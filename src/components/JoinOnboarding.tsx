@@ -49,21 +49,21 @@ export default function JoinOnboarding() {
     return `---
 APPLICANT_SHEET
 ---
-NAME: "${fullName || 'Anonymous hacker'}"
-EMAIL: "${email || 'N/A'}"
-TIMESTAMP: "${new Date().toISOString().split('T')[0]}"
+İSİM: "${fullName || 'Anonim kullanıcı'}"
+E-POSTA: "${email || 'Yok'}"
+TARİH: "${new Date().toISOString().split('T')[0]}"
 
-[INTEREST AREAS]
-${selectedInterests.map((interest) => `- ${interest}`).join('\n') || '- None selected'}
+[İLGİ ALANLARI]
+${selectedInterests.map((interest) => `- ${interest}`).join('\n') || '- Seçim yapılmadı'}
 
-[TECHNICAL LEVEL]
+[TEKNİK SEVİYE]
 - ${level}
 
-[DESIRED DEPARTMENT]
+[İSTENİLEN DEPARTMAN]
 - ${department}
 
-[PROJECTS & ACADEMIC GOALS]
-"${goals || 'No goals specified yet.'}"
+[PROJELER & AKADEMİK HEDEFLER]
+"${goals || 'Henüz hedef belirtilmedi.'}"
 
 ---
 EOF
@@ -291,7 +291,7 @@ EOF
                         className="flex items-center gap-1 font-mono text-[10px] text-brand-cyan hover:text-white transition-colors"
                       >
                         {copied ? <Check size={10} /> : <Copy size={10} />}
-                        <span>{copied ? 'Copied' : 'Copy'}</span>
+                        <span>{copied ? 'Kopyalandı' : 'Kopyala'}</span>
                       </button>
                     </div>
                     <pre className="p-4 overflow-x-auto text-[11px] md:text-xs font-mono text-slate-300 leading-relaxed max-h-[200px]">
@@ -318,7 +318,7 @@ EOF
                 className="flex items-center gap-1.5 px-4 py-2 border border-brand-border hover:border-slate-500 font-mono text-xs rounded transition-colors text-slate-400 hover:text-white"
               >
                 <ArrowLeft size={12} />
-                <span>BACK</span>
+                <span>GERİ</span>
               </button>
             ) : (
               <div />

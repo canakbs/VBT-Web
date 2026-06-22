@@ -18,73 +18,73 @@ interface RoadmapNode {
 const ROADMAP_STEPS: RoadmapNode[] = [
   {
     id: 'python',
-    title: 'Python Foundations',
-    subtitle: 'Syntactic Foundations & OOP',
+    title: 'Python Temelleri',
+    subtitle: 'Sözdizimi Temelleri & OOP',
     icon: <Code className="w-5 h-5 text-brand-cyan" />,
     difficulty: 'Beginner',
     concepts: ['Control Flow & Data Structures', 'Object-Oriented Programming (OOP)', 'List Comprehensions & Lambda functions', 'File I/O and JSON parsing'],
     tools: ['Python 3.x', 'VS Code', 'Jupyter Notebooks', 'Git'],
-    challenge: 'Build a command-line scientific calculator and publish the repo on GitHub.',
+    challenge: 'Komut satırı tabanlı bilimsel bir hesap makinesi oluşturun ve depoyu GitHub\'da yayınlayın.',
   },
   {
     id: 'data_analysis',
-    title: 'Scientific Data Analysis',
-    subtitle: 'Wrangling, Math & Exploration',
+    title: 'Bilimsel Veri Analizi',
+    subtitle: 'Düzenleme, Matematik & Keşif',
     icon: <Database className="w-5 h-5 text-brand-cyan" />,
     difficulty: 'Beginner',
     concepts: ['Exploratory Data Analysis (EDA)', 'Matrix algebra (Linear Algebra)', 'Descriptive & Inferential Statistics', 'Handling Missing Values & Outliers'],
     tools: ['Pandas', 'NumPy', 'Matplotlib', 'Seaborn'],
-    challenge: 'Analyze an open-source housing dataset, clean anomalies, and plot correlation matrices.',
+    challenge: 'Açık kaynaklı bir konut veri setini analiz edin, anomalileri temizleyin ve korelasyon matrislerini çizin.',
   },
   {
     id: 'machine_learning',
-    title: 'Classical Machine Learning',
-    subtitle: 'Supervised & Unsupervised Models',
+    title: 'Klasik Makine Öğrenmesi',
+    subtitle: 'Gözetimli & Gözetimsiz Modeller',
     icon: <Cpu className="w-5 h-5 text-brand-emerald" />,
     difficulty: 'Intermediate',
     concepts: ['Regression & Classification models', 'Decision Trees & Random Forests', 'Clustering (K-Means, DBSCAN)', 'Model Validation (K-Fold, ROC-AUC)'],
     tools: ['Scikit-Learn', 'SciPy', 'XGBoost', 'Joblib'],
-    challenge: 'Train an ensemble model to classify customer churn, achieving >85% F1-score.',
+    challenge: 'Müşteri kaybını sınıflandırmak için bir topluluk (ensemble) modeli eğitin, %85\'ten fazla F1-skoru elde edin.',
   },
   {
     id: 'deep_learning',
-    title: 'Deep Learning Laboratory',
-    subtitle: 'Artificial Neural Networks',
+    title: 'Derin Öğrenme Laboratuvarı',
+    subtitle: 'Yapay Sinir Ağları',
     icon: <Terminal className="w-5 h-5 text-brand-emerald" />,
     difficulty: 'Intermediate',
     concepts: ['Feedforward Networks & Backprop', 'Loss Functions & Gradient Optimizers', 'Convolutional Networks (CNNs)', 'Recurrent Networks (LSTMs)'],
     tools: ['PyTorch', 'TensorFlow', 'CUDA', 'TensorBoard'],
-    challenge: 'Build a custom PyTorch CNN to classify hand gestures from webcam inputs.',
+    challenge: 'Web kamerasından el hareketlerini sınıflandırmak için özel bir PyTorch CNN geliştirin.',
   },
   {
     id: 'computer_vision',
-    title: 'Computer Vision (CV)',
-    subtitle: 'Spatial Intelligence & Detection',
+    title: 'Bilgisayarlı Görü (CV)',
+    subtitle: 'Uzamsal Zeka & Tespit',
     icon: <Eye className="w-5 h-5 text-brand-blue" />,
     difficulty: 'Advanced',
     concepts: ['Image Segmentation (U-Net)', 'Real-time Object Detection (YOLO)', 'Transfer Learning (ResNet)', 'Feature Extraction & OpenCV operations'],
     tools: ['OpenCV', 'Ultralytics YOLO', 'Hugging Face', 'Albumentations'],
-    challenge: 'Develop a crop disease detection pipeline running on video streams.',
+    challenge: 'Video akışları üzerinde çalışan bir ekin hastalığı tespit boru hattı (pipeline) geliştirin.',
   },
   {
     id: 'nlp',
-    title: 'Natural Language Processing',
-    subtitle: 'Sequence Modeling & Language Agents',
+    title: 'Doğal Dil İşleme',
+    subtitle: 'Dizi Modelleme & Dil Ajanları',
     icon: <MessageSquare className="w-5 h-5 text-brand-blue" />,
     difficulty: 'Advanced',
     concepts: ['Tokenization & TF-IDF vectorizers', 'Word Embeddings (Word2Vec, GloVe)', 'Self-Attention & Transformers', 'Fine-tuning LLMs (QLoRA)'],
     tools: ['NLTK', 'Spacy', 'Hugging Face Transformers', 'LangChain'],
-    challenge: 'Fine-tune a lightweight LLM using custom medical text for virtual patient triage.',
+    challenge: 'Sanal hasta triyajı için özel tıbbi metin kullanarak hafif bir YDD\'ye (LLM) ince ayar (fine-tune) yapın.',
   },
   {
     id: 'mlops',
-    title: 'MLOps & Deployment',
-    subtitle: 'Production Pipelines & Monitoring',
+    title: 'MLOps & Dağıtım',
+    subtitle: 'Üretim Süreçleri & İzleme',
     icon: <Server className="w-5 h-5 text-purple-400" />,
     difficulty: 'Expert',
     concepts: ['Model Serialization & Dockerization', 'API construction (FastAPI/Flask)', 'Continuous Integration for ML (CD/CD)', 'Model drift tracking & Logging'],
     tools: ['Docker', 'FastAPI', 'MLflow', 'DVC (Data Version Control)'],
-    challenge: 'Deploy a classification API in a Docker container, integrated with MLflow metrics.',
+    challenge: 'Bir sınıflandırma API\'sini bir Docker konteynerinde dağıtın, MLflow metrikleriyle entegre edin.',
   },
 ];
 
@@ -482,12 +482,12 @@ export default function LearningRoadmap() {
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-col items-start mb-16">
           <span className="font-mono text-xs text-brand-cyan tracking-widest uppercase mb-2">
-            [ KNOWLEDGE LAYER: CURRICULUM ]
+            [ BİLGİ KATMANI: MÜFREDAT ]
           </span>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white">
-            Data Science <br />
+            Veri Bilimi <br />
             <span className="bg-gradient-to-r from-brand-cyan to-brand-emerald bg-clip-text text-transparent">
-              Roadmap Journey
+              Yol Haritası
             </span>
           </h2>
         </div>
@@ -534,7 +534,7 @@ export default function LearningRoadmap() {
                       step.difficulty === 'Advanced' ? 'bg-amber-950 text-amber-400 border border-amber-900' :
                       'bg-purple-950 text-purple-400 border border-purple-900'
                     }`}>
-                      {step.difficulty}
+                      {step.difficulty === 'Beginner' ? 'Başlangıç' : step.difficulty === 'Intermediate' ? 'Orta Seviye' : step.difficulty === 'Advanced' ? 'İleri Seviye' : 'Uzman'}
                     </span>
                     <ChevronRight size={14} className={`text-brand-muted group-hover:text-white transition-transform ${
                       isActive ? 'translate-x-1 text-brand-cyan' : ''
@@ -576,7 +576,7 @@ export default function LearningRoadmap() {
                   <div className="md:col-span-7 space-y-5">
                     <div>
                       <h4 className="font-mono text-xs text-brand-emerald tracking-wider uppercase mb-2">
-                        ■ CORE CONCEPTS
+                        ■ TEMEL KAVRAMLAR
                       </h4>
                       <ul className="space-y-1.5 text-xs md:text-sm text-slate-300">
                         {activeStep.concepts.map((c, i) => (
@@ -590,7 +590,7 @@ export default function LearningRoadmap() {
 
                     <div>
                       <h4 className="font-mono text-xs text-brand-cyan tracking-wider uppercase mb-2">
-                        ■ RECOMMENDED TOOLKIT
+                        ■ ÖNERİLEN ARAÇLAR
                       </h4>
                       <div className="flex flex-wrap gap-1.5">
                         {activeStep.tools.map((t) => (
@@ -613,7 +613,7 @@ export default function LearningRoadmap() {
                     </div>
                     
                     <span className="font-mono text-[7.5px] text-brand-emerald uppercase text-right w-full block">
-                      ● DATA SCIENCE SIMULATOR
+                      ● VERİ BİLİMİ SİMÜLATÖRÜ
                     </span>
                   </div>
 
@@ -624,14 +624,14 @@ export default function LearningRoadmap() {
               <div className="mt-4 p-4 bg-slate-950 border border-brand-border/60 rounded flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                   <div className="font-mono text-[10px] text-brand-emerald uppercase tracking-wider">
-                    ▼ LAB MILESTONE CHALLENGE
+                    ▼ LAB DÖNÜM NOKTASI GÖREVİ
                   </div>
                   <p className="text-slate-400 text-xs mt-1 leading-relaxed">
                     {activeStep.challenge}
                   </p>
                 </div>
                 <button className="flex items-center gap-1.5 px-4 py-2 bg-brand-cyan/10 hover:bg-brand-cyan/20 border border-brand-cyan/40 hover:border-brand-cyan/80 text-brand-cyan font-mono text-xs rounded transition-all duration-300 shrink-0">
-                  <span>Start Lab</span>
+                  <span>Lab\'a Başla</span>
                   <ExternalLink size={12} />
                 </button>
               </div>

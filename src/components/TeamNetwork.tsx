@@ -21,10 +21,10 @@ const TEAM_MEMBERS: TeamMember[] = [
   {
     id: 'adv_ahmet',
     name: 'Prof. Dr. Ahmet Yılmaz',
-    role: 'Academic Advisor',
+    role: 'Akademik Danışman',
     department: 'Danışmanlar',
     skills: ['Computer Science', 'Academic Research', 'Distributed Systems'],
-    bio: 'Professor at Akdeniz University computer engineering department, counseling the community on academic AI research.',
+    bio: 'Akdeniz Üniversitesi bilgisayar mühendisliği bölümünde profesör, topluluğa akademik yapay zeka araştırmaları konusunda danışmanlık yapıyor.',
     linkedin: 'https://linkedin.com',
     x: 50,
     y: 15,
@@ -33,10 +33,10 @@ const TEAM_MEMBERS: TeamMember[] = [
   {
     id: 'board_pres',
     name: 'Alperen Demir',
-    role: 'Topluluk Başkanı (President)',
+    role: 'Topluluk Başkanı',
     department: 'Yönetim',
     skills: ['Deep Learning', 'NLP', 'Mamba SSMs', 'PyTorch'],
-    bio: 'Computer Engineering junior. Directing organizational growth and leading the NLP Research laboratory.',
+    bio: 'Bilgisayar Mühendisliği öğrencisi. Organizasyonel büyümeyi yönetiyor ve NLP Araştırma laboratuvarına liderlik ediyor.',
     linkedin: 'https://linkedin.com',
     x: 50,
     y: 45,
@@ -44,10 +44,10 @@ const TEAM_MEMBERS: TeamMember[] = [
   {
     id: 'board_vpres',
     name: 'Begüm Kaya',
-    role: 'Vice President',
+    role: 'Başkan Yardımcısı',
     department: 'Yönetim',
     skills: ['Data Wrangling', 'Scikit-Learn', 'Statistical Inference'],
-    bio: 'Industrial Engineering senior. Managing educational curriculums, event planning, and sponsor relations.',
+    bio: 'Endüstri Mühendisliği öğrencisi. Eğitim müfredatlarını, etkinlik planlamasını ve sponsor ilişkilerini yönetiyor.',
     linkedin: 'https://linkedin.com',
     x: 35,
     y: 45,
@@ -57,10 +57,10 @@ const TEAM_MEMBERS: TeamMember[] = [
   {
     id: 'lead_mlops',
     name: 'Caner Öztürk',
-    role: 'MLOps Lead',
+    role: 'MLOps Lideri',
     department: 'Takım Liderleri',
     skills: ['Docker', 'FastAPI', 'MLflow', 'Kubernetes'],
-    bio: 'Directs deployment procedures and infrastructure, ensuring model models are packaged and monitored correctly.',
+    bio: 'Dağıtım süreçlerini ve altyapıyı yöneterek model paketleme ve izleme işlemlerini sağlar.',
     linkedin: 'https://linkedin.com',
     x: 20,
     y: 70,
@@ -68,10 +68,10 @@ const TEAM_MEMBERS: TeamMember[] = [
   {
     id: 'lead_cv',
     name: 'Zeynep Aslan',
-    role: 'Computer Vision Lead',
+    role: 'Bilgisayarlı Görü Lideri',
     department: 'Takım Liderleri',
     skills: ['YOLOv8', 'OpenCV', 'TensorRT', 'C++'],
-    bio: 'Coordinates camera automation systems and image processing projects for national contests.',
+    bio: 'Ulusal yarışmalar için kamera otomasyon sistemlerini ve görüntü işleme projelerini koordine eder.',
     linkedin: 'https://linkedin.com',
     x: 40,
     y: 70,
@@ -79,10 +79,10 @@ const TEAM_MEMBERS: TeamMember[] = [
   {
     id: 'lead_edu',
     name: 'Mert Yılmaz',
-    role: 'Education Lead',
+    role: 'Eğitim Lideri',
     department: 'Takım Liderleri',
     skills: ['Python Foundations', 'Numpy/Pandas', 'Course Design'],
-    bio: 'Manages bootcamp logistics, syllabus curation, and basic data analytics mentorship tracks.',
+    bio: 'Bootcamp lojistiğini, müfredat hazırlığını ve temel veri analitiği mentorluk programlarını yönetir.',
     linkedin: 'https://linkedin.com',
     x: 60,
     y: 70,
@@ -90,10 +90,10 @@ const TEAM_MEMBERS: TeamMember[] = [
   {
     id: 'lead_ops',
     name: 'Selin Demir',
-    role: 'Operations & Event Lead',
+    role: 'Operasyon & Etkinlik Lideri',
     department: 'Takım Liderleri',
     skills: ['Communications', 'Event Management', 'Public Relations'],
-    bio: 'Organizes tech meetups, coordinates with guest speakers, and builds community relations.',
+    bio: 'Teknoloji buluşmaları düzenler, konuk konuşmacılarla koordinasyonu sağlar ve topluluk ilişkilerini geliştirir.',
     linkedin: 'https://linkedin.com',
     x: 80,
     y: 70,
@@ -103,10 +103,10 @@ const TEAM_MEMBERS: TeamMember[] = [
   {
     id: 'mentor_python',
     name: 'Burak Yıldız',
-    role: 'Python Mentor',
+    role: 'Python Mentörü',
     department: 'Mentörler',
     skills: ['Python Syntax', 'Git Versioning', 'Object OOP'],
-    bio: 'Helping beginner students debug core scripting syntax and set up git repositories.',
+    bio: 'Başlangıç seviyesindeki öğrencilere kod sözdizimi hatalarını ayıklama ve git depoları oluşturma konusunda yardımcı olur.',
     linkedin: 'https://linkedin.com',
     x: 50,
     y: 90,
@@ -114,10 +114,10 @@ const TEAM_MEMBERS: TeamMember[] = [
   {
     id: 'mentor_dl',
     name: 'Kaan Kaya',
-    role: 'Deep Learning Mentor',
+    role: 'Derin Öğrenme Mentörü',
     department: 'Mentörler',
     skills: ['Transformers', 'PyTorch CNNs', 'TensorBoard'],
-    bio: 'Guiding advanced students through training cycles and hyperparameters optimization labs.',
+    bio: 'İleri düzey öğrencilere eğitim döngüleri ve hiperparametre optimizasyon laboratuvarlarında rehberlik eder.',
     linkedin: 'https://linkedin.com',
     x: 70,
     y: 90,
@@ -272,7 +272,7 @@ export default function TeamNetwork() {
               MEMBERS: {TEAM_MEMBERS.length} UNITS
             </div>
             <div className="absolute bottom-3 right-3 font-mono text-[8px] text-brand-emerald pointer-events-none uppercase">
-              ● interactive hierarchy map
+              ● İNTERAKTİF HİYERARŞİ HARİTASI
             </div>
           </div>
 

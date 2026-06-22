@@ -70,7 +70,7 @@ export default function ProjectPipeline({ projects }: ProjectPipelineProps) {
                   {stageProjects.length === 0 ? (
                     <div className="flex-grow flex items-center justify-center border border-dashed border-brand-border/60 rounded p-6 text-center">
                       <span className="font-mono text-[10px] text-brand-muted uppercase">
-                        [ Empty Queue ]
+                        [ Kuyruk Boş ]
                       </span>
                     </div>
                   ) : (
@@ -110,7 +110,7 @@ export default function ProjectPipeline({ projects }: ProjectPipelineProps) {
                               <span>GitHub</span>
                             </a>
                           ) : (
-                            <span>ACTIVE</span>
+                            <span>AKTİF</span>
                           )}
                           <span className="text-brand-cyan group-hover:translate-x-1 transition-transform flex items-center gap-1">
                             DETAY <Play size={8} />
@@ -213,7 +213,7 @@ export default function ProjectPipeline({ projects }: ProjectPipelineProps) {
                     onClick={() => setSelectedProject(null)}
                     className="px-4 py-2 border border-brand-border rounded font-mono text-xs text-slate-300 hover:text-white transition-colors"
                   >
-                    Close
+                    Kapat
                   </button>
                   {selectedProject.metadata.github && (
                     <a

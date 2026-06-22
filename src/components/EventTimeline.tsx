@@ -18,15 +18,15 @@ interface EventTimelineProps {
 }
 
 export default function EventTimeline({ events, showMoreButton = false }: EventTimelineProps) {
-  const [activeCategory, setActiveCategory] = useState<string>('All');
+  const [activeCategory, setActiveCategory] = useState<string>('Tümü');
   const containerRef = useRef<HTMLDivElement>(null);
   const lineRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<HTMLDivElement>(null);
 
   // Group and extract unique categories from actual events
-  const categories = ['All', ...Array.from(new Set(events.map(e => e.metadata.category || ''))).filter(Boolean)];
+  const categories = ['Tümü', ...Array.from(new Set(events.map(e => e.metadata.category || ''))).filter(Boolean)];
 
-  const filteredEvents = activeCategory === 'All'
+  const filteredEvents = activeCategory === 'Tümü'
     ? events
     : events.filter(e => e.metadata.category === activeCategory);
 
@@ -119,7 +119,7 @@ export default function EventTimeline({ events, showMoreButton = false }: EventT
                     : 'border border-transparent text-brand-muted hover:text-white'
                 }`}
               >
-                {cat === 'All' && <Filter size={12} />}
+                {cat === 'Tümü' && <Filter size={12} />}
                 <span>{cat}</span>
               </button>
             ))}
@@ -142,7 +142,7 @@ export default function EventTimeline({ events, showMoreButton = false }: EventT
           <div ref={cardsRef} className="space-y-16">
             {filteredEvents.length === 0 ? (
               <div className="py-12 text-center text-brand-muted font-mono text-sm border border-dashed border-brand-border rounded">
-                [ No records found for category: {activeCategory} ]
+                [ {activeCategory} kategorisi için kayıt bulunamadı ]
               </div>
             ) : (
               filteredEvents.map((event, index) => (
