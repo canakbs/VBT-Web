@@ -115,26 +115,26 @@ export default function Workspace() {
     setEditingSha(undefined);
     
     // Set defaults
-    setEventDate(new Date().toISOString().split('T')[0]);
+    setEventDate('');
     setEventCategory('AI Workshops');
-    setEventStats('120+ Participants, 5 Hours');
-    setEventOutcome('Built a custom neural network from scratch.');
+    setEventStats('');
+    setEventOutcome('');
     
-    setBlogDate(new Date().toISOString().split('T')[0]);
+    setBlogDate('');
     setBlogAuthor('');
-    setBlogStats('Read Time: 5 min');
+    setBlogStats('');
     
-    setProjectStage('Development');
-    setProjectCategory('Machine Learning');
+    setProjectStage('Idea');
+    setProjectCategory('');
     setProjectGithub('');
-    setProjectStats('Precision: 94%, Inference: 12ms');
+    setProjectStats('');
 
     setTeamRole('');
     setTeamDepartment('Yönetim');
     setTeamSkills('');
     setTeamBio('');
     setTeamLinkedin('');
-    setImagePath(activeTab === 'team' ? '/images/team/placeholder.jpg' : '/images/events/placeholder.jpg');
+    setImagePath('');
     
     setConsoleLines([
       'SYSTEM STATE: COMPOSING NEW DOCUMENT',
@@ -155,7 +155,7 @@ export default function Workspace() {
       setSummary(fileData.metadata.summary || '');
       setContent(fileData.content || '');
       setTagsInput(fileData.metadata.tags ? fileData.metadata.tags.join(', ') : '');
-      setImagePath(fileData.metadata.image || '/images/placeholder.jpg');
+      setImagePath(fileData.metadata.image || '');
 
       const parts = path.split('/');
       const name = parts[parts.length - 1];
@@ -163,14 +163,14 @@ export default function Workspace() {
       setEditingSha(fileData.sha);
 
       if (activeTab === 'events') {
-        setEventDate(fileData.metadata.date || new Date().toISOString().split('T')[0]);
+        setEventDate(fileData.metadata.date || '');
         setEventCategory(fileData.metadata.category || 'AI Workshops');
         setEventStats(fileData.metadata.stats || '');
         setEventOutcome(fileData.metadata.outcome || '');
       } else if (activeTab === 'blog') {
-        setBlogDate(fileData.metadata.date || new Date().toISOString().split('T')[0]);
+        setBlogDate(fileData.metadata.date || '');
         setBlogAuthor(fileData.metadata.author || '');
-        setBlogStats(fileData.metadata.stats || 'Read Time: 5 min');
+        setBlogStats(fileData.metadata.stats || '');
       } else if (activeTab === 'team') {
         setTeamRole(fileData.metadata.role || '');
         setTeamDepartment(fileData.metadata.department || 'Yönetim');
@@ -178,8 +178,8 @@ export default function Workspace() {
         setTeamBio(fileData.metadata.bio || '');
         setTeamLinkedin(fileData.metadata.linkedin || '');
       } else {
-        setProjectStage(fileData.metadata.stage || 'Development');
-        setProjectCategory(fileData.metadata.category || 'Machine Learning');
+        setProjectStage(fileData.metadata.stage || 'Idea');
+        setProjectCategory(fileData.metadata.category || '');
         setProjectGithub(fileData.metadata.github || '');
         setProjectStats(fileData.metadata.stats || '');
       }
@@ -263,61 +263,61 @@ export default function Workspace() {
 
     if (activeTab === 'events') {
       return `---
-title: "${title || 'Event Title'}"
+title: "${title}"
 date: "${eventDate}"
 category: "${eventCategory}"
 stats: "${eventStats}"
 outcome: "${eventOutcome}"
 image: "${imagePath}"
-summary: "${summary || 'Brief summary here'}"${formattedTags}
+summary: "${summary}"${formattedTags}
 ---
 
-${content || '### Event Details\nWrite the event description body here...'}
+${content}
 `;
     }
 
     if (activeTab === 'blog') {
       return `---
-title: "${title || 'Blog Post Title'}"
+title: "${title}"
 date: "${blogDate}"
-author: "${blogAuthor || 'Author Name'}"
+author: "${blogAuthor}"
 stats: "${blogStats}"
 image: "/images/blog/placeholder.jpg"
-summary: "${summary || 'Brief summary here'}"${formattedTags}
+summary: "${summary}"${formattedTags}
 ---
 
-${content || '### Article Body\nWrite the article body here...'}
+${content}
 `;
     }
 
     // Projects
     if (activeTab === 'projects') {
       return `---
-title: "${title || 'Project Title'}"
+title: "${title}"
 stage: "${projectStage}"
 category: "${projectCategory}"
-github: "${projectGithub || 'https://github.com/akdeniz-veri'}"
+github: "${projectGithub}"
 stats: "${projectStats}"
-summary: "${summary || 'Brief summary here'}"${formattedTags}
+summary: "${summary}"${formattedTags}
 ---
 
-${content || '### Project Implementation\nWrite project details and pipeline stages here...'}
+${content}
 `;
     }
 
     // Team
     return `---
-title: "${title || 'Üye Adı'}"
-role: "${teamRole || 'Rol'}"
+title: "${title}"
+role: "${teamRole}"
 department: "${teamDepartment}"
 skills: ${JSON.stringify(teamSkills.split(',').map(s => s.trim()).filter(Boolean))}
-bio: "${teamBio || 'Kısa biyografi'}"
+bio: "${teamBio}"
 linkedin: "${teamLinkedin}"
 image: "${imagePath}"
-summary: "${summary || 'Üye bilgileri'}"${formattedTags}
+summary: "${summary}"${formattedTags}
 ---
 
-${content || ''}
+${content}
 `;
   };
 
@@ -594,22 +594,22 @@ ${content || ''}
                   </button>
                   <h2 className="text-white font-bold text-base md:text-lg flex items-center gap-2 font-mono">
                     <PlusCircle className="text-brand-cyan w-5 h-5" />
-                    <span>{editingSha ? 'MODIFY ENTRY' : 'CREATE ENTRY'}</span>
+                    <span>{editingSha ? 'KAYDI DÜZENLE' : 'YENİ KAYIT EKLE'}</span>
                   </h2>
                 </div>
 
                 <div className="px-3 py-1 bg-slate-950 border border-brand-border rounded font-mono text-[9px] text-brand-cyan uppercase">
-                  DIRECTORY: content/{activeTab}/
+                  DİZİN: content/{activeTab}/
                 </div>
               </div>
 
               <div className="space-y-4 font-mono text-xs text-slate-300">
                 {/* Title */}
                 <div className="flex flex-col">
-                  <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Başlık (Title)</label>
+                  <label className="text-slate-400 mb-1.5 uppercase tracking-wider font-bold">Başlık</label>
                   <input
                     type="text"
-                    placeholder="e.g. Deep Learning Bootcamp"
+                    placeholder="Örn: Derin Öğrenme Bootcamp'i"
                     value={title}
                     onChange={(e) => {
                       setTitle(e.target.value);
@@ -624,7 +624,7 @@ ${content || ''}
                   <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Kısa Özet</label>
                   <textarea
                     rows={2}
-                    placeholder="Write a brief 2-sentence teaser summary..."
+                    placeholder="Kısa bir özet yazın (1-2 cümle)..."
                     value={summary}
                     onChange={(e) => setSummary(e.target.value)}
                     className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
@@ -678,7 +678,7 @@ ${content || ''}
                       <label className="text-slate-400 mb-1.5 uppercase tracking-wider">İstatistikler</label>
                       <input
                         type="text"
-                        placeholder="e.g. 150+ Hackers, 36 Hours Codeathon"
+                        placeholder="Örn: 150+ Katılımcı, 36 Saat Kodlama"
                         value={eventStats}
                         onChange={(e) => setEventStats(e.target.value)}
                         className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
@@ -688,7 +688,7 @@ ${content || ''}
                       <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Araştırma Çıktısı</label>
                       <input
                         type="text"
-                        placeholder="e.g. Developed 12 lightweight CV applications."
+                        placeholder="Örn: 12 adet bilgisayarlı görü uygulaması geliştirildi."
                         value={eventOutcome}
                         onChange={(e) => setEventOutcome(e.target.value)}
                         className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
@@ -849,7 +849,7 @@ ${content || ''}
                   <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Etiketler (Virgülle ayrılmış)</label>
                   <input
                     type="text"
-                    placeholder="e.g. PyTorch, YOLOv8, CNN"
+                    placeholder="Örn: PyTorch, YOLOv8, CNN"
                     value={tagsInput}
                     onChange={(e) => setTagsInput(e.target.value)}
                     className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
@@ -861,7 +861,7 @@ ${content || ''}
                   <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Markdown İçeriği (Ana Metin)</label>
                   <textarea
                     rows={10}
-                    placeholder="### Details Section&#10;Write markdown content paragraphs, lists, structures..."
+                    placeholder="### Detaylar&#10;Markdown içerik paragrafları, listeler, yapılar yazın..."
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors font-mono"
@@ -874,7 +874,7 @@ ${content || ''}
                     onClick={() => setActiveView('list')}
                     className="flex-grow flex items-center justify-center gap-2 p-3 bg-slate-900 hover:bg-slate-800 border border-brand-border text-slate-300 hover:text-white rounded font-mono font-bold transition-all duration-300 cursor-pointer"
                   >
-                    <span>CANCEL</span>
+                    <span>İPTAL</span>
                   </button>
 
                   <button
@@ -887,7 +887,7 @@ ${content || ''}
                     }`}
                   >
                     <FileDown size={14} />
-                    <span>DOWNLOAD .MD</span>
+                    <span>MARKDOWN (.MD) İNDİR</span>
                   </button>
 
                   {!isSandboxMode && (
@@ -903,12 +903,12 @@ ${content || ''}
                       {isSaving ? (
                         <>
                           <Loader2 size={14} className="animate-spin" />
-                          <span>SAVING TO REPO...</span>
+                          <span>DEPOYA KAYDEDİLİYOR...</span>
                         </>
                       ) : (
                         <>
                           <Sparkles size={14} />
-                          <span>{editingSha ? 'UPDATE GITHUB' : 'PUSH TO GITHUB'}</span>
+                          <span>{editingSha ? 'GITHUB\'DA GÜNCELLE' : 'GITHUB\'A GÖNDER'}</span>
                         </>
                       )}
                     </button>
