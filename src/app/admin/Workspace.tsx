@@ -22,7 +22,8 @@ import {
   getContentList, 
   getFileContent, 
   saveContent, 
-  deleteContent 
+  deleteContent,
+  uploadImageAction
 } from './actions';
 
 export default function Workspace() {
@@ -62,6 +63,9 @@ export default function Workspace() {
   const [teamSkills, setTeamSkills] = useState('');
   const [teamBio, setTeamBio] = useState('');
   const [teamLinkedin, setTeamLinkedin] = useState('');
+  
+  // Image handling
+  const [imagePath, setImagePath] = useState('/images/placeholder.jpg');
 
   // Commit tracking
   const [editingFilename, setEditingFilename] = useState('');
@@ -130,6 +134,7 @@ export default function Workspace() {
     setTeamSkills('');
     setTeamBio('');
     setTeamLinkedin('');
+    setImagePath(activeTab === 'team' ? '/images/team/placeholder.jpg' : '/images/events/placeholder.jpg');
     
     setConsoleLines([
       'SYSTEM STATE: COMPOSING NEW DOCUMENT',
@@ -150,6 +155,7 @@ export default function Workspace() {
       setSummary(fileData.metadata.summary || '');
       setContent(fileData.content || '');
       setTagsInput(fileData.metadata.tags ? fileData.metadata.tags.join(', ') : '');
+      setImagePath(fileData.metadata.image || '/images/placeholder.jpg');
 
       const parts = path.split('/');
       const name = parts[parts.length - 1];
@@ -213,6 +219,43 @@ export default function Workspace() {
       .filter(Boolean);
   };
 
+  // Image Uploader
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (isSandboxMode) {
+      alert("Sandbox mode active: GitHub upload is disabled. Image uploading will not work without a valid PAT.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+      try {
+        addConsoleLine(`STARTING IMAGE UPLOAD: ${file.name}...`);
+        const base64String = (event.target?.result as string).split(',')[1];
+        const destFolder = activeTab === 'team' ? 'team' : 'events';
+        const cleanName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
+        const finalName = `${Date.now()}-${cleanName}`;
+        
+        const result = await uploadImageAction(
+          destFolder as 'events' | 'team', 
+          finalName, 
+          base64String
+        );
+        if (result.success && result.path) {
+          setImagePath(result.path);
+          addConsoleLine(`IMAGE UPLOAD SUCCESSFUL: ${result.path}`);
+        }
+      } catch (err: any) {
+        console.error(err);
+        addConsoleLine(`IMAGE UPLOAD FAILED: ${err.message}`);
+        alert('Resim yüklenirken hata oluştu: ' + err.message);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   // Compile final markdown content string
   const generateMarkdownString = () => {
     const tagsArr = getTagsArray();
@@ -225,7 +268,7 @@ date: "${eventDate}"
 category: "${eventCategory}"
 stats: "${eventStats}"
 outcome: "${eventOutcome}"
-image: "/images/events/placeholder.jpg"
+image: "${imagePath}"
 summary: "${summary || 'Brief summary here'}"${formattedTags}
 ---
 
@@ -270,6 +313,7 @@ department: "${teamDepartment}"
 skills: ${JSON.stringify(teamSkills.split(',').map(s => s.trim()).filter(Boolean))}
 bio: "${teamBio || 'Kısa biyografi'}"
 linkedin: "${teamLinkedin}"
+image: "${imagePath}"
 summary: "${summary || 'Üye bilgileri'}"${formattedTags}
 ---
 
@@ -562,7 +606,7 @@ ${content || ''}
               <div className="space-y-4 font-mono text-xs text-slate-300">
                 {/* Title */}
                 <div className="flex flex-col">
-                  <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Title</label>
+                  <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Başlık (Title)</label>
                   <input
                     type="text"
                     placeholder="e.g. Deep Learning Bootcamp"
@@ -577,7 +621,7 @@ ${content || ''}
 
                 {/* Summary */}
                 <div className="flex flex-col">
-                  <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Short Summary</label>
+                  <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Kısa Özet</label>
                   <textarea
                     rows={2}
                     placeholder="Write a brief 2-sentence teaser summary..."
@@ -590,8 +634,25 @@ ${content || ''}
                 {/* Tab conditional input fields */}
                 {activeTab === 'events' && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-y border-brand-border/30 py-4">
+                    <div className="flex flex-col sm:col-span-2">
+                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Kapak Fotoğrafı (Etkinlik Resmi)</label>
+                      <div className="flex items-center gap-4">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageUpload}
+                          className="p-2 bg-slate-900 border border-brand-border rounded text-white text-xs w-full"
+                        />
+                        {imagePath && (
+                          <div className="w-10 h-10 overflow-hidden rounded border border-brand-cyan shrink-0">
+                            <img src={imagePath} alt="preview" className="object-cover w-full h-full" />
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-[10px] text-slate-500 mt-1">Örn: .jpg, .png</p>
+                    </div>
                     <div className="flex flex-col">
-                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Event Date</label>
+                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Etkinlik Tarihi</label>
                       <input
                         type="date"
                         value={eventDate}
@@ -600,7 +661,7 @@ ${content || ''}
                       />
                     </div>
                     <div className="flex flex-col">
-                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Category</label>
+                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Kategori</label>
                       <select
                         value={eventCategory}
                         onChange={(e) => setEventCategory(e.target.value)}
@@ -614,7 +675,7 @@ ${content || ''}
                       </select>
                     </div>
                     <div className="flex flex-col sm:col-span-2">
-                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Telemetry Stats</label>
+                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">İstatistikler</label>
                       <input
                         type="text"
                         placeholder="e.g. 150+ Hackers, 36 Hours Codeathon"
@@ -624,7 +685,7 @@ ${content || ''}
                       />
                     </div>
                     <div className="flex flex-col sm:col-span-2">
-                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Research Outcome</label>
+                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Araştırma Çıktısı</label>
                       <input
                         type="text"
                         placeholder="e.g. Developed 12 lightweight CV applications."
@@ -710,6 +771,23 @@ ${content || ''}
 
                 {activeTab === 'team' && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-y border-brand-border/30 py-4">
+                    <div className="flex flex-col sm:col-span-2">
+                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Profil Fotoğrafı (Kişi Resmi)</label>
+                      <div className="flex items-center gap-4">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageUpload}
+                          className="p-2 bg-slate-900 border border-brand-border rounded text-white text-xs w-full"
+                        />
+                        {imagePath && (
+                          <div className="w-10 h-10 overflow-hidden rounded border border-brand-cyan shrink-0">
+                            <img src={imagePath} alt="preview" className="object-cover w-full h-full" />
+                          </div>
+                        )}
+                      </div>
+                      <p className="text-[10px] text-slate-500 mt-1">Örn: .jpg, .png</p>
+                    </div>
                     <div className="flex flex-col">
                       <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Rol / Görev</label>
                       <input
@@ -768,7 +846,7 @@ ${content || ''}
 
                 {/* Tags */}
                 <div className="flex flex-col">
-                  <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Tags (comma-separated)</label>
+                  <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Etiketler (Virgülle ayrılmış)</label>
                   <input
                     type="text"
                     placeholder="e.g. PyTorch, YOLOv8, CNN"
@@ -780,7 +858,7 @@ ${content || ''}
 
                 {/* Markdown body text */}
                 <div className="flex flex-col">
-                  <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Markdown Description Body</label>
+                  <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Markdown İçeriği (Ana Metin)</label>
                   <textarea
                     rows={10}
                     placeholder="### Details Section&#10;Write markdown content paragraphs, lists, structures..."

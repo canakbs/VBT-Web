@@ -6,7 +6,8 @@ import {
   listDirectoryContents, 
   getFile, 
   commitFile, 
-  deleteFileFromRepo 
+  deleteFileFromRepo,
+  commitBinaryFile
 } from '@/lib/github';
 
 const DEFAULT_PASSCODE = 'avbt2026';
@@ -149,5 +150,27 @@ export async function deleteContent(path: string, sha: string) {
   } catch (err: any) {
     console.error(`Error deleting content at ${path}:`, err);
     throw new Error(err.message || 'FAILED_TO_DELETE_CONTENT');
+  }
+}
+
+export async function uploadImageAction(
+  type: 'events' | 'team',
+  filename: string,
+  base64Content: string
+) {
+  const cookieStore = await cookies();
+  if (cookieStore.get('avbt_cms_session')?.value !== 'true') {
+    throw new Error('UNAUTHORIZED');
+  }
+
+  const path = `public/images/${type}/${filename}`;
+  const message = `CMS: Upload image ${filename}`;
+
+  try {
+    const result = await commitBinaryFile(path, base64Content, message);
+    return { success: true, path: `/images/${type}/${filename}` };
+  } catch (err: any) {
+    console.error(`Error uploading image to ${path}:`, err);
+    throw new Error(err.message || 'FAILED_TO_UPLOAD_IMAGE');
   }
 }

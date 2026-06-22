@@ -105,3 +105,28 @@ export async function deleteFileFromRepo(
     body: JSON.stringify(body),
   });
 }
+
+export async function commitBinaryFile(
+  path: string,
+  base64Content: string,
+  message: string,
+  sha?: string
+): Promise<{ sha: string }> {
+  const body: any = {
+    message,
+    content: base64Content,
+    branch: 'main',
+  };
+
+  if (sha) {
+    body.sha = sha;
+  }
+
+  return await githubFetch(`contents/${path}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  });
+}
