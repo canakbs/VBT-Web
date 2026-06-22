@@ -28,7 +28,7 @@ import {
 export default function Workspace() {
   // Navigation & Tabs
   const [activeView, setActiveView] = useState<'list' | 'composer'>('list');
-  const [activeTab, setActiveTab] = useState<'events' | 'blog' | 'projects'>('events');
+  const [activeTab, setActiveTab] = useState<'events' | 'blog' | 'projects' | 'team'>('events');
   const [contentList, setContentList] = useState<any[]>([]);
   const [isLoadingList, setIsLoadingList] = useState(false);
   const [isSandboxMode, setIsSandboxMode] = useState(false);
@@ -56,6 +56,13 @@ export default function Workspace() {
   const [projectGithub, setProjectGithub] = useState('');
   const [projectStats, setProjectStats] = useState('Precision: 94%, Inference: 12ms');
 
+  // Team specific fields
+  const [teamRole, setTeamRole] = useState('');
+  const [teamDepartment, setTeamDepartment] = useState('Yönetim');
+  const [teamSkills, setTeamSkills] = useState('');
+  const [teamBio, setTeamBio] = useState('');
+  const [teamLinkedin, setTeamLinkedin] = useState('');
+
   // Commit tracking
   const [editingFilename, setEditingFilename] = useState('');
   const [editingSha, setEditingSha] = useState<string | undefined>(undefined);
@@ -66,7 +73,7 @@ export default function Workspace() {
   ]);
 
   // Load Content List
-  const fetchList = async (type: 'events' | 'blog' | 'projects') => {
+  const fetchList = async (type: 'events' | 'blog' | 'projects' | 'team') => {
     setIsLoadingList(true);
     setIsSandboxMode(false);
     try {
@@ -117,6 +124,12 @@ export default function Workspace() {
     setProjectCategory('Machine Learning');
     setProjectGithub('');
     setProjectStats('Precision: 94%, Inference: 12ms');
+
+    setTeamRole('');
+    setTeamDepartment('Yönetim');
+    setTeamSkills('');
+    setTeamBio('');
+    setTeamLinkedin('');
     
     setConsoleLines([
       'SYSTEM STATE: COMPOSING NEW DOCUMENT',
@@ -152,6 +165,12 @@ export default function Workspace() {
         setBlogDate(fileData.metadata.date || new Date().toISOString().split('T')[0]);
         setBlogAuthor(fileData.metadata.author || '');
         setBlogStats(fileData.metadata.stats || 'Read Time: 5 min');
+      } else if (activeTab === 'team') {
+        setTeamRole(fileData.metadata.role || '');
+        setTeamDepartment(fileData.metadata.department || 'Yönetim');
+        setTeamSkills(fileData.metadata.skills ? fileData.metadata.skills.join(', ') : '');
+        setTeamBio(fileData.metadata.bio || '');
+        setTeamLinkedin(fileData.metadata.linkedin || '');
       } else {
         setProjectStage(fileData.metadata.stage || 'Development');
         setProjectCategory(fileData.metadata.category || 'Machine Learning');
@@ -229,7 +248,8 @@ ${content || '### Article Body\nWrite the article body here...'}
     }
 
     // Projects
-    return `---
+    if (activeTab === 'projects') {
+      return `---
 title: "${title || 'Project Title'}"
 stage: "${projectStage}"
 category: "${projectCategory}"
@@ -239,6 +259,21 @@ summary: "${summary || 'Brief summary here'}"${formattedTags}
 ---
 
 ${content || '### Project Implementation\nWrite project details and pipeline stages here...'}
+`;
+    }
+
+    // Team
+    return `---
+title: "${title || 'Üye Adı'}"
+role: "${teamRole || 'Rol'}"
+department: "${teamDepartment}"
+skills: ${JSON.stringify(teamSkills.split(',').map(s => s.trim()).filter(Boolean))}
+bio: "${teamBio || 'Kısa biyografi'}"
+linkedin: "${teamLinkedin}"
+summary: "${summary || 'Üye bilgileri'}"${formattedTags}
+---
+
+${content || ''}
 `;
   };
 
@@ -401,7 +436,7 @@ ${content || '### Project Implementation\nWrite project details and pipeline sta
             {/* Tab Navigation & List Grid */}
             <div className="bg-brand-card border border-brand-border rounded overflow-hidden">
               <div className="flex border-b border-brand-border bg-slate-950/40">
-                {(['events', 'blog', 'projects'] as const).map((tab) => (
+                {(['events', 'blog', 'projects', 'team'] as const).map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
@@ -411,9 +446,10 @@ ${content || '### Project Implementation\nWrite project details and pipeline sta
                         : 'text-slate-400 hover:text-white hover:bg-slate-950/20'
                     }`}
                   >
-                    {tab === 'events' && 'Events Archive'}
-                    {tab === 'blog' && 'Publications / Blog'}
-                    {tab === 'projects' && 'Research Projects'}
+                    {tab === 'events' && 'Etkinlikler'}
+                    {tab === 'blog' && 'Blog / Yayınlar'}
+                    {tab === 'projects' && 'Projeler'}
+                    {tab === 'team' && 'Ekip Üyeleri'}
                   </button>
                 ))}
               </div>
@@ -637,23 +673,23 @@ ${content || '### Project Implementation\nWrite project details and pipeline sta
                 {activeTab === 'projects' && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-y border-brand-border/30 py-4">
                     <div className="flex flex-col">
-                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Pipeline Stage</label>
+                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Proje Aşaması</label>
                       <select
                         value={projectStage}
                         onChange={(e) => setProjectStage(e.target.value)}
                         className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
                       >
-                        <option value="Idea">Idea (Data Synthesis)</option>
-                        <option value="Research">Research (Math Validation)</option>
-                        <option value="Development">Development (Neural Train)</option>
-                        <option value="Deployment">Deployment (Production Edge)</option>
+                        <option value="Idea">Fikir Aşaması</option>
+                        <option value="Research">Araştırma</option>
+                        <option value="Development">Geliştirme</option>
+                        <option value="Deployment">Yayınlama</option>
                       </select>
                     </div>
                     <div className="flex flex-col">
-                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Project Category</label>
+                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Proje Kategorisi</label>
                       <input
                         type="text"
-                        placeholder="e.g. Reinforcement Learning"
+                        placeholder="örn. Reinforcement Learning"
                         value={projectCategory}
                         onChange={(e) => setProjectCategory(e.target.value)}
                         className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
@@ -663,19 +699,67 @@ ${content || '### Project Implementation\nWrite project details and pipeline sta
                       <label className="text-slate-400 mb-1.5 uppercase tracking-wider">GitHub Repository</label>
                       <input
                         type="text"
-                        placeholder="e.g. https://github.com/akdeniz-veri/repo-name"
+                        placeholder="örn. https://github.com/akdeniz-veri/repo-name"
                         value={projectGithub}
                         onChange={(e) => setProjectGithub(e.target.value)}
                         className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
                       />
                     </div>
-                    <div className="flex flex-col sm:col-span-2">
-                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Performance Metrics</label>
+                  </div>
+                )}
+
+                {activeTab === 'team' && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-y border-brand-border/30 py-4">
+                    <div className="flex flex-col">
+                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Rol / Görev</label>
                       <input
                         type="text"
-                        placeholder="e.g. Congestion Reduction: 22%"
-                        value={projectStats}
-                        onChange={(e) => setProjectStats(e.target.value)}
+                        placeholder="örn. Topluluk Başkanı, MLOps Lead"
+                        value={teamRole}
+                        onChange={(e) => setTeamRole(e.target.value)}
+                        className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Departman</label>
+                      <select
+                        value={teamDepartment}
+                        onChange={(e) => setTeamDepartment(e.target.value)}
+                        className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
+                      >
+                        <option value="Yönetim">Yönetim</option>
+                        <option value="Danışmanlar">Danışmanlar</option>
+                        <option value="Takım Liderleri">Takım Liderleri</option>
+                        <option value="Mentörler">Mentörler</option>
+                      </select>
+                    </div>
+                    <div className="flex flex-col sm:col-span-2">
+                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">İlgi Alanları / Yetenekler (virgülle)</label>
+                      <input
+                        type="text"
+                        placeholder="örn. Deep Learning, PyTorch, NLP"
+                        value={teamSkills}
+                        onChange={(e) => setTeamSkills(e.target.value)}
+                        className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
+                      />
+                    </div>
+                    <div className="flex flex-col sm:col-span-2">
+                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Kısa Biyografi</label>
+                      <textarea
+                        rows={2}
+                        placeholder="örn. Bilgisayar Mühendisliği 3. sınıf öğrencisi, NLP alanında çalışıyor."
+                        value={teamBio}
+                        onChange={(e) => setTeamBio(e.target.value)}
+                        className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
+                      />
+                    </div>
+                    <div className="flex flex-col sm:col-span-2">
+                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">LinkedIn URL</label>
+                      <input
+                        type="text"
+                        placeholder="örn. https://linkedin.com/in/username"
+                        value={teamLinkedin}
+                        onChange={(e) => setTeamLinkedin(e.target.value)}
                         className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
                       />
                     </div>

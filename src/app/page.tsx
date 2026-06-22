@@ -40,20 +40,20 @@ export default function Home() {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex flex-col items-center md:items-start gap-1">
             <span className="text-white font-bold tracking-wider">AKDENİZ VERİ BİLİMİ</span>
-            <span>Mediterranean Data Science Community // Since 2024</span>
+            <span>Akdeniz Üniversitesi Veri Bilimi Topluluğu // 2024</span>
           </div>
 
           <div className="flex flex-wrap justify-center gap-6 text-[11px]">
-            <a href="#who-we-are" className="hover:text-brand-cyan transition-colors">Who We Are</a>
-            <a href="#event-archive" className="hover:text-brand-cyan transition-colors">Timeline</a>
-            <a href="#ds-journey" className="hover:text-brand-cyan transition-colors">Roadmap</a>
-            <a href="#project-showcase" className="hover:text-brand-cyan transition-colors">Projects</a>
-            <a href="#team" className="hover:text-brand-cyan transition-colors">Team</a>
-            <a href="#join-us" className="hover:text-brand-emerald transition-colors font-bold">JOIN PROTOCOL</a>
+            <a href="#who-we-are" className="hover:text-brand-cyan transition-colors">Biz Kimiz</a>
+            <a href="#event-archive" className="hover:text-brand-cyan transition-colors">Etkinlikler</a>
+            <a href="#ds-journey" className="hover:text-brand-cyan transition-colors">Yol Haritası</a>
+            <a href="#project-showcase" className="hover:text-brand-cyan transition-colors">Projeler</a>
+            <a href="#team" className="hover:text-brand-cyan transition-colors">Ekip</a>
+            <a href="#join-us" className="hover:text-brand-emerald transition-colors font-bold">BİZE KATIL</a>
           </div>
 
           <div className="text-[10px] text-slate-600">
-            SYSTEM_SECURE: SHA-256 // LOCAL_EXECUTION
+            © 2024 Akdeniz Veri Bilimi Topluluğu
           </div>
         </div>
       </footer>

@@ -6,8 +6,8 @@ import confetti from 'canvas-confetti';
 import { ArrowRight, ArrowLeft, Terminal, Copy, Check, Info } from 'lucide-react';
 
 const INTERESTS = ['Machine Learning', 'Deep Learning', 'Computer Vision', 'Natural Language Processing', 'MLOps & Deployment', 'Exploratory Data Analysis', 'Academic Research'];
-const LEVELS = ['Beginner (Ready to Learn)', 'Intermediate (Built Projects)', 'Advanced (Research / Engineering Grade)'];
-const DEPARTMENTS = ['Research & Development (R&D)', 'Education & Bootcamp Academy', 'Public Relations & Marketing Operations'];
+const LEVELS = ['Başlangıç (Öğrenmeye hazırım)', 'Orta Seviye (Proje geliştirdim)', 'İleri Seviye (Araştırma / Mühendislik)'];
+const DEPARTMENTS = ['Araştırma & Geliştirme (Ar-Ge)', 'Eğitim & Workshop', 'İletişim & Sosyal Medya'];
 
 export default function JoinOnboarding() {
   const [step, setStep] = useState(1);
@@ -84,13 +84,13 @@ EOF
       <div className="max-w-4xl mx-auto px-6">
         <div className="flex flex-col items-center text-center mb-16">
           <span className="font-mono text-xs text-brand-cyan tracking-widest uppercase mb-2">
-            [ DATA LAYER: JOIN US ]
+            [ BİZE KATIL ]
           </span>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white">
-            Initialize Onboarding
+            Bize Katıl
           </h2>
           <p className="text-slate-400 text-sm md:text-base max-w-lg mt-4 leading-relaxed">
-            Begin the registration protocol. Input your research focus parameters to construct your applicant profiling dataset.
+            Topluluğumuza katılmak için aşağıdaki formu doldur. İlgi alanlarını ve hedeflerini belirleyerek sana en uygun ekibi bulalım.
           </p>
         </div>
 
@@ -98,8 +98,8 @@ EOF
         <div className="bg-brand-card border border-brand-border rounded p-6 md:p-8 backdrop-blur-sm relative overflow-hidden min-h-[460px] flex flex-col justify-between">
           {/* Top Wizard Steps Diagnostic bar */}
           <div className="flex justify-between items-center pb-4 border-b border-brand-border/40 font-mono text-[10px] text-brand-muted uppercase">
-            <span>PROTOCOL: ONBOARDING_SYSTEM</span>
-            <span>STEP 0{step} OF 05</span>
+            <span>KAYIT FORMU</span>
+            <span>ADIM 0{step} / 05</span>
           </div>
 
           {/* Form Content Steps */}
@@ -114,12 +114,12 @@ EOF
                   className="space-y-6"
                 >
                   <div>
-                    <h3 className="text-lg md:text-xl font-bold text-white mb-2">1. Identity Parameters</h3>
-                    <p className="text-xs md:text-sm text-brand-muted">Input your identifier fields to hook into the system logs.</p>
+                    <h3 className="text-lg md:text-xl font-bold text-white mb-2">1. Kişisel Bilgiler</h3>
+                    <p className="text-xs md:text-sm text-brand-muted">Adını ve e-posta adresini gir.</p>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="flex flex-col">
-                      <label className="font-mono text-[10px] text-slate-400 uppercase mb-2">Full Name</label>
+                      <label className="font-mono text-[10px] text-slate-400 uppercase mb-2">Ad Soyad</label>
                       <input
                         type="text"
                         placeholder="e.g. Alperen Demir"
@@ -129,7 +129,7 @@ EOF
                       />
                     </div>
                     <div className="flex flex-col">
-                      <label className="font-mono text-[10px] text-slate-400 uppercase mb-2">Academic Email</label>
+                      <label className="font-mono text-[10px] text-slate-400 uppercase mb-2">E-posta</label>
                       <input
                         type="email"
                         placeholder="e.g. alperen@email.com"
@@ -151,8 +151,8 @@ EOF
                   className="space-y-6"
                 >
                   <div>
-                    <h3 className="text-lg md:text-xl font-bold text-white mb-2">2. Select Interest Vectors</h3>
-                    <p className="text-xs md:text-sm text-brand-muted">What areas of intelligence science are you mapping?</p>
+                    <h3 className="text-lg md:text-xl font-bold text-white mb-2">2. İlgi Alanların</h3>
+                    <p className="text-xs md:text-sm text-brand-muted">Hangi alanlara ilgi duyuyorsun? Seç.</p>
                   </div>
                   <div className="flex flex-wrap gap-3">
                     {INTERESTS.map((interest) => {
@@ -184,12 +184,12 @@ EOF
                   className="space-y-6"
                 >
                   <div>
-                    <h3 className="text-lg md:text-xl font-bold text-white mb-2">3. Experience &amp; Department Coordinates</h3>
-                    <p className="text-xs md:text-sm text-brand-muted">Select your technical index tier and desired department branch.</p>
+                    <h3 className="text-lg md:text-xl font-bold text-white mb-2">3. Seviye &amp; Departman</h3>
+                    <p className="text-xs md:text-sm text-brand-muted">Teknik seviyeni ve ilgilendiğin departmanı seç.</p>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="flex flex-col">
-                      <label className="font-mono text-[10px] text-slate-400 uppercase mb-2">Technical Level</label>
+                      <label className="font-mono text-[10px] text-slate-400 uppercase mb-2">Teknik Seviye</label>
                       <div className="space-y-3">
                         {LEVELS.map((lvl) => (
                           <label
@@ -213,7 +213,7 @@ EOF
                     </div>
 
                     <div className="flex flex-col">
-                      <label className="font-mono text-[10px] text-slate-400 uppercase mb-2">Target Department</label>
+                      <label className="font-mono text-[10px] text-slate-400 uppercase mb-2">İlgilendiğin Departman</label>
                       <div className="space-y-3">
                         {DEPARTMENTS.map((dept) => (
                           <label
@@ -248,12 +248,12 @@ EOF
                   className="space-y-6"
                 >
                   <div>
-                    <h3 className="text-lg md:text-xl font-bold text-white mb-2">4. Core Goals</h3>
-                    <p className="text-xs md:text-sm text-brand-muted">Explain what models you hope to build or research topics you aim to outline.</p>
+                    <h3 className="text-lg md:text-xl font-bold text-white mb-2">4. Hedeflerin</h3>
+                    <p className="text-xs md:text-sm text-brand-muted">Toplulukta neler yapmak istiyorsun? Hedeflerini yaz.</p>
                   </div>
                   <textarea
                     rows={4}
-                    placeholder="e.g. I want to build YOLO-based drone monitoring models or publish medical papers on Transformers optimization."
+                    placeholder="örn. YOLO tabanlı nesne tespiti projesi yapmak istiyorum veya NLP alanında çalışmalar yapmak istiyorum."
                     value={goals}
                     onChange={(e) => setGoals(e.target.value)}
                     className="w-full p-4 bg-slate-900 border border-brand-border rounded font-mono text-xs md:text-sm text-white focus:border-brand-cyan focus:outline-none transition-colors"
@@ -274,8 +274,8 @@ EOF
                       ✔
                     </div>
                     <div>
-                      <h3 className="text-lg md:text-xl font-bold text-white">Onboarding Complete</h3>
-                      <p className="text-xs md:text-sm text-brand-muted">Applicant dataset sheet built. Copy and send to our email: info@avbt.org</p>
+                      <h3 className="text-lg md:text-xl font-bold text-white">Kayıt Tamamlandı!</h3>
+                      <p className="text-xs md:text-sm text-brand-muted">Başvuru özetin hazır. Kopyala ve bize e-posta ile gönder: info@avbt.org</p>
                     </div>
                   </div>
 
@@ -302,7 +302,7 @@ EOF
                   <div className="p-3 bg-slate-900 border border-brand-border rounded-lg flex items-start gap-2.5">
                     <Info size={16} className="text-brand-cyan mt-0.5 shrink-0" />
                     <span className="text-brand-muted font-mono text-[10px] uppercase leading-relaxed">
-                      Send the generated profile block directly to info@avbt.org or Akdeniz University AVBT board representatives to activate.
+                      Oluşturulan başvuru formunu info@avbt.org adresine veya topluluk yönetimine göndererek üyeliğinizi aktifleştirin.
                     </span>
                   </div>
                 </motion.div>
@@ -334,7 +334,7 @@ EOF
                     : 'bg-brand-cyan hover:bg-brand-cyan/80 text-black font-semibold'
                 }`}
               >
-                <span>{step === 4 ? 'COMPILE PROFILE' : 'CONTINUE'}</span>
+                <span>{step === 4 ? 'BAŞVURUYU TAMAMLA' : 'DEVAM ET'}</span>
                 <ArrowRight size={12} />
               </button>
             ) : (
@@ -342,7 +342,7 @@ EOF
                 onClick={() => setStep(1)}
                 className="px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-brand-border rounded font-mono text-xs text-white transition-colors"
               >
-                RE-INITIALIZE
+                TEKRAR BAŞLA
               </button>
             )}
           </div>

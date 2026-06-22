@@ -17,7 +17,7 @@ interface StatItem {
 const STATS: StatItem[] = [
   {
     id: 'members',
-    label: 'Registered Members',
+    label: 'Kayıtlı Üye',
     value: 440,
     suffix: '+',
     icon: <Users className="w-5 h-5 text-brand-cyan" />,
@@ -26,7 +26,7 @@ const STATS: StatItem[] = [
   },
   {
     id: 'workshops',
-    label: 'Bootcamp & Lab Hours',
+    label: 'Workshop & Eğitim Saati',
     value: 400,
     suffix: 'h',
     icon: <Clock className="w-5 h-5 text-brand-emerald" />,
@@ -35,7 +35,7 @@ const STATS: StatItem[] = [
   },
   {
     id: 'events',
-    label: 'Organised Milestones',
+    label: 'Düzenlenen Etkinlik',
     value: 24,
     suffix: '',
     icon: <Activity className="w-5 h-5 text-brand-cyan" />,
@@ -44,18 +44,18 @@ const STATS: StatItem[] = [
   },
   {
     id: 'projects',
-    label: 'Active Codebases',
+    label: 'Aktif Proje',
     value: 8,
-    suffix: ' repos',
+    suffix: ' repo',
     icon: <CheckSquare className="w-5 h-5 text-brand-blue" />,
     sparkline: [1, 2, 4, 4, 6, 7, 8],
     color: '#3b82f6',
   },
   {
     id: 'teams',
-    label: 'Contest Teams',
+    label: 'Yarışma Ekibi',
     value: 15,
-    suffix: ' groups',
+    suffix: ' takım',
     icon: <Award className="w-5 h-5 text-amber-400" />,
     sparkline: [2, 4, 6, 9, 11, 13, 15],
     color: '#fbbf24',
@@ -150,12 +150,12 @@ export default function ImpactDashboard() {
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-col items-start mb-16">
           <span className="font-mono text-xs text-brand-cyan tracking-widest uppercase mb-2">
-            [ DATA TELEMETRY LAYER: REGRESSION ANALYSIS ]
+            [ TOPLULUK İSTATİSTİKLERİ ]
           </span>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white">
-            Community Impact <br />
+            Topluluğumuz <br />
             <span className="bg-gradient-to-r from-brand-cyan to-brand-emerald bg-clip-text text-transparent">
-              Telemetry Diagnostics
+              Rakamlarla
             </span>
           </h2>
         </div>
@@ -261,7 +261,7 @@ export default function ImpactDashboard() {
                   </svg>
                 </div>
 
-                {/* Status Bar: Switch to Regression Console on Hover */}
+                {/* Status Bar */}
                 <div className="mt-4 pt-3 border-t border-brand-border/40 flex items-center justify-between font-mono text-[8.5px] min-h-[22px]">
                   {isHovered ? (
                     <motion.div 
@@ -269,13 +269,13 @@ export default function ImpactDashboard() {
                       animate={{ opacity: 1, y: 0 }}
                       className="text-brand-cyan flex justify-between w-full"
                     >
-                      <span>{reg.equation}</span>
-                      <span>R²: {reg.rSquared}</span>
+                      <span>Büyümeye devam 📈</span>
+                      <span>TREND: ARTIYOR</span>
                     </motion.div>
                   ) : (
                     <div className="text-brand-muted flex justify-between w-full uppercase">
-                      <span>STATUS: STABLE</span>
-                      <span>RATE: LINEAR</span>
+                      <span>DURUM: AKTİF</span>
+                      <span>TREND: İYİ</span>
                     </div>
                   )}
                 </div>

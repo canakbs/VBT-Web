@@ -18,8 +18,8 @@ export default function Hero3D() {
   // Live regression statistics state for UI display
   const [stats, setStats] = useState({
     equation: 'y = 0.00x + 0.00',
-    rSquared: '0.000',
-    mse: '0.00',
+    pointCount: '42',
+    fit: '0.00',
   });
 
   // Generate 45 initial data points along a general linear trend with noise
@@ -220,8 +220,8 @@ export default function Hero3D() {
         const mathIntercept = canvas.height - intercept;
         setStats({
           equation: `y = ${mathSlope.toFixed(2)}x + ${mathIntercept.toFixed(0)}`,
-          rSquared: Math.max(0, r2).toFixed(3),
-          mse: (mse / 100).toFixed(2),
+          pointCount: String(pts.length),
+          fit: Math.max(0, r2).toFixed(3),
         });
       }
 
@@ -282,7 +282,7 @@ export default function Hero3D() {
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-brand-emerald animate-pulse" />
           <span className="font-mono text-xs tracking-widest text-brand-emerald uppercase">
-            Model: Real-Time 2D Least-Squares Regression // Telemetry Active
+            Topluluk: Aktif // Öğrenmeye Devam
           </span>
         </div>
         <a 
@@ -306,18 +306,18 @@ export default function Hero3D() {
             </span>
           </h1>
           <p className="font-mono text-xs md:text-sm text-brand-muted tracking-wider uppercase mb-6">
-            [ Mediterranean Data Science Community ]
+            [ Akdeniz Üniversitesi Veri Bilimi Topluluğu ]
           </p>
           <p className="text-base md:text-lg text-slate-300 mb-8 leading-relaxed">
-            We are a university research movement mapping complex data to human understanding. Focus areas: Deep Learning, NLP, Computer Vision, MLOps, and fostering data intelligence.
+            Veri bilimi, yapay zekâ ve makine öğrenmesi alanlarında birlikte öğrenen, projeler geliştiren ve etkinlikler düzenleyen bir öğrenci topluluğuyuz. Herkese açık, merak eden herkes hoş geldi!
           </p>
 
           <div className="flex flex-wrap gap-4 font-mono text-xs text-slate-400">
             <div className="px-3 py-2 bg-brand-card/50 border border-brand-border rounded backdrop-blur-sm">
-              <span className="text-brand-cyan">LOC:</span> Akdeniz Univ. Antalya
+              <span className="text-brand-cyan">📍</span> Akdeniz Üniversitesi, Antalya
             </div>
             <div className="px-3 py-2 bg-brand-card/50 border border-brand-border rounded backdrop-blur-sm">
-              <span className="text-brand-emerald">DEPT:</span> AI, ML & MLOps
+              <span className="text-brand-emerald">🎯</span> Veri Bilimi &amp; Yapay Zekâ
             </div>
           </div>
         </div>
@@ -325,28 +325,28 @@ export default function Hero3D() {
         {/* Right Side: Floating Scientific Math Console */}
         <div className="w-full max-w-[320px] p-6 bg-brand-card/80 border border-brand-border rounded backdrop-blur-md font-mono text-xs text-slate-300 relative overflow-hidden">
           <div className="absolute top-0 right-0 p-3 text-[8px] text-brand-muted select-none">
-            REGRESSION_MONITOR_v1.0
+            AVBT_DASHBOARD
           </div>
           
           <div className="space-y-4">
             <div className="text-brand-cyan font-bold uppercase tracking-wider pb-2 border-b border-brand-border/40">
-              ■ Model Parameters
+              ■ Topluluk Özeti
             </div>
             <div>
-              <div className="text-[10px] text-brand-muted">LINEAR FIT EQUATION:</div>
-              <div className="text-white text-sm font-semibold mt-0.5">{stats.equation}</div>
+              <div className="text-[10px] text-brand-muted">AKTİF ÜYELER:</div>
+              <div className="text-white text-sm font-semibold mt-0.5">440+ Öğrenci</div>
             </div>
             <div>
-              <div className="text-[10px] text-brand-muted">DETERMINATION COEFFICIENT (R²):</div>
-              <div className="text-brand-emerald text-sm font-semibold mt-0.5">{stats.rSquared}</div>
+              <div className="text-[10px] text-brand-muted">ETKİNLİK SAYISI:</div>
+              <div className="text-brand-emerald text-sm font-semibold mt-0.5">24+ Etkinlik</div>
             </div>
             <div>
-              <div className="text-[10px] text-brand-muted">MEAN SQUARED ERROR (MSE):</div>
-              <div className="text-brand-blue text-sm font-semibold mt-0.5">{stats.mse}</div>
+              <div className="text-[10px] text-brand-muted">AKTİF PROJELER:</div>
+              <div className="text-brand-blue text-sm font-semibold mt-0.5">8 Açık Kaynak Repo</div>
             </div>
             
             <div className="pt-2 border-t border-brand-border/40 text-[9px] text-brand-muted uppercase">
-              Move cursor over graph area to drag points and optimize line fit.
+              İmlecinizi grafik alanı üzerinde gezdirerek noktaları hareket ettirin.
             </div>
           </div>
         </div>
@@ -356,15 +356,15 @@ export default function Hero3D() {
       {/* Footer / Scroll hint */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pb-12 flex justify-between items-end pointer-events-none">
         <div className="hidden md:flex flex-col gap-1 font-mono text-[10px] text-slate-500">
-          <div>SOLVER_TYPE: 2D Least-Squares Solver</div>
-          <div>SIMULATION RUNTIME: {new Date().getFullYear()} // v2.8</div>
+          <div>KURULUŞ: 2024 // ANTALYA</div>
+          <div>PLATFORM: Akdeniz Veri Bilimi Topluluğu</div>
         </div>
 
         <a 
           href="#who-we-are" 
           className="pointer-events-auto group flex items-center gap-3 px-4 py-3 bg-brand-card border border-brand-border rounded-full hover:border-brand-cyan/50 hover:bg-brand-cyan/5 transition-all duration-300 font-mono text-xs text-brand-cyan"
         >
-          <span>ENTER THE DATA PIPELINE</span>
+          <span>KEŞFETMEYE BAŞLA</span>
           <ArrowDown size={14} className="group-hover:translate-y-1 transition-transform" />
         </a>
       </div>

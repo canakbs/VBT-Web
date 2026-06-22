@@ -21,7 +21,7 @@ export default function EventsArchivePage() {
             <ArrowLeft size={12} />
             <span>Ana Sayfaya Dön</span>
           </Link>
-          <span className="font-mono text-xs text-brand-cyan uppercase">ETKİNLİK ARŞİVİ // TOTAL: {allEvents.length} UNIT</span>
+          <span className="font-mono text-xs text-brand-cyan uppercase">ETKİNLİK ARŞİVİ // TOPLAM: {allEvents.length} ETKİNLİK</span>
         </div>
       </header>
 
@@ -32,7 +32,7 @@ export default function EventsArchivePage() {
 
       {/* Footer */}
       <footer className="w-full border-t border-brand-border py-6 px-6 text-center font-mono text-[10px] text-brand-muted relative z-20 bg-slate-950">
-        AVBT EVENT ARCHIVE SERVICE CORE v1.0
+        AVBT ETKİNLİK ARŞİVİ
       </footer>
     </main>
   );

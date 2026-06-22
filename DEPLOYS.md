@@ -68,3 +68,25 @@ Vercel, alan adını eklediğinizde size yönlendirmeniz gereken sunucu adresler
 
 > [!NOTE]
 > Nameserver (DNS) yönlendirmelerinin dünya genelinde aktif olması, alan adı sağlayıcınıza bağlı olarak **2 ile 24 saat arasında** sürebilir. Yönlendirme tamamlandığında Vercel siteniz için güvenlik sertifikasını (SSL) otomatik olarak oluşturacak ve siteniz alan adınız üzerinden yayına girecektir.
+
+---
+
+## Sık Karşılaşılan Sorunlar ve Çözümleri
+
+### 1. "This domain is linked to another Vercel account" (Domain başka bir hesaba bağlı) Hatası
+Eğer alan adınızı eklerken **"Verification Needed - This domain is linked to another Vercel account..."** uyarısı alıyorsanız, bu alan adının daha önce başka bir Vercel hesabı veya projesinde kullanıldığını gösterir.
+
+**Çözüm:**
+Domain sahipliğinizi doğrulamak için alan adını satın aldığınız firmanın (GoDaddy, Turhost, Yoncu, Metunic vb.) DNS yönetim paneline gidip aşağıdaki iki adet **TXT** kaydını eklemeniz gerekir:
+
+* **1. Kayıt (akdenizveribilimi.com için):**
+  * **Tür (Type):** `TXT`
+  * **İsim (Name/Host):** `_vercel`
+  * **Değer (Value):** `vc-domain-verify=akdenizveribilimi.com,a23e5b2873946f4f01e9`
+
+* **2. Kayıt (www.akdenizveribilimi.com için):**
+  * **Tür (Type):** `TXT`
+  * **İsim (Name/Host):** `_vercel` (Eğer DNS paneliniz aynı isimle ikinci bir TXT kaydı eklemenize izin vermezse, mevcut `_vercel` kaydının değerler kısmına ikinci satır olarak ekleyebilirsiniz.)
+  * **Değer (Value):** `vc-domain-verify=www.akdenizveribilimi.com,4f442daf5e7d8c542446`
+
+Kayıtları ekleyip kaydettikten sonra Vercel panelindeki **"Refresh"** butonlarına tıklayın. Doğrulama başarılı olduktan sonra siteniz yayına girecektir (doğrulama tamamlandıktan sonra bu TXT kayıtlarını DNS panelinizden silebilirsiniz).

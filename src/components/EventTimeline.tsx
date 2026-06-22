@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Calendar, Filter, Sparkles, Award, ArrowRight } from 'lucide-react';
+import { Calendar, Filter, Sparkles, Award, ArrowRight, Camera } from 'lucide-react';
 import { MarkdownFile } from '@/lib/markdown';
 import Link from 'next/link';
 
@@ -93,12 +93,12 @@ export default function EventTimeline({ events, showMoreButton = false }: EventT
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16">
           <div className="flex flex-col items-start mb-6 md:mb-0">
             <span className="font-mono text-xs text-brand-cyan tracking-widest uppercase mb-2">
-              [ KNOWLEDGE LAYER: EVENT ARCHIVE ]
+              [ ETKİNLİK ARŞİVİ ]
             </span>
             <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white">
-              Research &amp; <br />
+              Etkinliklerimiz &amp; <br />
               <span className="bg-gradient-to-r from-brand-cyan to-brand-emerald bg-clip-text text-transparent">
-                Milestone Timeline
+                Anılarımız
               </span>
             </h2>
           </div>
@@ -159,7 +159,26 @@ export default function EventTimeline({ events, showMoreButton = false }: EventT
                       SYS_ID: 0{index + 1}
                     </div>
 
-                    <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start md:items-center">
+                    <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-start">
+                      {/* Event Photo */}
+                      {event.metadata.image && (
+                        <div className="w-full md:w-56 shrink-0 aspect-[4/3] bg-slate-900 border border-brand-border rounded overflow-hidden relative group-hover:border-brand-cyan/30 transition-colors">
+                          <img
+                            src={event.metadata.image}
+                            alt={event.metadata.title || 'Etkinlik fotoğrafı'}
+                            className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = 'none';
+                              const parent = target.parentElement;
+                              if (parent) {
+                                parent.innerHTML = '<div class="w-full h-full flex flex-col items-center justify-center text-brand-muted font-mono text-xs"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mb-2 opacity-40"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg><span>Foto yakında</span></div>';
+                              }
+                            }}
+                          />
+                        </div>
+                      )}
+
                       <div className="flex-grow">
                         {/* Meta Tags */}
                         <div className="flex flex-wrap items-center gap-3 mb-4 font-mono text-xs">
@@ -181,20 +200,20 @@ export default function EventTimeline({ events, showMoreButton = false }: EventT
                           {event.metadata.summary}
                         </p>
 
-                        {/* Outputs / Lab Indicators */}
+                        {/* Outputs / Indicators */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-brand-border/40 font-mono text-xs">
                           <div className="flex items-start gap-2.5">
                             <Sparkles className="w-4 h-4 text-brand-cyan shrink-0 mt-0.5" />
                             <div>
-                              <div className="text-slate-500 uppercase tracking-wider">Metrics &amp; Attendance</div>
-                              <div className="text-slate-300 mt-0.5">{event.metadata.stats || 'N/A'}</div>
+                              <div className="text-slate-500 uppercase tracking-wider">Katılım &amp; Detaylar</div>
+                              <div className="text-slate-300 mt-0.5">{event.metadata.stats || 'Bilgi yakında'}</div>
                             </div>
                           </div>
                           <div className="flex items-start gap-2.5">
                             <Award className="w-4 h-4 text-brand-emerald shrink-0 mt-0.5" />
                             <div>
-                              <div className="text-slate-500 uppercase tracking-wider">Research Outcome</div>
-                              <div className="text-slate-300 mt-0.5">{event.metadata.outcome || 'N/A'}</div>
+                              <div className="text-slate-500 uppercase tracking-wider">Kazanımlar</div>
+                              <div className="text-slate-300 mt-0.5">{event.metadata.outcome || 'Bilgi yakında'}</div>
                             </div>
                           </div>
                         </div>
@@ -209,10 +228,10 @@ export default function EventTimeline({ events, showMoreButton = false }: EventT
                             ))}
                           </div>
                         )}
-                      </div>
+                        </div>
+                    </div>
                     </div>
                   </div>
-                </div>
               ))
             )}
           </div>
@@ -223,7 +242,7 @@ export default function EventTimeline({ events, showMoreButton = false }: EventT
                 href="/events"
                 className="flex items-center gap-2 px-6 py-3 bg-brand-card hover:bg-brand-cyan/15 border border-brand-border hover:border-brand-cyan/40 rounded font-mono text-xs text-brand-cyan hover:text-white transition-all duration-300 shadow-lg glow-cyan"
               >
-                <span>DAHA FAZLA ETKİNLİK GÖSTER (ARŞİV)</span>
+                <span>DAHA FAZLA ETKİNLİK GÖSTER</span>
                 <ArrowRight size={14} />
               </Link>
             </div>

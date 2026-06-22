@@ -1,17 +1,15 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Users, BookOpen, Briefcase, Trophy, Globe, Play, RotateCcw, Award } from 'lucide-react';
+import { Users, BookOpen, Briefcase, Trophy, Globe } from 'lucide-react';
 
 interface ClusterNode {
   id: string;
   label: string;
   category: 'hub' | 'members' | 'workshops' | 'projects' | 'competitions';
-  x: number; // current x
-  y: number; // current y
-  initialX: number; // initial clean layout coordinates
-  initialY: number;
+  x: number;
+  y: number;
   details: {
     title: string;
     value: string;
@@ -19,176 +17,180 @@ interface ClusterNode {
   };
 }
 
-const INITIAL_NODES: ClusterNode[] = [
+const NODES: ClusterNode[] = [
   // Hub
   {
     id: 'hub',
     label: 'Akdeniz Veri Bilimi',
     category: 'hub',
-    x: 50, y: 50, initialX: 50, initialY: 50,
+    x: 50, y: 50,
     details: {
-      title: 'Mediterranean Data Science Hub',
-      value: 'Simulation Center',
-      description: 'The core network hub routing and clustering datasets into operational research divisions.',
+      title: 'Akdeniz Veri Bilimi Topluluğu',
+      value: 'Merkez',
+      description: 'Veri bilimi, yapay zekâ ve makine öğrenmesi alanlarında projeler geliştiren, etkinlikler düzenleyen öğrenci topluluğu.',
     },
   },
   // Members
   {
     id: 'members_hub',
-    label: 'Members & Network',
+    label: 'Üyeler & Ağ',
     category: 'members',
-    x: 25, y: 30, initialX: 25, initialY: 30,
+    x: 25, y: 30,
     details: {
-      title: 'Community Network',
-      value: '440+ Registered',
-      description: 'An inclusive network of computer science, engineering, and mathematics students collaborating on intelligent tech.',
+      title: 'Topluluk Ağı',
+      value: '440+ Kayıtlı Üye',
+      description: 'Bilgisayar mühendisliği, endüstri mühendisliği ve matematik bölümlerinden öğrencilerin bir araya geldiği kapsayıcı bir ağ.',
     },
   },
   {
     id: 'members_1',
-    label: 'Mentors',
+    label: 'Mentörler',
     category: 'members',
-    x: 18, y: 22, initialX: 18, initialY: 22,
+    x: 18, y: 22,
     details: {
-      title: 'Technical Mentors',
-      value: '12 Active Leads',
-      description: 'Senior students and industry professionals guiding newcomers in PyTorch, Scikit-Learn, and engineering paths.',
+      title: 'Teknik Mentörler',
+      value: '12 Aktif Mentör',
+      description: 'PyTorch, Scikit-Learn ve mühendislik yollarında yeni üyelere rehberlik eden deneyimli öğrenciler.',
     },
   },
   {
     id: 'members_2',
-    label: 'Advisors',
+    label: 'Danışmanlar',
     category: 'members',
-    x: 32, y: 24, initialX: 32, initialY: 24,
+    x: 32, y: 24,
     details: {
-      title: 'Academic Advisors',
-      value: '3 Faculty Professors',
-      description: 'Department heads providing academic guidance, research review, and computing resources.',
+      title: 'Akademik Danışmanlar',
+      value: '3 Öğretim Üyesi',
+      description: 'Akademik rehberlik, araştırma desteği ve bilişim kaynakları sağlayan bölüm hocaları.',
     },
   },
   // Workshops
   {
     id: 'workshops_hub',
-    label: 'Training Labs',
+    label: 'Eğitimler',
     category: 'workshops',
-    x: 75, y: 30, initialX: 75, initialY: 30,
+    x: 75, y: 30,
     details: {
-      title: 'AI Workshops & Bootcamps',
-      value: '400+ Hours Taught',
-      description: 'Hands-on curriculum ranging from Python fundamentals to custom model deployment (MLOps).',
+      title: 'Workshop & Bootcamp',
+      value: '400+ Saat Eğitim',
+      description: 'Python temellerinden model deployment\'a kadar uzanan uygulamalı eğitim programları.',
     },
   },
   {
     id: 'workshops_1',
     label: 'DL Bootcamp',
     category: 'workshops',
-    x: 82, y: 22, initialX: 82, initialY: 22,
+    x: 82, y: 22,
     details: {
       title: 'Deep Learning Bootcamp',
-      value: 'Annual 6-Week Course',
-      description: 'Comprehensive sessions covering CNNs, RNNs, Attention mechanisms, and training on cloud GPUs.',
+      value: 'Yıllık 6 Haftalık Kurs',
+      description: 'CNN, RNN, Attention mekanizmaları ve bulut GPU\'larda eğitimi kapsayan kapsamlı oturumlar.',
     },
   },
   {
     id: 'workshops_2',
-    label: 'Data Analytics',
+    label: 'Veri Analizi',
     category: 'workshops',
-    x: 68, y: 24, initialX: 68, initialY: 24,
+    x: 68, y: 24,
     details: {
-      title: 'Data Wrangling Labs',
-      value: 'Introductory Series',
-      description: 'Exploratory data analysis using Pandas, NumPy, and interactive data visualization practices.',
+      title: 'Veri Analizi Atölyeleri',
+      value: 'Giriş Serisi',
+      description: 'Pandas, NumPy ve interaktif veri görselleştirme uygulamaları ile keşifsel veri analizi.',
     },
   },
   // Projects
   {
     id: 'projects_hub',
-    label: 'Active Projects',
+    label: 'Projeler',
     category: 'projects',
-    x: 25, y: 70, initialX: 25, initialY: 70,
+    x: 25, y: 70,
     details: {
-      title: 'Research & Development',
-      value: '8 Ongoing repos',
-      description: 'Open-source scientific pipelines designed to solve regional agricultural and urban traffic constraints.',
+      title: 'Projeler & Geliştirme',
+      value: '8 Aktif Repo',
+      description: 'Bölgesel tarım ve kentsel trafik sorunlarını çözmek için tasarlanmış açık kaynak projeler.',
     },
   },
   {
     id: 'projects_1',
     label: 'Drone Vision',
     category: 'projects',
-    x: 18, y: 78, initialX: 18, initialY: 78,
+    x: 18, y: 78,
     details: {
-      title: 'Drone Vision Pipeline',
-      value: 'Stage: Deployment',
-      description: 'YOLO-based drone imaging classification systems running locally on Edge NVIDIA Jetson boards.',
+      title: 'Drone Görüntü İşleme',
+      value: 'Aşama: Yayınlama',
+      description: 'NVIDIA Jetson kartlarında çalışan YOLO tabanlı drone görüntüleme sınıflandırma sistemi.',
     },
   },
   {
     id: 'projects_2',
-    label: 'Traffic RL',
+    label: 'Trafik RL',
     category: 'projects',
-    x: 32, y: 76, initialX: 32, initialY: 76,
+    x: 32, y: 76,
     details: {
-      title: 'Traffic Control RL',
-      value: 'Stage: Development',
-      description: 'Optimizing Antalya signal lights dynamically with reinforcement learning networks in SUMO.',
+      title: 'Trafik Kontrol RL',
+      value: 'Aşama: Geliştirme',
+      description: 'Antalya trafik ışıklarını pekiştirmeli öğrenme ile dinamik olarak optimize eden sistem.',
     },
   },
   // Competitions
   {
     id: 'competitions_hub',
-    label: 'Competitions',
+    label: 'Yarışmalar',
     category: 'competitions',
-    x: 75, y: 70, initialX: 75, initialY: 70,
+    x: 75, y: 70,
     details: {
-      title: 'Competitions & Hackathons',
-      value: '9 National Awards',
-      description: 'Competing globally and nationally in machine learning benchmarks and hackathons.',
+      title: 'Yarışmalar & Hackathon',
+      value: '9 Ulusal Ödül',
+      description: 'Makine öğrenmesi yarışmaları ve hackathon\'larda ulusal ve uluslararası düzeyde rekabet.',
     },
   },
   {
     id: 'competitions_1',
     label: 'Teknofest AI',
     category: 'competitions',
-    x: 82, y: 78, initialX: 82, initialY: 78,
+    x: 82, y: 78,
     details: {
-      title: 'Teknofest AI Contest',
-      value: 'Top 3 Finalist',
-      description: 'Competing in the Natural Language Processing and Agricultural Robotics tracks at Turkey\'s biggest technology fest.',
+      title: 'Teknofest YZ Yarışması',
+      value: 'İlk 3 Finalisti',
+      description: 'Türkiye\'nin en büyük teknoloji festivalinde NLP ve Tarımsal Robotik kategorilerinde yarışma.',
     },
   },
   {
     id: 'competitions_2',
-    label: 'Kaggle Labs',
+    label: 'Kaggle',
     category: 'competitions',
-    x: 68, y: 76, initialX: 68, initialY: 76,
+    x: 68, y: 76,
     details: {
-      title: 'Kaggle Classrooms',
-      value: 'Monthly Sprints',
-      description: 'Internal hackathons pitting members against tabular, image, and text benchmarks in a live scoreboard.',
+      title: 'Kaggle Çalışmaları',
+      value: 'Aylık Sprint',
+      description: 'Üyelerin tablo, görüntü ve metin veri setlerinde yarıştığı topluluk içi hackathon\'lar.',
     },
   },
 ];
 
-interface Centroid {
-  id: string;
-  x: number;
-  y: number;
-  color: string;
-  name: string;
-}
+// Connection edges between nodes
+const EDGES = [
+  // Hub to category hubs
+  { from: 'hub', to: 'members_hub' },
+  { from: 'hub', to: 'workshops_hub' },
+  { from: 'hub', to: 'projects_hub' },
+  { from: 'hub', to: 'competitions_hub' },
+  // Category hubs to children
+  { from: 'members_hub', to: 'members_1' },
+  { from: 'members_hub', to: 'members_2' },
+  { from: 'workshops_hub', to: 'workshops_1' },
+  { from: 'workshops_hub', to: 'workshops_2' },
+  { from: 'projects_hub', to: 'projects_1' },
+  { from: 'projects_hub', to: 'projects_2' },
+  { from: 'competitions_hub', to: 'competitions_1' },
+  { from: 'competitions_hub', to: 'competitions_2' },
+  // Cross connections
+  { from: 'members_hub', to: 'workshops_hub' },
+  { from: 'projects_hub', to: 'competitions_hub' },
+];
 
 export default function WhoWeAreGraph() {
-  const [nodes, setNodes] = useState<ClusterNode[]>(INITIAL_NODES);
-  const [activeNode, setActiveNode] = useState<ClusterNode>(INITIAL_NODES[0]);
-  const [centroids, setCentroids] = useState<Centroid[]>([
-    { id: 'members', x: 30, y: 35, color: '#00f2fe', name: 'Members Centroid' },
-    { id: 'workshops', x: 70, y: 35, color: '#00f5a0', name: 'Workshops Centroid' },
-    { id: 'projects', x: 30, y: 65, color: '#3b82f6', name: 'Projects Centroid' },
-    { id: 'competitions', x: 70, y: 65, color: '#fbbf24', name: 'Competitions Centroid' },
-  ]);
-  const [iteration, setIteration] = useState(0);
-  const [clusteringActive, setClusteringActive] = useState(false);
+  const [activeNode, setActiveNode] = useState<ClusterNode>(NODES[0]);
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
@@ -201,151 +203,31 @@ export default function WhoWeAreGraph() {
     }
   };
 
-  // Run a single K-Means step
-  const runKMeansStep = () => {
-    setClusteringActive(true);
-    setIteration((prev) => prev + 1);
+  const getNodeColor = (category: string) => {
+    switch (category) {
+      case 'hub': return '#ffffff';
+      case 'members': return '#00f2fe';
+      case 'workshops': return '#00f5a0';
+      case 'projects': return '#3b82f6';
+      case 'competitions': return '#fbbf24';
+      default: return '#64748b';
+    }
+  };
 
-    // 1. Assignment Step: Assign nodes to nearest centroids
-    const nodeAssignments = nodes.map((node) => {
-      if (node.category === 'hub') return node; // Keep central hub fixed
-
-      let minDistance = Infinity;
-      let nearestCentroid = centroids[0];
-
-      centroids.forEach((centroid) => {
-        const dx = node.x - centroid.x;
-        const dy = node.y - centroid.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < minDistance) {
-          minDistance = dist;
-          nearestCentroid = centroid;
-        }
-      });
-
-      // Shift node coordinates slightly closer to its nearest centroid
-      const pullForce = 0.45; // Speed of shifting
-      const newX = node.x + (nearestCentroid.x - node.x) * pullForce;
-      const newY = node.y + (nearestCentroid.y - node.y) * pullForce;
-
+  // Generate animated pulse connections
+  const pulseEdges = useMemo(() => {
+    return EDGES.map((edge, index) => {
+      const fromNode = NODES.find(n => n.id === edge.from)!;
+      const toNode = NODES.find(n => n.id === edge.to)!;
       return {
-        ...node,
-        x: newX,
-        y: newY,
+        ...edge,
+        fromNode,
+        toNode,
+        delay: index * 0.4,
+        duration: 2 + (index % 3) * 0.5,
       };
     });
-
-    setNodes(nodeAssignments);
-
-    // 2. Update Step: Recompute centroids based on mean positions of assigned nodes
-    const updatedCentroids = centroids.map((centroid) => {
-      // Find all nodes in this category
-      const assignedNodes = nodeAssignments.filter((n) => n.category === centroid.id);
-      if (assignedNodes.length === 0) return centroid;
-
-      const meanX = assignedNodes.reduce((sum, n) => sum + n.x, 0) / assignedNodes.length;
-      const meanY = assignedNodes.reduce((sum, n) => sum + n.y, 0) / assignedNodes.length;
-
-      return {
-        ...centroid,
-        x: meanX,
-        y: meanY,
-      };
-    });
-
-    setCentroids(updatedCentroids);
-  };
-
-  // Disperse datapoints randomly inside the boundaries to show K-means fitting
-  const disperseNodes = () => {
-    setIteration(0);
-    setClusteringActive(true);
-    
-    // Randomize nodes coordinates, keeping central hub at (50, 50)
-    setNodes((prevNodes) =>
-      prevNodes.map((n) => {
-        if (n.category === 'hub') return n;
-        return {
-          ...n,
-          x: 15 + Math.random() * 70,
-          y: 15 + Math.random() * 70,
-        };
-      })
-    );
-
-    // Scatter centroids randomly too
-    setCentroids([
-      { id: 'members', x: 20 + Math.random() * 20, y: 20 + Math.random() * 20, color: '#00f2fe', name: 'Members Centroid' },
-      { id: 'workshops', x: 60 + Math.random() * 20, y: 20 + Math.random() * 20, color: '#00f5a0', name: 'Workshops Centroid' },
-      { id: 'projects', x: 20 + Math.random() * 20, y: 60 + Math.random() * 20, color: '#3b82f6', name: 'Projects Centroid' },
-      { id: 'competitions', x: 60 + Math.random() * 20, y: 60 + Math.random() * 20, color: '#fbbf24', name: 'Competitions Centroid' },
-    ]);
-  };
-
-  // Reset to original structured clean layout
-  const resetToCleanLayout = () => {
-    setNodes(INITIAL_NODES);
-    setCentroids([
-      { id: 'members', x: 25, y: 30, color: '#00f2fe', name: 'Members Centroid' },
-      { id: 'workshops', x: 75, y: 30, color: '#00f5a0', name: 'Workshops Centroid' },
-      { id: 'projects', x: 25, y: 70, color: '#3b82f6', name: 'Projects Centroid' },
-      { id: 'competitions', x: 75, y: 70, color: '#fbbf24', name: 'Competitions Centroid' },
-    ]);
-    setIteration(0);
-    setClusteringActive(false);
-  };
-
-  // Calculate Mathematical Metrics: Inertia & Silhouette Approximation
-  const metrics = useMemo(() => {
-    // Inertia: Sum of squared distances to assigned centroid
-    let inertia = 0;
-    let totalDists = 0;
-    let nodeCount = 0;
-
-    nodes.forEach((n) => {
-      if (n.category === 'hub') return;
-      const centroid = centroids.find((c) => c.id === n.category);
-      if (!centroid) return;
-
-      const dx = n.x - centroid.x;
-      const dy = n.y - centroid.y;
-      const dSquared = dx * dx + dy * dy;
-      inertia += dSquared;
-      totalDists += Math.sqrt(dSquared);
-      nodeCount++;
-    });
-
-    // Silhouette coefficient approximation
-    // S = (b - a) / max(a, b) where a is mean intra-cluster dist, b is mean nearest-cluster dist
-    const avgIntraDist = nodeCount ? totalDists / nodeCount : 0;
-    const silhouette = Math.max(0.1, 1 - (avgIntraDist / 35)).toFixed(3); // Mock-scaled ratio
-
-    return {
-      inertia: inertia.toFixed(2),
-      silhouette: iteration === 0 && !clusteringActive ? '0.000' : silhouette,
-    };
-  }, [nodes, centroids, iteration, clusteringActive]);
-
-  // Calculate cluster diameters for glowing hulls
-  const clusterRadii = useMemo(() => {
-    const radii: Record<string, number> = { members: 5, workshops: 5, projects: 5, competitions: 5 };
-    
-    centroids.forEach((centroid) => {
-      const assignedNodes = nodes.filter((n) => n.category === centroid.id);
-      let maxDist = 4; // minimum radius
-
-      assignedNodes.forEach((node) => {
-        const dx = node.x - centroid.x;
-        const dy = node.y - centroid.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist > maxDist) maxDist = dist;
-      });
-
-      radii[centroid.id] = maxDist;
-    });
-
-    return radii;
-  }, [nodes, centroids]);
+  }, []);
 
   return (
     <section id="who-we-are" className="relative py-24 bg-brand-bg/95 border-b border-brand-border">
@@ -357,60 +239,21 @@ export default function WhoWeAreGraph() {
           {/* Information Column */}
           <div className="w-full md:w-5/12 flex flex-col items-start">
             <span className="font-mono text-xs text-brand-cyan tracking-widest uppercase mb-2">
-              [ DATA SCIENCE LAYER: K-MEANS SIMULATION ]
+              [ BİZ KİMİZ? ]
             </span>
             <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-6">
-              Interactive <br />
+              Topluluğumuzu <br />
               <span className="bg-gradient-to-r from-brand-cyan to-brand-emerald bg-clip-text text-transparent">
-                Node Clustering
+                Keşfet
               </span>
             </h2>
             <p className="text-slate-400 text-sm md:text-base leading-relaxed mb-6">
-              Instead of a static structure, our community network operates as a live **K-Means Clustering model**. Scatter the node embeddings and run iterations to watch nodes segment into their thematic cluster centroids.
+              Akdeniz Veri Bilimi Topluluğu, farklı bölüm ve ilgi alanlarından öğrencileri bir araya getiriyor. Grafikteki düğümlere tıklayarak topluluğumuzun yapısını keşfedebilirsin.
             </p>
 
-            {/* Interactive Clustering Controller */}
-            <div className="w-full grid grid-cols-2 gap-3 mb-6">
-              <button
-                onClick={runKMeansStep}
-                className="flex items-center justify-center gap-1.5 p-3 bg-brand-emerald/10 hover:bg-brand-emerald/20 border border-brand-emerald/40 hover:border-brand-emerald text-brand-emerald font-mono text-xs rounded transition-all duration-300"
-              >
-                <Play size={12} />
-                <span>RUN ITERATION</span>
-              </button>
-              <button
-                onClick={disperseNodes}
-                className="flex items-center justify-center gap-1.5 p-3 bg-brand-cyan/10 hover:bg-brand-cyan/20 border border-brand-cyan/40 hover:border-brand-cyan text-brand-cyan font-mono text-xs rounded transition-all duration-300"
-              >
-                <RotateCcw size={12} />
-                <span>SCATTER DATA</span>
-              </button>
-              <button
-                onClick={resetToCleanLayout}
-                className="col-span-2 flex items-center justify-center gap-1.5 p-2 bg-slate-900 hover:bg-slate-800 border border-brand-border text-slate-400 hover:text-white font-mono text-xs rounded transition-all duration-300"
-              >
-                <span>RESET TO HUB STRUCT</span>
-              </button>
-            </div>
-
-            {/* Metrics Dashboard Box */}
+            {/* Info Panel */}
             <div className="w-full p-5 bg-brand-card border border-brand-border rounded relative overflow-hidden backdrop-blur-md">
               <div className="absolute top-0 right-0 w-32 h-32 bg-radial from-brand-cyan/5 to-transparent pointer-events-none" />
-              
-              <div className="grid grid-cols-3 gap-4 mb-4 border-b border-brand-border/40 pb-4 font-mono">
-                <div>
-                  <div className="text-[9px] text-brand-muted uppercase">ITERATION</div>
-                  <div className="text-white text-lg font-bold">{iteration}</div>
-                </div>
-                <div>
-                  <div className="text-[9px] text-brand-muted uppercase">INERTIA (J)</div>
-                  <div className="text-brand-cyan text-lg font-bold">{metrics.inertia}</div>
-                </div>
-                <div>
-                  <div className="text-[9px] text-brand-muted uppercase">SILHOUETTE (S)</div>
-                  <div className="text-brand-emerald text-lg font-bold">{metrics.silhouette}</div>
-                </div>
-              </div>
 
               <AnimatePresence mode="wait">
                 <motion.div
@@ -438,109 +281,80 @@ export default function WhoWeAreGraph() {
             </div>
           </div>
 
-          {/* Interactive Graph Column */}
+          {/* Interactive Neural Network Graph Column */}
           <div className="w-full md:w-7/12 relative aspect-square max-w-[550px] md:max-w-none border border-brand-border bg-brand-card/25 rounded-lg overflow-hidden backdrop-blur-sm">
             <svg 
               viewBox="0 0 100 100" 
               className="w-full h-full select-none cursor-crosshair"
             >
-              {/* Cluster diameter glowing hulls */}
-              {centroids.map((centroid) => {
-                const radius = clusterRadii[centroid.id] || 5;
+              {/* Connection Lines with animated pulses */}
+              {pulseEdges.map((edge, index) => {
+                const isActive = activeNode.id === edge.from || activeNode.id === edge.to;
+                const color = getNodeColor(edge.fromNode.category);
+                
                 return (
-                  <circle
-                    key={`hull-${centroid.id}`}
-                    cx={centroid.x}
-                    cy={centroid.y}
-                    r={radius}
-                    fill={`${centroid.color}03`}
-                    stroke={centroid.color}
-                    strokeWidth="0.12"
-                    strokeDasharray="1,1"
-                    className="transition-all duration-500"
-                    style={{ filter: `drop-shadow(0 0 1px ${centroid.color})` }}
-                  />
+                  <g key={`edge-${index}`}>
+                    {/* Static line */}
+                    <line
+                      x1={edge.fromNode.x}
+                      y1={edge.fromNode.y}
+                      x2={edge.toNode.x}
+                      y2={edge.toNode.y}
+                      stroke={isActive ? color : 'rgba(255, 255, 255, 0.06)'}
+                      strokeWidth={isActive ? 0.6 : 0.25}
+                      className="transition-all duration-300"
+                    />
+                    {/* Animated pulse traveling along edge */}
+                    <motion.circle
+                      r="0.6"
+                      fill={color}
+                      fillOpacity={0.7}
+                      initial={{ 
+                        cx: edge.fromNode.x, 
+                        cy: edge.fromNode.y,
+                        opacity: 0 
+                      }}
+                      animate={{ 
+                        cx: [edge.fromNode.x, edge.toNode.x],
+                        cy: [edge.fromNode.y, edge.toNode.y],
+                        opacity: [0, 0.8, 0]
+                      }}
+                      transition={{
+                        duration: edge.duration,
+                        repeat: Infinity,
+                        delay: edge.delay,
+                        ease: 'linear',
+                      }}
+                    />
+                  </g>
                 );
               })}
-
-              {/* Connections (Centroid to Assigned Node Paths) */}
-              {nodes.map((node) => {
-                if (node.category === 'hub') return null;
-                const centroid = centroids.find((c) => c.id === node.category);
-                if (!centroid) return null;
-
-                return (
-                  <line
-                    key={`line-${node.id}`}
-                    x1={centroid.x}
-                    y1={centroid.y}
-                    x2={node.x}
-                    y2={node.y}
-                    stroke={`${centroid.color}18`}
-                    strokeWidth="0.2"
-                    className="transition-all duration-500"
-                  />
-                );
-              })}
-
-              {/* Central AVBT hub connections when in clean layout */}
-              {!clusteringActive && nodes.map((node) => {
-                if (node.category === 'hub') return null;
-                return (
-                  <line
-                    key={`clean-${node.id}`}
-                    x1="50"
-                    y1="50"
-                    x2={node.x}
-                    y2={node.y}
-                    stroke="rgba(255,255,255,0.04)"
-                    strokeWidth="0.15"
-                  />
-                );
-              })}
-
-              {/* Draw Centroid Vectors */}
-              {clusteringActive && centroids.map((centroid) => (
-                <g key={`centroid-${centroid.id}`}>
-                  {/* Centroid Anchor Target */}
-                  <circle
-                    cx={centroid.x}
-                    cy={centroid.y}
-                    r="2"
-                    fill="none"
-                    stroke={centroid.color}
-                    strokeWidth="0.4"
-                    className="transition-all duration-500"
-                  />
-                  {/* Centroid Cross hair */}
-                  <line x1={centroid.x - 3} y1={centroid.y} x2={centroid.x + 3} y2={centroid.y} stroke={centroid.color} strokeWidth="0.15" className="transition-all duration-500" />
-                  <line x1={centroid.x} y1={centroid.y - 3} x2={centroid.x} y2={centroid.y + 3} stroke={centroid.color} strokeWidth="0.15" className="transition-all duration-500" />
-                  <text
-                    x={centroid.x}
-                    y={centroid.y - 4}
-                    className="fill-white font-mono text-[1.8px] font-bold"
-                    textAnchor="middle"
-                  >
-                    μ_{centroid.id.substring(0, 3).toUpperCase()}
-                  </text>
-                </g>
-              ))}
 
               {/* Central Hub */}
-              <g className="cursor-pointer" onClick={() => setActiveNode(nodes[0])}>
-                <circle cx="50" cy="50" r="4.5" className="fill-brand-bg stroke-white stroke-[0.4]" />
-                <circle cx="50" cy="50" r="1.5" className="fill-brand-cyan" />
+              <g className="cursor-pointer" onClick={() => setActiveNode(NODES[0])}>
+                {activeNode.id === 'hub' && (
+                  <motion.circle
+                    cx={50} cy={50} r={7}
+                    className="fill-none stroke-brand-cyan/20"
+                    strokeWidth={0.4}
+                    animate={{ r: [6, 8, 6] }}
+                    transition={{ repeat: Infinity, duration: 2.5 }}
+                  />
+                )}
+                <circle cx={50} cy={50} r={4.5} className="fill-brand-bg stroke-white" strokeWidth={0.5} />
+                <circle cx={50} cy={50} r={1.8} className="fill-brand-cyan" />
+                <text x={50} y={46} className="fill-white font-mono text-[2px] font-bold" textAnchor="middle">
+                  AVBT
+                </text>
               </g>
 
-              {/* Nodes */}
-              {nodes.map((node) => {
+              {/* Data Nodes */}
+              {NODES.map((node) => {
                 if (node.category === 'hub') return null;
                 const isActive = activeNode.id === node.id;
-                
-                let color = '#3b82f6';
-                if (node.category === 'members') color = '#00f2fe';
-                if (node.category === 'workshops') color = '#00f5a0';
-                if (node.category === 'competitions') color = '#fbbf24';
+                const color = getNodeColor(node.category);
+                const isHub = node.id.includes('_hub') || node.id.includes('_1') === false && node.id.includes('_2') === false;
+                const r = isHub ? 2.5 : 1.8;
 
                 return (
                   <g 
@@ -549,33 +363,44 @@ export default function WhoWeAreGraph() {
                     onMouseEnter={() => setActiveNode(node)}
                     onClick={() => setActiveNode(node)}
                   >
-                    {/* Ring highlight on active nodes */}
+                    {/* Active highlight ring */}
                     {isActive && (
-                      <circle
+                      <motion.circle
                         cx={node.x}
                         cy={node.y}
-                        r="3.8"
-                        className="fill-none stroke-brand-cyan/20"
-                        strokeWidth={0.5}
+                        r={r + 2}
+                        className="fill-none"
+                        stroke={color}
+                        strokeOpacity={0.25}
+                        strokeWidth={0.4}
+                        animate={{ r: [r + 1.5, r + 3, r + 1.5] }}
+                        transition={{ repeat: Infinity, duration: 2 }}
                       />
                     )}
 
-                    {/* Node */}
+                    {/* Node circle */}
                     <circle
                       cx={node.x}
                       cy={node.y}
-                      r="1.8"
+                      r={r}
                       fill={color}
-                      stroke="rgba(0,0,0,0.4)"
-                      strokeWidth="0.3"
-                      className="transition-all duration-500"
+                      fillOpacity={isActive ? 0.3 : 0.15}
+                      stroke={color}
+                      strokeWidth={isActive ? 0.5 : 0.3}
+                      className="transition-all duration-300"
+                    />
+                    <circle
+                      cx={node.x}
+                      cy={node.y}
+                      r={0.7}
+                      fill={color}
                     />
 
-                    {/* Small text tags */}
+                    {/* Label on hover/active */}
                     {isActive && (
                       <text
                         x={node.x}
-                        y={node.y - 3.2}
+                        y={node.y - r - 1.5}
                         className="fill-white font-mono text-[2px] font-semibold"
                         textAnchor="middle"
                       >
@@ -587,13 +412,13 @@ export default function WhoWeAreGraph() {
               })}
             </svg>
 
-            {/* Grid overlay controls decoration */}
-            <div className="absolute top-3 left-3 font-mono text-[9px] text-brand-muted pointer-events-none uppercase">
-              MODEL: K-Means Clustering <br />
-              K: 4 clusters // SEED: Random
+            {/* Corner decorations */}
+            <div className="absolute top-3 left-3 font-mono text-[9px] text-brand-muted/70 pointer-events-none uppercase">
+              TOPLULUK: Ağ Haritası <br />
+              DÜĞÜM: {NODES.length} BİRİM
             </div>
             <div className="absolute bottom-3 right-3 font-mono text-[8px] text-brand-emerald pointer-events-none uppercase">
-              ● Live Clustering Emulation
+              ● interaktif topluluk haritası
             </div>
           </div>
         </div>

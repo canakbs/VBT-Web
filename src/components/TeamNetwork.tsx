@@ -8,7 +8,7 @@ interface TeamMember {
   id: string;
   name: string;
   role: string;
-  department: 'Board' | 'Advisors' | 'Leads' | 'Mentors';
+  department: 'Yönetim' | 'Danışmanlar' | 'Takım Liderleri' | 'Mentörler';
   skills: string[];
   bio: string;
   linkedin?: string;
@@ -22,7 +22,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     id: 'adv_ahmet',
     name: 'Prof. Dr. Ahmet Yılmaz',
     role: 'Academic Advisor',
-    department: 'Advisors',
+    department: 'Danışmanlar',
     skills: ['Computer Science', 'Academic Research', 'Distributed Systems'],
     bio: 'Professor at Akdeniz University computer engineering department, counseling the community on academic AI research.',
     linkedin: 'https://linkedin.com',
@@ -34,7 +34,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     id: 'board_pres',
     name: 'Alperen Demir',
     role: 'Topluluk Başkanı (President)',
-    department: 'Board',
+    department: 'Yönetim',
     skills: ['Deep Learning', 'NLP', 'Mamba SSMs', 'PyTorch'],
     bio: 'Computer Engineering junior. Directing organizational growth and leading the NLP Research laboratory.',
     linkedin: 'https://linkedin.com',
@@ -45,7 +45,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     id: 'board_vpres',
     name: 'Begüm Kaya',
     role: 'Vice President',
-    department: 'Board',
+    department: 'Yönetim',
     skills: ['Data Wrangling', 'Scikit-Learn', 'Statistical Inference'],
     bio: 'Industrial Engineering senior. Managing educational curriculums, event planning, and sponsor relations.',
     linkedin: 'https://linkedin.com',
@@ -58,7 +58,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     id: 'lead_mlops',
     name: 'Caner Öztürk',
     role: 'MLOps Lead',
-    department: 'Leads',
+    department: 'Takım Liderleri',
     skills: ['Docker', 'FastAPI', 'MLflow', 'Kubernetes'],
     bio: 'Directs deployment procedures and infrastructure, ensuring model models are packaged and monitored correctly.',
     linkedin: 'https://linkedin.com',
@@ -69,7 +69,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     id: 'lead_cv',
     name: 'Zeynep Aslan',
     role: 'Computer Vision Lead',
-    department: 'Leads',
+    department: 'Takım Liderleri',
     skills: ['YOLOv8', 'OpenCV', 'TensorRT', 'C++'],
     bio: 'Coordinates camera automation systems and image processing projects for national contests.',
     linkedin: 'https://linkedin.com',
@@ -80,7 +80,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     id: 'lead_edu',
     name: 'Mert Yılmaz',
     role: 'Education Lead',
-    department: 'Leads',
+    department: 'Takım Liderleri',
     skills: ['Python Foundations', 'Numpy/Pandas', 'Course Design'],
     bio: 'Manages bootcamp logistics, syllabus curation, and basic data analytics mentorship tracks.',
     linkedin: 'https://linkedin.com',
@@ -91,7 +91,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     id: 'lead_ops',
     name: 'Selin Demir',
     role: 'Operations & Event Lead',
-    department: 'Leads',
+    department: 'Takım Liderleri',
     skills: ['Communications', 'Event Management', 'Public Relations'],
     bio: 'Organizes tech meetups, coordinates with guest speakers, and builds community relations.',
     linkedin: 'https://linkedin.com',
@@ -104,7 +104,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     id: 'mentor_python',
     name: 'Burak Yıldız',
     role: 'Python Mentor',
-    department: 'Mentors',
+    department: 'Mentörler',
     skills: ['Python Syntax', 'Git Versioning', 'Object OOP'],
     bio: 'Helping beginner students debug core scripting syntax and set up git repositories.',
     linkedin: 'https://linkedin.com',
@@ -115,7 +115,7 @@ const TEAM_MEMBERS: TeamMember[] = [
     id: 'mentor_dl',
     name: 'Kaan Kaya',
     role: 'Deep Learning Mentor',
-    department: 'Mentors',
+    department: 'Mentörler',
     skills: ['Transformers', 'PyTorch CNNs', 'TensorBoard'],
     bio: 'Guiding advanced students through training cycles and hyperparameters optimization labs.',
     linkedin: 'https://linkedin.com',
@@ -147,19 +147,19 @@ export default function TeamNetwork() {
 
   const getDepartmentBadge = (dept: string) => {
     switch (dept) {
-      case 'Advisors': return 'bg-purple-950 text-purple-400 border border-purple-900';
-      case 'Board': return 'bg-amber-950 text-amber-400 border border-amber-900';
-      case 'Leads': return 'bg-emerald-950 text-emerald-400 border border-emerald-900';
-      case 'Mentors': return 'bg-blue-950 text-blue-400 border border-blue-900';
+      case 'Danışmanlar': return 'bg-purple-950 text-purple-400 border border-purple-900';
+      case 'Yönetim': return 'bg-amber-950 text-amber-400 border border-amber-900';
+      case 'Takım Liderleri': return 'bg-emerald-950 text-emerald-400 border border-emerald-900';
+      case 'Mentörler': return 'bg-blue-950 text-blue-400 border border-blue-900';
       default: return 'bg-slate-900 text-slate-400 border border-brand-border';
     }
   };
 
   const getNodeBorderColor = (dept: string, isSelected: boolean) => {
     if (isSelected) return 'stroke-brand-cyan fill-brand-cyan/20';
-    if (dept === 'Advisors') return 'stroke-purple-400 fill-slate-900';
-    if (dept === 'Board') return 'stroke-amber-400 fill-slate-900';
-    if (dept === 'Leads') return 'stroke-emerald-400 fill-slate-900';
+    if (dept === 'Danışmanlar') return 'stroke-purple-400 fill-slate-900';
+    if (dept === 'Yönetim') return 'stroke-amber-400 fill-slate-900';
+    if (dept === 'Takım Liderleri') return 'stroke-emerald-400 fill-slate-900';
     return 'stroke-brand-blue fill-slate-900';
   };
 
@@ -171,12 +171,12 @@ export default function TeamNetwork() {
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-col items-start mb-16">
           <span className="font-mono text-xs text-brand-cyan tracking-widest uppercase mb-2">
-            [ COMMUNITY LAYER: TEAM ]
+            [ EKİBİMİZ ]
           </span>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white">
-            Organizational <br />
+            Ekibimiz <br />
             <span className="bg-gradient-to-r from-brand-cyan to-brand-emerald bg-clip-text text-transparent">
-              Network Graph
+              &amp; Organizasyon
             </span>
           </h2>
         </div>
@@ -212,8 +212,8 @@ export default function TeamNetwork() {
               {TEAM_MEMBERS.map((member) => {
                 const isSelected = selectedMember.id === member.id;
                 let r = 3.5;
-                if (member.department === 'Advisors') r = 4.5;
-                else if (member.department === 'Board') r = 4;
+                if (member.department === 'Danışmanlar') r = 4.5;
+                else if (member.department === 'Yönetim') r = 4;
 
                 return (
                   <g
@@ -330,7 +330,7 @@ export default function TeamNetwork() {
                     <div>
                       <h4 className="font-mono text-xs text-brand-emerald tracking-wider uppercase mb-3 flex items-center gap-1.5">
                         <Award size={12} />
-                        <span>■ TECHNICAL MATRIX</span>
+                        <span>■ İLGİ ALANLARI</span>
                       </h4>
                       <div className="flex flex-wrap gap-2">
                         {selectedMember.skills.map((skill) => (
@@ -349,8 +349,8 @@ export default function TeamNetwork() {
 
               {/* Console log footer */}
               <div className="mt-8 pt-4 border-t border-brand-border/30 flex justify-between font-mono text-[10px] text-brand-muted">
-                <span>MEMBER_HASH: {selectedMember.id.toUpperCase()}</span>
-                <span>SYSTEM_ROLE: EN_LEAD</span>
+                <span>Topluluk Ekibi</span>
+                <span>Akdeniz Veri Bilimi</span>
               </div>
             </div>
           </div>

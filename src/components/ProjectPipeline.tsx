@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play, ArrowRight, Lightbulb, GraduationCap, Cpu, Layers } from 'lucide-react';
+import { Play, ArrowRight, Lightbulb, GraduationCap, Cpu, Layers, ExternalLink } from 'lucide-react';
 import { MarkdownFile } from '@/lib/markdown';
 
 interface ProjectPipelineProps {
@@ -10,10 +10,10 @@ interface ProjectPipelineProps {
 }
 
 const STAGES = [
-  { name: 'Idea', label: 'Data Synthesis', icon: <Lightbulb className="w-4 h-4 text-amber-400" /> },
-  { name: 'Research', label: 'Math Validation', icon: <GraduationCap className="w-4 h-4 text-brand-cyan" /> },
-  { name: 'Development', label: 'Neural Train', icon: <Cpu className="w-4 h-4 text-brand-emerald" /> },
-  { name: 'Deployment', label: 'Production Edge', icon: <Layers className="w-4 h-4 text-brand-blue" /> },
+  { name: 'Idea', label: 'Fikir Aşaması', icon: <Lightbulb className="w-4 h-4 text-amber-400" /> },
+  { name: 'Research', label: 'Araştırma', icon: <GraduationCap className="w-4 h-4 text-brand-cyan" /> },
+  { name: 'Development', label: 'Geliştirme', icon: <Cpu className="w-4 h-4 text-brand-emerald" /> },
+  { name: 'Deployment', label: 'Yayınlama', icon: <Layers className="w-4 h-4 text-brand-blue" /> },
 ];
 
 export default function ProjectPipeline({ projects }: ProjectPipelineProps) {
@@ -34,12 +34,12 @@ export default function ProjectPipeline({ projects }: ProjectPipelineProps) {
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-col items-start mb-16">
           <span className="font-mono text-xs text-brand-cyan tracking-widest uppercase mb-2">
-            [ COMMUNITY LAYER: PROJECT SHOWCASE ]
+            [ PROJELERİMİZ ]
           </span>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white">
-            Data Pipelines <br />
+            Projelerimiz <br />
             <span className="bg-gradient-to-r from-brand-cyan to-brand-emerald bg-clip-text text-transparent">
-              &amp; System Architectures
+              &amp; Çalışmalarımız
             </span>
           </h2>
         </div>
@@ -96,13 +96,24 @@ export default function ProjectPipeline({ projects }: ProjectPipelineProps) {
                           </p>
                         </div>
 
-                        {/* Card Footer dashboard stats */}
+                        {/* Card Footer with GitHub link */}
                         <div className="mt-4 pt-3 border-t border-brand-border/40 flex items-center justify-between font-mono text-[9px] text-brand-muted">
-                          <span>
-                            {project.metadata.stats ? project.metadata.stats.split(',')[0] : 'ACTIVE'}
-                          </span>
+                          {project.metadata.github ? (
+                            <a
+                              href={project.metadata.github}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              className="flex items-center gap-1 text-slate-400 hover:text-white transition-colors"
+                            >
+                              <ExternalLink size={12} />
+                              <span>GitHub</span>
+                            </a>
+                          ) : (
+                            <span>ACTIVE</span>
+                          )}
                           <span className="text-brand-cyan group-hover:translate-x-1 transition-transform flex items-center gap-1">
-                            LOGS <Play size={8} />
+                            DETAY <Play size={8} />
                           </span>
                         </div>
                       </div>
@@ -143,7 +154,7 @@ export default function ProjectPipeline({ projects }: ProjectPipelineProps) {
                   <div className="flex items-center gap-2">
                     <div className="w-2.5 h-2.5 rounded-full bg-brand-cyan" />
                     <span className="font-mono text-xs text-white uppercase tracking-wider">
-                      Console: Project_Viewer.exe
+                      Proje Detayı
                     </span>
                   </div>
                   <button
@@ -174,23 +185,15 @@ export default function ProjectPipeline({ projects }: ProjectPipelineProps) {
                     {selectedProject.metadata.summary}
                   </p>
 
-                  {/* Description (Parsed markdown body render approximation) */}
+                  {/* Description */}
                   <div className="prose prose-invert max-w-none text-slate-400 text-xs md:text-sm space-y-4">
                     <h4 className="text-white font-semibold text-sm uppercase tracking-wider font-mono">
-                      ■ SYSTEM LOG DETAILS
+                      ■ PROJE HAKKINDA
                     </h4>
                     <p>
-                      This open-source package coordinates data mapping, optimizing weights, and localizing predictive matrices. View the repository documentation for advanced API implementation schemas.
+                      Bu projenin detayları ve teknik altyapısı hakkında daha fazla bilgi için GitHub repository&apos;sini inceleyebilirsiniz.
                     </p>
                   </div>
-
-                  {/* Metrics panel */}
-                  {selectedProject.metadata.stats && (
-                    <div className="mt-6 p-4 bg-slate-900 border border-brand-border rounded font-mono text-xs">
-                      <div className="text-brand-cyan mb-2 uppercase">● Pipeline Diagnostics</div>
-                      <div className="text-slate-300">{selectedProject.metadata.stats}</div>
-                    </div>
-                  )}
 
                   {/* Tags */}
                   {selectedProject.metadata.tags && (
