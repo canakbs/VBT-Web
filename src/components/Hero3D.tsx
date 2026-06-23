@@ -23,11 +23,7 @@ export default function Hero3D() {
   });
 
   // Generate 45 initial data points along a general linear trend with noise
-  const points = useMemoPoints();
-
-  function useMemoPoints() {
-    return useRef<Point2D[]>([]);
-  }
+  const points = useRef<Point2D[]>([]);
 
   // Initialize points on first load relative to canvas size
   useEffect(() => {
@@ -265,7 +261,7 @@ export default function Hero3D() {
   return (
     <section 
       ref={containerRef}
-      className="relative h-screen w-full flex flex-col justify-between overflow-hidden bg-brand-bg border-b border-brand-border"
+      className="relative h-screen w-full flex flex-col justify-between overflow-hidden bg-transparent border-b border-brand-border"
     >
       {/* 2D Canvas Layer */}
       <canvas

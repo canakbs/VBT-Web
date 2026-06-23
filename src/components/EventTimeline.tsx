@@ -84,7 +84,7 @@ export default function EventTimeline({ events, showMoreButton = false }: EventT
   }, [filteredEvents, activeCategory]);
 
   return (
-    <section id="event-archive" ref={containerRef} className="relative py-24 bg-brand-bg border-b border-brand-border">
+    <section id="event-archive" ref={containerRef} className="relative py-24 bg-transparent border-b border-brand-border">
       {/* Grid backgrounds */}
       <div className="absolute inset-0 scientific-grid opacity-10 pointer-events-none" />
 
@@ -186,7 +186,7 @@ export default function EventTimeline({ events, showMoreButton = false }: EventT
                             <Calendar size={12} />
                             {event.metadata.date}
                           </span>
-                          <span className="text-slate-600">//</span>
+                          <span className="text-slate-600">{"//"}</span>
                           <span className="px-2 py-0.5 bg-slate-800/80 border border-brand-border rounded text-brand-emerald">
                             {event.metadata.category}
                           </span>

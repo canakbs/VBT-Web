@@ -1,7 +1,14 @@
 'use client';
 
 import React, { useState, useMemo, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
+
+// Pure deterministic pseudo-random number generator based on a seed.
+// React Compiler rules forbid impure functions (like Math.random) during render.
+function pureRandom(seed: number): number {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
 import { ChevronRight, Database, Code, Cpu, Eye, MessageSquare, Server, Terminal, ExternalLink } from 'lucide-react';
 
 interface RoadmapNode {
@@ -125,10 +132,10 @@ function DataAnalysisVisualizer() {
     // Generate scattered random dots under a bell curve representation
     const pts = [];
     for (let i = 0; i < 20; i++) {
-      const rx = 15 + Math.random() * 70;
+      const rx = 15 + pureRandom(i * 123.45 + 1.2) * 70;
       const dist = Math.abs(rx - 50);
       const limitY = 48 - (30 * Math.exp(-Math.pow(dist, 2) / 200));
-      const ry = limitY + Math.random() * (48 - limitY);
+      const ry = limitY + pureRandom(i * 234.56 + 3.4) * (48 - limitY);
       pts.push({ x: rx, y: ry });
     }
     return pts;
@@ -195,8 +202,17 @@ function MachineLearningVisualizer() {
   );
 }
 
+interface SynapseConnection {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  seedWeight: number;
+  pulse: boolean;
+}
+
 // 4. Deep Learning MLP Synapses helper (original neural net)
-function DeepLearningVisualizer({ synapseConnections }: { synapseConnections: any[] }) {
+function DeepLearningVisualizer({ synapseConnections }: { synapseConnections: SynapseConnection[] }) {
   const LAYERS = [
     { name: 'Input', nodes: [15, 30, 45] },
     { name: 'Hidden 1', nodes: [10, 22, 35, 47] },
@@ -475,7 +491,7 @@ export default function LearningRoadmap() {
   };
 
   return (
-    <section id="ds-journey" className="relative py-24 bg-brand-bg/95 border-b border-brand-border">
+    <section id="ds-journey" className="relative py-24 bg-transparent border-b border-brand-border">
       {/* Background Grid */}
       <div className="absolute inset-0 scientific-grid opacity-10 pointer-events-none" />
 
@@ -631,7 +647,7 @@ export default function LearningRoadmap() {
                   </p>
                 </div>
                 <button className="flex items-center gap-1.5 px-4 py-2 bg-brand-cyan/10 hover:bg-brand-cyan/20 border border-brand-cyan/40 hover:border-brand-cyan/80 text-brand-cyan font-mono text-xs rounded transition-all duration-300 shrink-0">
-                  <span>Lab\'a Başla</span>
+                  <span>{"Lab'a Başla"}</span>
                   <ExternalLink size={12} />
                 </button>
               </div>

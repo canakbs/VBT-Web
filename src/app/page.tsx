@@ -6,6 +6,7 @@ import ProjectPipeline from "@/components/ProjectPipeline";
 import TeamNetwork from "@/components/TeamNetwork";
 import ImpactDashboard from "@/components/ImpactDashboard";
 import JoinOnboarding from "@/components/JoinOnboarding";
+import NeuralBackground from "@/components/NeuralBackground";
 
 export default function Home() {
   // Read events and projects statically from content files
@@ -14,6 +15,7 @@ export default function Home() {
 
   return (
     <>
+      <NeuralBackground />
       {/* 1. DATA: Hero Experience */}
       <Hero3D />
 

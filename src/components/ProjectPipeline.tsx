@@ -27,7 +27,7 @@ export default function ProjectPipeline({ projects }: ProjectPipelineProps) {
   };
 
   return (
-    <section id="project-showcase" className="relative py-24 bg-brand-bg border-b border-brand-border">
+    <section id="project-showcase" className="relative py-24 bg-transparent border-b border-brand-border">
       {/* Background patterns */}
       <div className="absolute inset-0 scientific-grid opacity-10 pointer-events-none" />
 
@@ -86,7 +86,7 @@ export default function ProjectPipeline({ projects }: ProjectPipelineProps) {
                         <div>
                           {/* Category Tag */}
                           <span className="font-mono text-[9px] text-brand-cyan uppercase tracking-wider">
-                            // {project.metadata.category}
+                            {`// ${project.metadata.category}`}
                           </span>
                           <h4 className="text-white font-semibold text-sm md:text-base mt-1.5 group-hover:text-brand-cyan transition-colors">
                             {project.metadata.title}

@@ -77,7 +77,7 @@ EOF
   };
 
   return (
-    <section id="join-us" className="relative py-24 bg-brand-bg border-b border-brand-border">
+    <section id="join-us" className="relative py-24 bg-transparent border-b border-brand-border">
       {/* Background patterns */}
       <div className="absolute inset-0 scientific-grid opacity-10 pointer-events-none" />
 

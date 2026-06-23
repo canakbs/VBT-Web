@@ -143,7 +143,7 @@ export default function ImpactDashboard() {
   }, []);
 
   return (
-    <section id="community-impact" className="relative py-24 bg-brand-bg border-b border-brand-border">
+    <section id="community-impact" className="relative py-24 bg-transparent border-b border-brand-border">
       {/* Grid pattern background */}
       <div className="absolute inset-0 scientific-grid opacity-10 pointer-events-none" />
 

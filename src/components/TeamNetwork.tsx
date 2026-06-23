@@ -164,7 +164,7 @@ export default function TeamNetwork() {
   };
 
   return (
-    <section id="team" className="relative py-24 bg-brand-bg/95 border-b border-brand-border">
+    <section id="team" className="relative py-24 bg-transparent border-b border-brand-border">
       {/* Background patterns */}
       <div className="absolute inset-0 scientific-grid opacity-10 pointer-events-none" />
 
