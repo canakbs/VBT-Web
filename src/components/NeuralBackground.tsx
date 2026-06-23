@@ -24,6 +24,7 @@ function pureRandom(seed: number): number {
 }
 
 // Generate static properties for a node purely based on its index.
+// Expanded boundaries to spread the nodes along the entire height of the scrolled page.
 function getDeterministicNode(index: number): NodeItem {
   const r1 = pureRandom(index * 123.456 + 1.1);
   const r2 = pureRandom(index * 234.567 + 2.2);
@@ -33,14 +34,15 @@ function getDeterministicNode(index: number): NodeItem {
   const r6 = pureRandom(index * 678.901 + 6.6);
   const r7 = pureRandom(index * 789.012 + 7.7);
 
-  const x = (r1 - 0.5) * 28;
-  const y = (r2 - 0.5) * 18;
-  const z = r3 * -30 + 5; // distributed from -25 to +5
+  // Distribute nodes across a much larger volume, especially along the Z axis (depth)
+  const x = (r1 - 0.5) * 32;
+  const y = (r2 - 0.5) * 22;
+  const z = r3 * -97 + 12; // Distributed from -85 to +12
 
-  // Elegant drift velocity
-  const vx = (r4 - 0.5) * 0.006;
-  const vy = (r5 - 0.5) * 0.006;
-  const vz = (r6 - 0.5) * 0.004;
+  // Elegant slow drift velocity
+  const vx = (r4 - 0.5) * 0.005;
+  const vy = (r5 - 0.5) * 0.005;
+  const vz = (r6 - 0.5) * 0.003;
 
   const seed = r7 * 1000;
 
@@ -98,7 +100,6 @@ function NeuralNetwork({
     if (!meshRef.current) return;
     const color = new THREE.Color();
     for (let i = 0; i < nodeCount; i++) {
-      // We use index-based seed for purity here as well
       const r = pureRandom(i * 987.654 + 9.9);
       if (r < 0.70) {
         color.set('#00f2fe'); // Brand Cyan
@@ -114,8 +115,8 @@ function NeuralNetwork({
     }
   }, [nodeCount]);
 
-  // Pre-allocated line buffers for maximum performance (avoids memory allocation GC lag in frame loop)
-  const MAX_CONNECTIONS = 1200;
+  // Pre-allocated line buffers for maximum performance (1600 connections to cover larger space)
+  const MAX_CONNECTIONS = 1600;
   const positions = useMemo(() => new Float32Array(MAX_CONNECTIONS * 2 * 3), []);
   const colors = useMemo(() => new Float32Array(MAX_CONNECTIONS * 2 * 3), []);
 
@@ -144,11 +145,11 @@ function NeuralNetwork({
       node.y += (node.vy + driftY) * speedMultiplier;
       node.z += (node.vz + driftZ) * speedMultiplier;
 
-      // Keep them enclosed in the boundary box (bounce velocities)
-      const boundX = 14;
-      const boundY = 9;
-      const boundZMin = -25;
-      const boundZMax = 5;
+      // Keep them enclosed in the expanded boundary box (bounce velocities)
+      const boundX = 16;
+      const boundY = 11;
+      const boundZMin = -85;
+      const boundZMax = 12;
 
       if (node.x < -boundX || node.x > boundX) {
         node.vx = -node.vx;
@@ -175,11 +176,11 @@ function NeuralNetwork({
     }
     meshRef.current.instanceMatrix.needsUpdate = true;
 
-    // 2. Compute Connection lines and opacities
+    // 2. Compute Connection lines and opacities (increased threshold to 4.8 due to wider space distribution)
     const pos = posArray.current;
     const col = colArray.current;
     let lineCount = 0;
-    const threshold = 3.2;
+    const threshold = 4.8;
     const thresholdSq = threshold * threshold;
 
     // Background color components normalized to blend lines out
@@ -242,8 +243,8 @@ function NeuralNetwork({
     // 3. Smooth Camera movement matching scroll progress & mouse coordinates
     const progress = scrollProgress.current;
 
-    // Progress from Z=8 down to Z=-20 (flying into the network)
-    const targetZ = THREE.MathUtils.lerp(8, -20, progress);
+    // Progress from Z=8 down to Z=-80 (extended depth coordinates to stretch across the full page)
+    const targetZ = THREE.MathUtils.lerp(8, -80, progress);
 
     // Lateral S-Curve scroll parallax
     const scrollParallaxX = Math.sin(progress * Math.PI * 1.5) * 3.2;
@@ -300,32 +301,32 @@ function NeuralNetwork({
 }
 
 export default function NeuralBackground() {
-  const [nodeCount, setNodeCount] = useState(220);
+  const [nodeCount, setNodeCount] = useState(320);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    // Handle system accessibility prefers-reduced-motion
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    const motionListener = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
-    mediaQuery.addEventListener('change', motionListener);
-
     // Avoid synchronous state update inside effect body to prevent cascading render warnings
     const animationFrameId = requestAnimationFrame(() => {
       setMounted(true);
       setReducedMotion(mediaQuery.matches);
     });
 
-    // Optimize node counts for performance based on mobile width
+    // Optimize node counts for performance based on mobile width (slightly increased to fill larger depth)
     const checkMobile = () => {
       if (window.innerWidth < 768) {
-        setNodeCount(85);
+        setNodeCount(130);
       } else {
-        setNodeCount(220);
+        setNodeCount(320);
       }
     };
     checkMobile();
     window.addEventListener('resize', checkMobile);
+
+    // Handle system accessibility prefers-reduced-motion
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const motionListener = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
+    mediaQuery.addEventListener('change', motionListener);
 
     return () => {
       cancelAnimationFrame(animationFrameId);
