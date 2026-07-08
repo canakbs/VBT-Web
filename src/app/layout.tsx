@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
   title: "Akdeniz Veri Bilimi Topluluğu | Mediterranean Data Science Community",
@@ -25,6 +26,7 @@ export default function RootLayout({
           </div>
         </SmoothScroll>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
