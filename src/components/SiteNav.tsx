@@ -5,12 +5,12 @@ import Link from 'next/link';
 import { Menu, X, ArrowRight } from 'lucide-react';
 
 const NAV_LINKS = [
-  { href: '#community-impact', label: 'Rakamlar' },
-  { href: '#event-archive', label: 'Etkinlikler' },
-  { href: '#project-showcase', label: 'Projeler' },
+  { href: '/#community-impact', label: 'Rakamlar' },
+  { href: '/#event-archive', label: 'Etkinlikler' },
+  { href: '/#project-showcase', label: 'Projeler' },
   { href: '/ekibimiz', label: 'Ekibimiz' },
   { href: '/veri-bilimi-nedir', label: 'Veri Bilimi Nedir?' },
-  { href: '#contact', label: 'İletişim' },
+  { href: '/#contact', label: 'İletişim' },
 ];
 
 export default function SiteNav() {
@@ -59,13 +59,13 @@ export default function SiteNav() {
               {link.label}
             </Link>
           ))}
-          <a
-            href="#join-us"
+          <Link
+            href="/#join-us"
             className="ml-3 px-4 py-2 text-xs font-semibold bg-brand-cyan text-[#090d16] rounded-lg hover:bg-brand-cyan/90 transition-all flex items-center gap-1.5 shadow-sm shadow-brand-cyan/20"
           >
             <span>Bize Katıl</span>
             <ArrowRight size={13} />
-          </a>
+          </Link>
         </div>
 
         {/* Mobile toggle */}
@@ -92,13 +92,13 @@ export default function SiteNav() {
                 {link.label}
               </Link>
             ))}
-            <a
-              href="#join-us"
+            <Link
+              href="/#join-us"
               onClick={() => setMobileOpen(false)}
               className="mt-2 px-4 py-3 text-sm font-semibold text-center bg-brand-cyan text-[#090d16] rounded-lg"
             >
               Bize Katıl
-            </a>
+            </Link>
           </div>
         </div>
       )}
