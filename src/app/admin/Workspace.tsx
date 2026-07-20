@@ -12,9 +12,11 @@ import {
   Trash2, 
   Loader2, 
   AlertTriangle, 
-  ChevronRight, 
-  RefreshCw, 
-  FolderOpen 
+  FolderOpen,
+  Inbox,
+  User,
+  Mail,
+  Calendar
 } from 'lucide-react';
 import Link from 'next/link';
 import { 
@@ -23,14 +25,17 @@ import {
   getFileContent, 
   saveContent, 
   deleteContent,
-  uploadImageAction
+  uploadImageAction,
+  getApplicationsList,
+  deleteApplication
 } from './actions';
 
 export default function Workspace() {
   // Navigation & Tabs
   const [activeView, setActiveView] = useState<'list' | 'composer'>('list');
-  const [activeTab, setActiveTab] = useState<'events' | 'blog' | 'projects' | 'team'>('events');
+  const [activeTab, setActiveTab] = useState<'events' | 'blog' | 'projects' | 'team' | 'applications'>('events');
   const [contentList, setContentList] = useState<any[]>([]);
+  const [applicationsList, setApplicationsList] = useState<any[]>([]);
   const [isLoadingList, setIsLoadingList] = useState(false);
   const [isSandboxMode, setIsSandboxMode] = useState(false);
 
@@ -77,9 +82,23 @@ export default function Workspace() {
   ]);
 
   // Load Content List
-  const fetchList = async (type: 'events' | 'blog' | 'projects' | 'team') => {
+  const fetchList = async (type: 'events' | 'blog' | 'projects' | 'team' | 'applications') => {
     setIsLoadingList(true);
     setIsSandboxMode(false);
+
+    if (type === 'applications') {
+      try {
+        const apps = await getApplicationsList();
+        setApplicationsList(apps);
+      } catch (err) {
+        console.error(err);
+        setApplicationsList([]);
+      } finally {
+        setIsLoadingList(false);
+      }
+      return;
+    }
+
     try {
       const items = await getContentList(type);
       setContentList(items);
@@ -195,19 +214,30 @@ export default function Workspace() {
 
   // Delete document
   const handleDelete = async (path: string, sha: string) => {
-    if (!window.confirm(`Are you sure you want to delete this file?\nPath: ${path}\n\nThis will permanently remove it from GitHub.`)) {
+    if (!window.confirm(`Bu dosyayı silmek istediğinizden emin misiniz?\nYol: ${path}`)) {
       return;
     }
 
-    addConsoleLine(`DISPATCHING DELETION TRANSACTION: ${path}`);
+    addConsoleLine(`DELETING FILE: ${path}`);
     try {
       await deleteContent(path, sha);
-      addConsoleLine('DELETION COMMITTED SUCCESSFULLY ON GITHUB.');
+      addConsoleLine('FILE DELETED SUCCESSFULLY.');
       fetchList(activeTab);
     } catch (err: any) {
       console.error(err);
       addConsoleLine(`DELETE FAILED: ${err.message || 'Unknown error'}`);
-      alert(`Deletion failed: ${err.message || 'Unknown error'}`);
+      alert(`Silme başarısız: ${err.message || 'Unknown error'}`);
+    }
+  };
+
+  // Delete application record
+  const handleDeleteApp = async (id: string) => {
+    if (!window.confirm('Bu başvuruyu silmek istediğinizden emin misiniz?')) return;
+    try {
+      await deleteApplication(id);
+      fetchList('applications');
+    } catch (err: any) {
+      alert('Silinemedi: ' + err.message);
     }
   };
 
@@ -229,7 +259,7 @@ export default function Workspace() {
       try {
         addConsoleLine(`STARTING IMAGE UPLOAD: ${file.name}...`);
         const base64String = (event.target?.result as string).split(',')[1];
-        const destFolder = activeTab;
+        const destFolder = activeTab === 'applications' ? 'events' : activeTab;
         const cleanName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
         const finalName = `${Date.now()}-${cleanName}`;
         
@@ -347,7 +377,7 @@ ${content}
   };
 
   const handleSaveToGithub = async () => {
-    if (!title || isSaving) return;
+    if (!title || isSaving || activeTab === 'applications') return;
     setIsSaving(true);
 
     let filename = editingFilename;
@@ -366,25 +396,22 @@ ${content}
       }
     }
 
-    addConsoleLine(`COMMITTING DATABASE UPDATE: content/${activeTab}/${filename}`);
-    addConsoleLine('GENERATING MARKDOWN COMPILATION STRING...');
+    addConsoleLine(`SAVING CONTENT: content/${activeTab}/${filename}`);
     const mdContent = generateMarkdownString();
 
     try {
       const res = await saveContent(activeTab, filename, mdContent, editingSha);
-      addConsoleLine(`COMMIT SUCCESSFUL! GITHUB OBJECT SHA: ${res.sha.substring(0, 8)}`);
-      addConsoleLine('VERCEL CD WEBHOOK ENGAGED. REBUILD SEQUENCE COMMENCED.');
+      addConsoleLine(`KAYIT BAŞARILI! SHA: ${res.sha.substring(0, 8)}`);
       setIsSaving(false);
       
-      // Navigate back to list after 1s
       setTimeout(() => {
         setActiveView('list');
       }, 1000);
     } catch (err: any) {
       console.error(err);
-      addConsoleLine(`TRANSACTION ABORTED: ${err.message || 'Unknown error'}`);
+      addConsoleLine(`KAYIT HATASI: ${err.message || 'Bilinmeyen hata'}`);
       setIsSaving(false);
-      alert(`Commit failed: ${err.message || 'Unknown error'}`);
+      alert(`Kayıt başarısız: ${err.message || 'Bilinmeyen hata'}`);
     }
   };
 
@@ -418,7 +445,7 @@ ${content}
           </div>
           <div className="flex items-center gap-4">
             <span className="font-mono text-xs text-brand-emerald">
-              {isSandboxMode ? 'DURUM: YEREL SİSTEM' : 'DURUM: BULUT BULUTU AKTİF'}
+              DURUM: KONTROL PANELİ AKTİF
             </span>
             <button
               onClick={handleLogoutClick}
@@ -446,144 +473,202 @@ ${content}
                   <span>İçerik Yönetim Paneli</span>
                 </h1>
                 <p className="text-xs text-slate-500 font-mono mt-1">
-                  ETKİNLİKLERİ, PROJELERİ, EKİBİ VE DUYURULARI BURADAN DÜZENLEYEBİLİRSİNİZ
+                  ETKİNLİKLERİ, PROJELERİ, EKİBİ VE BAŞVURULARI BURADAN DÜZENLEYEBİLİRSİNİZ
                 </p>
               </div>
               
-              <button
-                onClick={handleCreateNew}
-                className="flex items-center gap-2 px-5 py-2.5 bg-brand-emerald hover:bg-brand-emerald/80 text-black font-mono font-bold text-xs rounded transition-all duration-300 shadow-[0_0_15px_rgba(0,245,160,0.1)] hover:shadow-[0_0_25px_rgba(0,245,160,0.2)] cursor-pointer"
-              >
-                <PlusCircle size={14} />
-                <span>YENİ İÇERİK EKLE</span>
-              </button>
+              {activeTab !== 'applications' && (
+                <button
+                  onClick={handleCreateNew}
+                  className="flex items-center gap-2 px-5 py-2.5 bg-brand-emerald hover:bg-brand-emerald/80 text-black font-mono font-bold text-xs rounded transition-all duration-300 shadow-[0_0_15px_rgba(0,245,160,0.1)] hover:shadow-[0_0_25px_rgba(0,245,160,0.2)] cursor-pointer"
+                >
+                  <PlusCircle size={14} />
+                  <span>YENİ İÇERİK EKLE</span>
+                </button>
+              )}
             </div>
-
-            {/* Sandbox alert */}
-            {isSandboxMode && (
-              <div className="border border-dashed border-amber-600/40 bg-amber-950/10 text-amber-300 text-xs px-4 py-3.5 rounded font-mono flex items-start gap-2.5 shadow-[inset_0_1px_3px_rgba(0,0,0,0.2)]">
-                <AlertTriangle className="text-amber-500 flex-shrink-0 mt-0.5" size={16} />
-                <div>
-                  <span className="font-bold">SYSTEM WARNING: GITHUB_PAT NOT DETECTED IN ENVIRONMENT VARIABLES</span>
-                  <p className="mt-1 text-slate-400">
-                    Running in local sandbox mode. Cloud list query and automatic push operations are disabled. You can still create compositions and click <strong className="text-white">Download Markdown</strong> to save files manually into the local repository folder.
-                  </p>
-                </div>
-              </div>
-            )}
 
             {/* Tab Navigation & List Grid */}
             <div className="bg-brand-card border border-brand-border rounded overflow-hidden">
-              <div className="flex border-b border-brand-border bg-slate-950/40">
-                {(['events', 'blog', 'projects', 'team'] as const).map((tab) => (
+              <div className="flex border-b border-brand-border bg-slate-950/40 flex-wrap">
+                {(['events', 'blog', 'projects', 'team', 'applications'] as const).map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`px-6 py-4 font-mono text-xs uppercase font-bold border-r border-brand-border transition-colors cursor-pointer ${
+                    className={`px-6 py-4 font-mono text-xs uppercase font-bold border-r border-brand-border transition-colors cursor-pointer flex items-center gap-2 ${
                       activeTab === tab
                         ? 'bg-slate-900/60 text-brand-cyan border-b-2 border-b-brand-cyan'
                         : 'text-slate-400 hover:text-white hover:bg-slate-950/20'
                     }`}
                   >
+                    {tab === 'applications' && <Inbox size={14} className="text-amber-400" />}
                     {tab === 'events' && 'Etkinlikler'}
                     {tab === 'blog' && 'Blog / Yayınlar'}
                     {tab === 'projects' && 'Projeler'}
                     {tab === 'team' && 'Ekip Üyeleri'}
+                    {tab === 'applications' && 'Gelen Başvurular'}
                   </button>
                 ))}
               </div>
 
-              {/* Grid content list */}
-              <div className="p-6">
-                {isLoadingList ? (
-                  <div className="py-24 flex flex-col justify-center items-center text-center font-mono text-xs text-brand-cyan">
-                    <Loader2 className="w-8 h-8 animate-spin mb-4 text-brand-cyan" />
-                    <span>FETCHING CONTENT STREAMS FROM GITHUB FOR: {activeTab.toUpperCase()}...</span>
-                  </div>
-                ) : contentList.length === 0 ? (
-                  <div className="py-24 text-center border border-dashed border-brand-border/60 rounded flex flex-col justify-center items-center text-brand-muted font-mono text-xs uppercase">
-                    <AlertTriangle className="w-8 h-8 mb-3 text-slate-700" />
-                    {isSandboxMode 
-                      ? 'Sandbox Mode Active: Unable to fetch items without GITHUB_PAT' 
-                      : `No data entries detected in: content/${activeTab}/`}
-                  </div>
-                ) : (
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-left font-mono text-xs border-collapse">
-                      <thead>
-                        <tr className="border-b border-brand-border/60 text-slate-500 uppercase tracking-widest text-[10px]">
-                          <th className="pb-3 font-semibold">Title / Identifier</th>
-                          <th className="pb-3 font-semibold hidden md:table-cell">File Path</th>
-                          <th className="pb-3 font-semibold text-center hidden sm:table-cell">
-                            {activeTab === 'projects' ? 'Stage' : 'Date'}
-                          </th>
-                          <th className="pb-3 font-semibold text-right">Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-brand-border/30">
-                        {contentList.map((item) => (
-                          <tr key={item.name} className="hover:bg-slate-950/30 group transition-colors">
-                            <td className="py-4 pr-4">
-                              <span className="text-white font-bold block group-hover:text-brand-cyan transition-colors truncate max-w-[280px] sm:max-w-md">
-                                {item.title}
-                              </span>
-                              <span className="text-[10px] text-slate-500 font-mono mt-0.5 block truncate max-w-[200px]">
-                                {item.summary || 'No teaser summary text...'}
-                              </span>
-                            </td>
-                            <td className="py-4 text-slate-400 font-mono hidden md:table-cell">
-                              {item.path}
-                            </td>
-                            <td className="py-4 text-center text-brand-muted hidden sm:table-cell">
-                              {activeTab === 'projects' ? (
-                                <span className="px-2.5 py-0.5 bg-slate-900 border border-brand-border rounded-full text-[10px]">
-                                  {item.date || 'Research'}
+              {/* Applications List Render */}
+              {activeTab === 'applications' ? (
+                <div className="p-6">
+                  {isLoadingList ? (
+                    <div className="py-24 flex flex-col justify-center items-center text-center font-mono text-xs text-brand-cyan">
+                      <Loader2 className="w-8 h-8 animate-spin mb-4 text-brand-cyan" />
+                      <span>BAŞVURULAR YÜKLENİYOR...</span>
+                    </div>
+                  ) : applicationsList.length === 0 ? (
+                    <div className="py-24 text-center border border-dashed border-brand-border/60 rounded flex flex-col justify-center items-center text-brand-muted font-mono text-xs uppercase">
+                      <Inbox className="w-8 h-8 mb-3 text-slate-700" />
+                      Henüz kaydedilmiş başvuru bulunmuyor.
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="font-mono text-xs text-brand-cyan mb-2">
+                        TOPLAM {applicationsList.length} BAŞVURU KAYDI
+                      </div>
+                      <div className="grid grid-cols-1 gap-4">
+                        {applicationsList.map((app) => (
+                          <div key={app.id} className="p-5 bg-slate-950 border border-brand-border rounded-xl font-mono text-xs text-slate-300 space-y-3 relative group">
+                            <div className="flex justify-between items-start border-b border-brand-border/40 pb-3">
+                              <div>
+                                <span className="text-white font-bold text-sm flex items-center gap-2">
+                                  <User size={14} className="text-brand-cyan" />
+                                  {app.fullName}
                                 </span>
-                              ) : (
-                                item.date || 'N/A'
-                              )}
-                            </td>
-                            <td className="py-4 text-right">
-                              <div className="flex justify-end gap-2">
+                                <span className="text-brand-cyan text-xs flex items-center gap-1.5 mt-1">
+                                  <Mail size={12} />
+                                  {app.email}
+                                </span>
+                              </div>
+                              <div className="flex items-center gap-3">
+                                <span className="text-[10px] text-slate-500 flex items-center gap-1">
+                                  <Calendar size={10} />
+                                  {new Date(app.submittedAt).toLocaleString('tr-TR')}
+                                </span>
                                 <button
-                                  onClick={() => handleEdit(item.path)}
-                                  className="p-2 bg-slate-900 border border-brand-border hover:border-slate-500 hover:bg-slate-800 text-slate-300 hover:text-white rounded transition-all cursor-pointer"
-                                  title="Edit entry"
-                                >
-                                  <Edit size={12} />
-                                </button>
-                                <button
-                                  onClick={() => handleDelete(item.path, item.sha)}
-                                  className="p-2 bg-slate-900 border border-brand-border hover:border-red-600 hover:bg-red-950/20 text-red-400 hover:text-red-300 rounded transition-all cursor-pointer"
-                                  title="Delete entry"
+                                  onClick={() => handleDeleteApp(app.id)}
+                                  className="p-1.5 bg-red-950/40 hover:bg-red-900/60 border border-red-900/40 text-red-400 rounded transition-colors"
+                                  title="Başvuruyu sil"
                                 >
                                   <Trash2 size={12} />
                                 </button>
                               </div>
-                            </td>
-                          </tr>
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+                              <div><strong className="text-slate-400">Departman:</strong> {app.department}</div>
+                              <div><strong className="text-slate-400">Seviye:</strong> {app.level}</div>
+                              <div className="sm:col-span-2">
+                                <strong className="text-slate-400">İlgi Alanları:</strong> {app.selectedInterests?.join(', ') || 'Yok'}
+                              </div>
+                            </div>
+
+                            {app.goals && (
+                              <div className="p-3 bg-slate-900 border border-brand-border/30 rounded text-[11px] text-slate-300">
+                                <strong className="text-brand-cyan block mb-1">Hedefler &amp; Proje Fikirleri:</strong>
+                                {app.goals}
+                              </div>
+                            )}
+                          </div>
                         ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : (
+                /* Grid Content List (Events/Blog/Projects/Team) */
+                <div className="p-6">
+                  {isLoadingList ? (
+                    <div className="py-24 flex flex-col justify-center items-center text-center font-mono text-xs text-brand-cyan">
+                      <Loader2 className="w-8 h-8 animate-spin mb-4 text-brand-cyan" />
+                      <span>İÇERİKLER YÜKLENİYOR: {activeTab.toUpperCase()}...</span>
+                    </div>
+                  ) : contentList.length === 0 ? (
+                    <div className="py-24 text-center border border-dashed border-brand-border/60 rounded flex flex-col justify-center items-center text-brand-muted font-mono text-xs uppercase">
+                      <AlertTriangle className="w-8 h-8 mb-3 text-slate-700" />
+                      {`Henüz kayıtlı dosya yok: content/${activeTab}/`}
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left font-mono text-xs border-collapse">
+                        <thead>
+                          <tr className="border-b border-brand-border/60 text-slate-500 uppercase tracking-widest text-[10px]">
+                            <th className="pb-3 font-semibold">Başlık / Tanımlayıcı</th>
+                            <th className="pb-3 font-semibold hidden md:table-cell">Dosya Yolu</th>
+                            <th className="pb-3 font-semibold text-center hidden sm:table-cell">
+                              {activeTab === 'projects' ? 'Aşama' : 'Tarih'}
+                            </th>
+                            <th className="pb-3 font-semibold text-right">İşlemler</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-brand-border/30">
+                          {contentList.map((item) => (
+                            <tr key={item.name} className="hover:bg-slate-950/30 group transition-colors">
+                              <td className="py-4 pr-4">
+                                <span className="text-white font-bold block group-hover:text-brand-cyan transition-colors truncate max-w-[280px] sm:max-w-md">
+                                  {item.title}
+                                </span>
+                                <span className="text-[10px] text-slate-500 font-mono mt-0.5 block truncate max-w-[200px]">
+                                  {item.summary || 'Özet yok...'}
+                                </span>
+                              </td>
+                              <td className="py-4 text-slate-400 font-mono hidden md:table-cell">
+                                {item.path}
+                              </td>
+                              <td className="py-4 text-center text-brand-muted hidden sm:table-cell">
+                                {activeTab === 'projects' ? (
+                                  <span className="px-2.5 py-0.5 bg-slate-900 border border-brand-border rounded-full text-[10px]">
+                                    {item.date || 'Araştırma'}
+                                  </span>
+                                ) : (
+                                  item.date || 'N/A'
+                                )}
+                              </td>
+                              <td className="py-4 text-right">
+                                <div className="flex justify-end gap-2">
+                                  <button
+                                    onClick={() => handleEdit(item.path)}
+                                    className="p-2 bg-slate-900 border border-brand-border hover:border-slate-500 hover:bg-slate-800 text-slate-300 hover:text-white rounded transition-all cursor-pointer"
+                                    title="Düzenle"
+                                  >
+                                    <Edit size={12} />
+                                  </button>
+                                  <button
+                                    onClick={() => handleDelete(item.path, item.sha)}
+                                    className="p-2 bg-slate-900 border border-brand-border hover:border-red-600 hover:bg-red-950/20 text-red-400 hover:text-red-300 rounded transition-all cursor-pointer"
+                                    title="Sil"
+                                  >
+                                    <Trash2 size={12} />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         )}
 
-        {/* VIEW B: COMPOSER & PREVIEW INTERFACE */}
+        {/* VIEW B: COMPOSER INTERFACE */}
         {activeView === 'composer' && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             
-            {/* Left Composer Form Pane */}
+            {/* Left Form Pane */}
             <div className="col-span-1 lg:col-span-6 bg-brand-card border border-brand-border rounded p-6">
               <div className="flex justify-between items-center pb-4 border-b border-brand-border/40 mb-6">
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => setActiveView('list')}
                     className="p-1.5 bg-slate-900 border border-brand-border hover:border-slate-600 rounded text-slate-400 hover:text-white transition-colors cursor-pointer"
-                    title="Back to list"
+                    title="Listeye dön"
                   >
                     <ArrowLeft size={12} />
                   </button>
@@ -608,7 +693,7 @@ ${content}
                     value={title}
                     onChange={(e) => {
                       setTitle(e.target.value);
-                      addConsoleLine(`UPDATED TITLE: ${e.target.value}`);
+                      addConsoleLine(`GÜNCELLENEN BAŞLIK: ${e.target.value}`);
                     }}
                     className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
                   />
@@ -626,11 +711,11 @@ ${content}
                   />
                 </div>
 
-                {/* Tab conditional input fields */}
+                {/* Conditional fields */}
                 {activeTab === 'events' && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-y border-brand-border/30 py-4">
                     <div className="flex flex-col sm:col-span-2">
-                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Kapak Fotoğrafı (Etkinlik Resmi)</label>
+                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Kapak Fotoğrafı</label>
                       <div className="flex items-center gap-4">
                         <input
                           type="file"
@@ -644,7 +729,6 @@ ${content}
                           </div>
                         )}
                       </div>
-                      <p className="text-[10px] text-slate-500 mt-1">Örn: .jpg, .png</p>
                     </div>
                     <div className="flex flex-col">
                       <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Etkinlik Tarihi</label>
@@ -669,179 +753,12 @@ ${content}
                         <option value="Competitions">Competitions</option>
                       </select>
                     </div>
-                    <div className="flex flex-col sm:col-span-2">
-                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">İstatistikler</label>
-                      <input
-                        type="text"
-                        placeholder="Örn: 150+ Katılımcı, 36 Saat Kodlama"
-                        value={eventStats}
-                        onChange={(e) => setEventStats(e.target.value)}
-                        className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
-                      />
-                    </div>
-                    <div className="flex flex-col sm:col-span-2">
-                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Araştırma Çıktısı</label>
-                      <input
-                        type="text"
-                        placeholder="Örn: 12 adet bilgisayarlı görü uygulaması geliştirildi."
-                        value={eventOutcome}
-                        onChange={(e) => setEventOutcome(e.target.value)}
-                        className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {activeTab === 'blog' && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-y border-brand-border/30 py-4">
-                    <div className="flex flex-col">
-                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Publish Date</label>
-                      <input
-                        type="date"
-                        value={blogDate}
-                        onChange={(e) => setBlogDate(e.target.value)}
-                        className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
-                      />
-                    </div>
-                    <div className="flex flex-col">
-                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Author Name</label>
-                      <input
-                        type="text"
-                        placeholder="e.g. Alperen Demir"
-                        value={blogAuthor}
-                        onChange={(e) => setBlogAuthor(e.target.value)}
-                        className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
-                      />
-                    </div>
-                    <div className="flex flex-col sm:col-span-2">
-                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Reading Time / Stats</label>
-                      <input
-                        type="text"
-                        placeholder="e.g. Read Time: 8 min"
-                        value={blogStats}
-                        onChange={(e) => setBlogStats(e.target.value)}
-                        className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {activeTab === 'projects' && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-y border-brand-border/30 py-4">
-                    <div className="flex flex-col">
-                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Proje Aşaması</label>
-                      <select
-                        value={projectStage}
-                        onChange={(e) => setProjectStage(e.target.value)}
-                        className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
-                      >
-                        <option value="Idea">Fikir Aşaması</option>
-                        <option value="Research">Araştırma</option>
-                        <option value="Development">Geliştirme</option>
-                        <option value="Deployment">Yayınlama</option>
-                      </select>
-                    </div>
-                    <div className="flex flex-col">
-                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Proje Kategorisi</label>
-                      <input
-                        type="text"
-                        placeholder="örn. Reinforcement Learning"
-                        value={projectCategory}
-                        onChange={(e) => setProjectCategory(e.target.value)}
-                        className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
-                      />
-                    </div>
-                    <div className="flex flex-col sm:col-span-2">
-                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">GitHub Repository</label>
-                      <input
-                        type="text"
-                        placeholder="örn. https://github.com/akdeniz-veri/repo-name"
-                        value={projectGithub}
-                        onChange={(e) => setProjectGithub(e.target.value)}
-                        className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {activeTab === 'team' && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-y border-brand-border/30 py-4">
-                    <div className="flex flex-col sm:col-span-2">
-                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Profil Fotoğrafı (Kişi Resmi)</label>
-                      <div className="flex items-center gap-4">
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleImageUpload}
-                          className="p-2 bg-slate-900 border border-brand-border rounded text-white text-xs w-full"
-                        />
-                        {imagePath && (
-                          <div className="w-10 h-10 overflow-hidden rounded border border-brand-cyan shrink-0">
-                            <img src={imagePath} alt="preview" className="object-cover w-full h-full" />
-                          </div>
-                        )}
-                      </div>
-                      <p className="text-[10px] text-slate-500 mt-1">Örn: .jpg, .png</p>
-                    </div>
-                    <div className="flex flex-col">
-                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Rol / Görev</label>
-                      <input
-                        type="text"
-                        placeholder="örn. Topluluk Başkanı, MLOps Lead"
-                        value={teamRole}
-                        onChange={(e) => setTeamRole(e.target.value)}
-                        className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
-                      />
-                    </div>
-                    <div className="flex flex-col">
-                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Departman</label>
-                      <select
-                        value={teamDepartment}
-                        onChange={(e) => setTeamDepartment(e.target.value)}
-                        className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
-                      >
-                        <option value="Yönetim">Yönetim</option>
-                        <option value="Danışmanlar">Danışmanlar</option>
-                        <option value="Takım Liderleri">Takım Liderleri</option>
-                        <option value="Mentörler">Mentörler</option>
-                      </select>
-                    </div>
-                    <div className="flex flex-col sm:col-span-2">
-                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">İlgi Alanları / Yetenekler (virgülle)</label>
-                      <input
-                        type="text"
-                        placeholder="örn. Deep Learning, PyTorch, NLP"
-                        value={teamSkills}
-                        onChange={(e) => setTeamSkills(e.target.value)}
-                        className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
-                      />
-                    </div>
-                    <div className="flex flex-col sm:col-span-2">
-                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Kısa Biyografi</label>
-                      <textarea
-                        rows={2}
-                        placeholder="örn. Bilgisayar Mühendisliği 3. sınıf öğrencisi, NLP alanında çalışıyor."
-                        value={teamBio}
-                        onChange={(e) => setTeamBio(e.target.value)}
-                        className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
-                      />
-                    </div>
-                    <div className="flex flex-col sm:col-span-2">
-                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">LinkedIn URL</label>
-                      <input
-                        type="text"
-                        placeholder="örn. https://linkedin.com/in/username"
-                        value={teamLinkedin}
-                        onChange={(e) => setTeamLinkedin(e.target.value)}
-                        className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
-                      />
-                    </div>
                   </div>
                 )}
 
                 {/* Tags */}
                 <div className="flex flex-col">
-                  <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Etiketler (Virgülle ayrılmış)</label>
+                  <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Etiketler (Virgülle)</label>
                   <input
                     type="text"
                     placeholder="Örn: PyTorch, YOLOv8, CNN"
@@ -853,10 +770,10 @@ ${content}
 
                 {/* Markdown body text */}
                 <div className="flex flex-col">
-                  <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Markdown İçeriği (Ana Metin)</label>
+                  <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Markdown İçeriği</label>
                   <textarea
                     rows={10}
-                    placeholder="### Detaylar&#10;Markdown içerik paragrafları, listeler, yapılar yazın..."
+                    placeholder="Markdown içerik metni..."
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
                     className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors font-mono"
@@ -875,52 +792,40 @@ ${content}
                   <button
                     onClick={handleDownload}
                     disabled={!title}
-                    className={`flex-grow flex items-center justify-center gap-2 p-3 border border-brand-border rounded font-mono font-bold transition-all duration-300 cursor-pointer ${
-                      !title 
-                        ? 'bg-slate-950 text-brand-muted border-brand-border/40 cursor-not-allowed' 
-                        : 'bg-slate-900 hover:bg-slate-800 hover:border-slate-500 text-white'
-                    }`}
+                    className="flex-grow flex items-center justify-center gap-2 p-3 bg-slate-900 border border-brand-border rounded font-mono font-bold text-white hover:bg-slate-800 transition-colors cursor-pointer"
                   >
                     <FileDown size={14} />
                     <span>MARKDOWN (.MD) İNDİR</span>
                   </button>
 
-                  {!isSandboxMode && (
-                    <button
-                      onClick={handleSaveToGithub}
-                      disabled={!title || isSaving}
-                      className={`flex-grow flex items-center justify-center gap-2 p-3.5 rounded font-mono font-bold transition-all duration-300 shadow-[0_0_15px_rgba(0,245,160,0.05)] cursor-pointer ${
-                        !title || isSaving
-                          ? 'bg-slate-950 border border-brand-border text-brand-muted cursor-not-allowed'
-                          : 'bg-brand-emerald hover:bg-brand-emerald/80 text-black shadow-[0_0_20px_rgba(0,245,160,0.15)]'
-                      }`}
-                    >
-                      {isSaving ? (
-                        <>
-                          <Loader2 size={14} className="animate-spin" />
-                          <span>DEPOYA KAYDEDİLİYOR...</span>
-                        </>
-                      ) : (
-                        <>
-                          <Sparkles size={14} />
-                          <span>{editingSha ? 'GITHUB\'DA GÜNCELLE' : 'GITHUB\'A GÖNDER'}</span>
-                        </>
-                      )}
-                    </button>
-                  )}
+                  <button
+                    onClick={handleSaveToGithub}
+                    disabled={!title || isSaving}
+                    className="flex-grow flex items-center justify-center gap-2 p-3.5 bg-brand-emerald hover:bg-brand-emerald/80 text-black rounded font-mono font-bold transition-all shadow-md cursor-pointer"
+                  >
+                    {isSaving ? (
+                      <>
+                        <Loader2 size={14} className="animate-spin" />
+                        <span>KAYDEDİLİYOR...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles size={14} />
+                        <span>KAYDET</span>
+                      </>
+                    )}
+                  </button>
                 </div>
               </div>
             </div>
 
-            {/* Right Diagnostic Console & Preview Pane */}
+            {/* Right Preview Pane */}
             <div className="col-span-1 lg:col-span-6 flex flex-col gap-6">
-              
-              {/* Output Preview Screen */}
               <div className="bg-slate-950 border border-brand-border rounded overflow-hidden">
                 <div className="px-4 py-2.5 bg-slate-900 border-b border-brand-border flex justify-between items-center font-mono text-[10px] text-brand-muted uppercase">
                   <div className="flex items-center gap-2">
                     <Terminal size={12} className="text-brand-cyan" />
-                    <span>Compiler_Stdout.txt</span>
+                    <span>Önizleme.md</span>
                   </div>
                   <span className="text-brand-emerald font-bold">PREVIEW</span>
                 </div>
@@ -929,31 +834,6 @@ ${content}
                   <code>{generateMarkdownString()}</code>
                 </pre>
               </div>
-
-              {/* Console log stream display */}
-              <div className="bg-slate-950 border border-brand-border rounded overflow-hidden">
-                <div className="px-4 py-2.5 bg-slate-900 border-b border-brand-border flex justify-between items-center font-mono text-[10px] text-brand-muted uppercase">
-                  <div className="flex items-center gap-2">
-                    <Terminal size={12} className="text-brand-emerald" />
-                    <span>Terminal_Diagnostics.log</span>
-                  </div>
-                  <button 
-                    onClick={() => setConsoleLines(['CONSOLE CLEANSED.', 'AWAITING INSTRUCTIONS...'])}
-                    className="text-[9px] hover:text-white transition-colors cursor-pointer"
-                  >
-                    CLEAR
-                  </button>
-                </div>
-                
-                <div className="p-4 overflow-y-auto text-[10px] font-mono text-brand-emerald space-y-1 max-h-[220px] min-h-[160px] bg-black/90 scrollbar-thin">
-                  {consoleLines.map((line, i) => (
-                    <div key={i} className="flex gap-2">
-                      <span className="text-slate-600 select-none">{String(i + 1).padStart(3, '0')}:</span>
-                      <span className="break-all">{line}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
             </div>
           </div>
         )}
@@ -961,7 +841,7 @@ ${content}
 
       {/* Footer */}
       <div className="w-full border-t border-brand-border py-4 px-6 text-center font-mono text-[10px] text-brand-muted">
-        AVBT CMS CLOUD CORE v2.5 // INTEGRATED DIRECT REPOSITORY SYNC
+        AVBT CMS YÖNETİM PANELİ
       </div>
     </main>
   );

@@ -16,7 +16,7 @@ export interface ApplicationData {
 export async function sendApplicationAction(data: ApplicationData) {
   const targetEmail = 'akdenizveri07@gmail.com';
 
-  // 1. Always save a local record in content/applications/ so no submission is lost
+  // 1. Always save a local record in content/applications/ so no submission is ever lost
   try {
     const dirPath = path.join(process.cwd(), 'content', 'applications');
     if (!fs.existsSync(dirPath)) {
@@ -79,14 +79,14 @@ ${data.goals || 'Belirtilmedi'}
     </div>
   `;
 
-  // 3. Send email using Nodemailer if SMTP details exist
-  try {
-    const smtpPass = process.env.SMTP_PASS || process.env.GMAIL_APP_PASSWORD;
-    const smtpUser = process.env.SMTP_USER || process.env.GMAIL_USER || 'akdenizveri07@gmail.com';
-    const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
-    const smtpPort = Number(process.env.SMTP_PORT) || 587;
+  // 3. Send email via Nodemailer SMTP if credentials provided
+  const smtpPass = process.env.SMTP_PASS || process.env.GMAIL_APP_PASSWORD;
+  const smtpUser = process.env.SMTP_USER || process.env.GMAIL_USER || 'akdenizveri07@gmail.com';
+  const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
+  const smtpPort = Number(process.env.SMTP_PORT) || 587;
 
-    if (smtpPass) {
+  if (smtpPass) {
+    try {
       const transporter = nodemailer.createTransport({
         host: smtpHost,
         port: smtpPort,
@@ -98,7 +98,7 @@ ${data.goals || 'Belirtilmedi'}
       });
 
       await transporter.sendMail({
-        from: `"Akdeniz Veri Bilimi" <${smtpUser}>`,
+        from: `"Akdeniz Veri Bilimi Topluluğu" <${smtpUser}>`,
         to: targetEmail,
         replyTo: data.email,
         subject,
@@ -106,10 +106,20 @@ ${data.goals || 'Belirtilmedi'}
         html: htmlContent,
       });
 
+      console.log(`✅ E-posta ${targetEmail} adresine başarıyla gönderildi.`);
       return { success: true, method: 'smtp' };
+    } catch (err: any) {
+      console.error('Nodemailer SMTP Error:', err);
     }
-  } catch (err) {
-    console.error('Nodemailer SMTP Error:', err);
+  } else {
+    console.log('---------------------------------------------------------');
+    console.log('📌 YENİ BAŞVURU ALINDI VE SUNUCUYA KAYDEDİLDİ:');
+    console.log(`- Ad Soyad: ${data.fullName}`);
+    console.log(`- E-posta: ${data.email}`);
+    console.log(`- Departman: ${data.department}`);
+    console.log(`- Kayıt Yeri: content/applications/`);
+    console.log('💡 Gmail adresinize e-posta gelmesi için .env.local dosyasına GMAIL_APP_PASSWORD ekleyin.');
+    console.log('---------------------------------------------------------');
   }
 
   return { success: true, method: 'recorded' };

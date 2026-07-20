@@ -277,3 +277,57 @@ export async function uploadImageAction(
 
   return { success: true, path: webPath };
 }
+
+export async function getApplicationsList() {
+  const cookieStore = await cookies();
+  if (cookieStore.get('avbt_cms_session')?.value !== 'true') {
+    throw new Error('UNAUTHORIZED');
+  }
+
+  try {
+    const dirPath = path.join(process.cwd(), 'content', 'applications');
+    if (!fs.existsSync(dirPath)) {
+      return [];
+    }
+
+    const files = fs.readdirSync(dirPath).filter((f) => f.endsWith('.json'));
+    const records = files.map((filename) => {
+      const filePath = path.join(dirPath, filename);
+      const raw = fs.readFileSync(filePath, 'utf-8');
+      const data = JSON.parse(raw);
+      return {
+        id: filename,
+        submittedAt: data.submittedAt || '',
+        fullName: data.fullName || '',
+        email: data.email || '',
+        selectedInterests: data.selectedInterests || [],
+        level: data.level || '',
+        department: data.department || '',
+        goals: data.goals || '',
+      };
+    });
+
+    return records.sort((a, b) => new Date(b.submittedAt).getTime() - new Date(a.submittedAt).getTime());
+  } catch (err) {
+    console.error('Error fetching applications:', err);
+    return [];
+  }
+}
+
+export async function deleteApplication(id: string) {
+  const cookieStore = await cookies();
+  if (cookieStore.get('avbt_cms_session')?.value !== 'true') {
+    throw new Error('UNAUTHORIZED');
+  }
+
+  try {
+    const filePath = path.join(process.cwd(), 'content', 'applications', id);
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+    return { success: true };
+  } catch (err: any) {
+    console.error('Error deleting application:', err);
+    throw new Error(err.message || 'FAILED_TO_DELETE');
+  }
+}
