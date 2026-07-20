@@ -42,7 +42,11 @@ export default function SiteNav() {
     >
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5 group">
-          <div className="w-3 h-3 rounded-full bg-brand-cyan group-hover:scale-125 transition-transform" />
+          <img 
+            src="/logo.png" 
+            alt="Akdeniz Veri Bilimi" 
+            className="w-7 h-7 rounded-full object-contain border border-brand-cyan/40 group-hover:scale-110 transition-transform"
+          />
           <span className="text-sm font-bold text-white tracking-wide">
             Akdeniz Veri Bilimi
           </span>
