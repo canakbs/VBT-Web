@@ -10,6 +10,7 @@ const NAV_LINKS = [
   { href: '#project-showcase', label: 'Projeler' },
   { href: '#team', label: 'Ekibimiz' },
   { href: '/veri-bilimi-nedir', label: 'Veri Bilimi Nedir?' },
+  { href: '#contact', label: 'İletişim' },
 ];
 
 export default function SiteNav() {

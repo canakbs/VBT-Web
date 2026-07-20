@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { ArrowRight, ArrowLeft, Send, ExternalLink, Share2, CheckCircle2, Loader2, Sparkles } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Send, ExternalLink, Share2, CheckCircle2, Loader2, Sparkles, AlertTriangle } from 'lucide-react';
 import { sendApplicationAction } from '@/app/actions/sendApplication';
 
 const INTERESTS = ['Machine Learning', 'Deep Learning', 'Computer Vision', 'Natural Language Processing', 'MLOps & Deployment', 'Exploratory Data Analysis', 'Academic Research'];
@@ -23,9 +23,10 @@ export default function JoinOnboarding() {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
 
-  // Submission State
+  // Submission & Rate Limit State
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
   const handleInterestToggle = (interest: string) => {
     setSelectedInterests((prev) =>
@@ -36,10 +37,10 @@ export default function JoinOnboarding() {
   const handleSubmitApplication = async () => {
     if (isSubmitting || isSubmitted) return;
     setIsSubmitting(true);
+    setErrorMsg('');
 
     try {
-      // Direct Server Action execution — NO blank browser tab opens
-      await sendApplicationAction({
+      const res = await sendApplicationAction({
         fullName,
         email,
         selectedInterests,
@@ -47,6 +48,12 @@ export default function JoinOnboarding() {
         department,
         goals,
       });
+
+      if (!res.success) {
+        setErrorMsg(res.error || 'Başvuru gönderilirken bir sınırlama oluştu.');
+        setIsSubmitting(false);
+        return;
+      }
 
       // Confetti celebration
       confetti({
@@ -57,8 +64,9 @@ export default function JoinOnboarding() {
       });
 
       setIsSubmitted(true);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Submission error:', err);
+      setErrorMsg('Bir bağlantı hatası oluştu. Lütfen tekrar deneyiniz.');
     } finally {
       setIsSubmitting(false);
     }
@@ -314,6 +322,14 @@ export default function JoinOnboarding() {
                         </div>
                       </div>
 
+                      {/* Error Alert if Rate Limit Triggered */}
+                      {errorMsg && (
+                        <div className="p-4 bg-red-950/40 border border-red-800/60 rounded-xl flex items-start gap-3 text-red-300 text-xs font-mono animate-in fade-in">
+                          <AlertTriangle size={18} className="text-red-400 shrink-0 mt-0.5" />
+                          <span>{errorMsg}</span>
+                        </div>
+                      )}
+
                       {/* Direct Action Buttons */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <button
@@ -384,6 +400,7 @@ export default function JoinOnboarding() {
                 onClick={() => {
                   setStep(1);
                   setIsSubmitted(false);
+                  setErrorMsg('');
                 }}
                 className="px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-brand-border rounded font-mono text-xs text-white transition-colors cursor-pointer"
               >

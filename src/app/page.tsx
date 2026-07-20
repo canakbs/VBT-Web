@@ -5,6 +5,7 @@ import ProjectPipeline from "@/components/ProjectPipeline";
 import TeamNetwork from "@/components/TeamNetwork";
 import ImpactDashboard from "@/components/ImpactDashboard";
 import JoinOnboarding from "@/components/JoinOnboarding";
+import ContactSection from "@/components/ContactSection";
 import NeuralBackground from "@/components/NeuralBackground";
 
 export default function Home() {
@@ -35,6 +36,9 @@ export default function Home() {
       {/* 6. Bize Katıl (Final Application Wizard Flow) */}
       <JoinOnboarding />
 
+      {/* 7. İletişim & İş Birliği (Questions, Inquiries, Collaborations Form) */}
+      <ContactSection />
+
       {/* Scientific Community Footer */}
       <footer className="bg-[#090d16] border-t border-brand-border py-12 px-6 relative z-10 font-mono text-xs text-brand-muted">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
@@ -49,6 +53,7 @@ export default function Home() {
             <a href="#project-showcase" className="hover:text-brand-cyan transition-colors">Projeler</a>
             <a href="#team" className="hover:text-brand-cyan transition-colors">Ekibimiz</a>
             <a href="/veri-bilimi-nedir" className="hover:text-brand-cyan transition-colors">Veri Bilimi Nedir?</a>
+            <a href="#contact" className="hover:text-brand-cyan transition-colors">İletişim</a>
             <a href="#join-us" className="hover:text-brand-emerald transition-colors font-bold">BİZE KATIL</a>
           </div>
 
