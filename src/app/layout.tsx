@@ -10,11 +10,11 @@ export const metadata: Metadata = {
   description: "Akdeniz Üniversitesi Veri Bilimi Topluluğu - Yapay Zeka, Makine Öğrenmesi, Veri Bilimi ve MLOps Araştırma Topluluğu.",
   icons: {
     icon: [
-      { url: "/favicon.svg?v=3", type: "image/svg+xml" },
-      { url: "/favicon.ico?v=3" },
+      { url: "/favicon.png?v=4", type: "image/png", sizes: "512x512" },
+      { url: "/favicon.ico?v=4", sizes: "any" },
     ],
-    shortcut: "/favicon.svg?v=3",
-    apple: "/favicon.svg?v=3",
+    shortcut: "/favicon.ico?v=4",
+    apple: "/favicon.png?v=4",
   },
 };
 
