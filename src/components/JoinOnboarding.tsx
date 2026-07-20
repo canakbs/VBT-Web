@@ -3,18 +3,17 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { ArrowRight, ArrowLeft, Terminal, Copy, Check, Mail, ExternalLink, Share2 } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Send, ExternalLink, Share2, CheckCircle2 } from 'lucide-react';
 
 const INTERESTS = ['Machine Learning', 'Deep Learning', 'Computer Vision', 'Natural Language Processing', 'MLOps & Deployment', 'Exploratory Data Analysis', 'Academic Research'];
 const LEVELS = ['Başlangıç (Öğrenmeye hazırım)', 'Orta Seviye (Proje geliştirdim)', 'İleri Seviye (Araştırma / Mühendislik)'];
 const DEPARTMENTS = ['Araştırma & Geliştirme (Ar-Ge)', 'Eğitim & Workshop', 'İletişim & Sosyal Medya'];
 
 const TARGET_EMAIL = 'akdenizveri07@gmail.com';
-const LINKTREE_URL = 'https://linktr.ee/akdenizveribilimi';
+const SOCIAL_LINK = 'https://linktr.ee/akdenizveribilimi';
 
 export default function JoinOnboarding() {
   const [step, setStep] = useState(1);
-  const [copied, setCopied] = useState(false);
 
   // Form State
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
@@ -30,29 +29,8 @@ export default function JoinOnboarding() {
     );
   };
 
-  const handleNext = () => {
-    if (step < 5) setStep(step + 1);
-    if (step === 4) {
-      // Trigger confetti on onboarding summary page
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ['#00f2fe', '#00f5a0', '#3b82f6'],
-      });
-    }
-  };
-
-  const handleBack = () => {
-    if (step > 1) setStep(step - 1);
-  };
-
-  // Generate application summary
-  const generateApplicationSummary = () => {
-    return `---
-BAŞVURU FORMU - AKDENİZ VERİ BİLİMİ TOPLULUĞU
----
-Ad Soyad: ${fullName || 'Belirtilmedi'}
+  const generateEmailBody = () => {
+    return `Ad Soyad: ${fullName || 'Belirtilmedi'}
 E-posta: ${email || 'Belirtilmedi'}
 Tarih: ${new Date().toLocaleDateString('tr-TR')}
 
@@ -66,21 +44,29 @@ Tercih Edilen Departman:
 - ${department}
 
 Hedefler & Proje Fikirleri:
-${goals || 'Henüz belirtilmedi.'}
----`;
+${goals || 'Henüz belirtilmedi.'}`;
   };
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(generateApplicationSummary());
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  // Mailto link for 1-click email submission
   const getMailtoLink = () => {
     const subject = encodeURIComponent(`Topluluk Üyelik Başvurusu - ${fullName || 'Yeni Üye'}`);
-    const body = encodeURIComponent(generateApplicationSummary());
+    const body = encodeURIComponent(generateEmailBody());
     return `mailto:${TARGET_EMAIL}?subject=${subject}&body=${body}`;
+  };
+
+  const handleNext = () => {
+    if (step < 5) setStep(step + 1);
+    if (step === 4) {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#00f2fe', '#00f5a0', '#3b82f6'],
+      });
+    }
+  };
+
+  const handleBack = () => {
+    if (step > 1) setStep(step - 1);
   };
 
   return (
@@ -102,8 +88,8 @@ ${goals || 'Henüz belirtilmedi.'}
         </div>
 
         {/* Wizard Panel */}
-        <div className="bg-brand-card border border-brand-border rounded-xl p-6 md:p-8 backdrop-blur-sm relative overflow-hidden min-h-[460px] flex flex-col justify-between">
-          {/* Top Wizard Steps Diagnostic bar */}
+        <div className="bg-brand-card border border-brand-border rounded-xl p-6 md:p-8 backdrop-blur-sm relative overflow-hidden min-h-[440px] flex flex-col justify-between">
+          {/* Top Wizard Steps Bar */}
           <div className="flex justify-between items-center pb-4 border-b border-brand-border/40 font-mono text-[10px] text-brand-muted uppercase">
             <span>KAYIT FORMU</span>
             <span>ADIM 0{step} / 05</span>
@@ -274,74 +260,39 @@ ${goals || 'Henüz belirtilmedi.'}
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.95 }}
-                  className="space-y-6"
+                  className="space-y-8 py-2"
                 >
-                  <div className="flex items-center gap-3.5 pb-4 border-b border-brand-border/40">
-                    <div className="w-10 h-10 rounded-full bg-brand-emerald/20 border border-brand-emerald flex items-center justify-center text-brand-emerald font-bold text-lg">
-                      ✓
+                  <div className="flex items-center gap-4 pb-6 border-b border-brand-border/40">
+                    <div className="w-12 h-12 rounded-full bg-brand-emerald/20 border border-brand-emerald flex items-center justify-center text-brand-emerald shrink-0">
+                      <CheckCircle2 size={24} />
                     </div>
                     <div>
-                      <h3 className="text-lg md:text-xl font-bold text-white">Başvurunuz Hazır! 🎉</h3>
-                      <p className="text-xs md:text-sm text-brand-muted">
-                        Aşağıdaki buton ile başvurunuzu doğrudan <strong className="text-brand-cyan">{TARGET_EMAIL}</strong> adresine gönderebilirsiniz.
+                      <h3 className="text-xl md:text-2xl font-bold text-white">Formunuz Tamamlandı!</h3>
+                      <p className="text-sm text-slate-300 mt-1">
+                        Aşağıdaki buton ile başvurunuzu e-posta olarak gönderebilir ve sosyal topluluk kanallarımıza katılabilirsiniz.
                       </p>
                     </div>
                   </div>
 
-                  {/* Quick Action Buttons */}
-                  <div className="flex flex-col sm:flex-row gap-3">
+                  {/* Direct Action Buttons */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <a
                       href={getMailtoLink()}
-                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 bg-brand-cyan text-[#090d16] font-bold rounded-lg text-xs hover:bg-brand-cyan/90 transition-all shadow-lg shadow-brand-cyan/20"
+                      className="flex items-center justify-center gap-2.5 px-6 py-4 bg-brand-cyan text-[#090d16] font-bold rounded-xl text-sm hover:bg-brand-cyan/90 transition-all shadow-lg shadow-brand-cyan/25 hover:scale-[1.02] active:scale-[0.98]"
                     >
-                      <Mail size={16} />
-                      <span>E-posta Uygulamasıyla Gönder ({TARGET_EMAIL})</span>
+                      <Send size={18} />
+                      <span>Başvuruyu Gönder</span>
                     </a>
-                    <button
-                      onClick={copyToClipboard}
-                      className="flex items-center justify-center gap-2 px-5 py-3.5 bg-slate-900 border border-brand-border hover:border-slate-500 rounded text-xs font-mono text-white transition-all"
-                    >
-                      {copied ? <Check size={14} className="text-brand-emerald" /> : <Copy size={14} />}
-                      <span>{copied ? 'Kopyalandı!' : 'Özeti Kopyala'}</span>
-                    </button>
-                  </div>
-
-                  {/* Terminal Display */}
-                  <div className="border border-brand-border bg-slate-950 rounded-lg overflow-hidden">
-                    <div className="px-4 py-2 bg-slate-900 border-b border-brand-border flex justify-between items-center">
-                      <div className="flex items-center gap-2 font-mono text-[10px] text-brand-muted uppercase">
-                        <Terminal size={10} />
-                        <span>basvuru_ozeti.md</span>
-                      </div>
-                      <span className="font-mono text-[9px] text-brand-emerald uppercase">ALICI: {TARGET_EMAIL}</span>
-                    </div>
-                    <pre className="p-4 overflow-x-auto text-[11px] md:text-xs font-mono text-slate-300 leading-relaxed max-h-[180px]">
-                      <code>{generateApplicationSummary()}</code>
-                    </pre>
-                  </div>
-
-                  {/* Linktree Social Networks Promotion Card */}
-                  <div className="p-4 bg-gradient-to-r from-brand-cyan/10 via-slate-900 to-brand-emerald/10 border border-brand-cyan/30 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2.5 bg-brand-cyan/20 border border-brand-cyan/40 rounded-lg text-brand-cyan">
-                        <Share2 size={20} />
-                      </div>
-                      <div>
-                        <h4 className="text-white font-bold text-sm">Sosyal Ağlarımıza Katılın</h4>
-                        <p className="text-slate-400 text-xs mt-0.5">
-                          Discord, Instagram ve diğer kanallarımıza Linktree bağlantımızdan ulaşabilirsiniz.
-                        </p>
-                      </div>
-                    </div>
 
                     <a
-                      href={LINKTREE_URL}
+                      href={SOCIAL_LINK}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="px-5 py-2.5 bg-brand-emerald text-[#090d16] font-bold rounded-lg text-xs hover:bg-brand-emerald/90 transition-all flex items-center gap-1.5 shrink-0 shadow-md shadow-brand-emerald/20"
+                      className="flex items-center justify-center gap-2.5 px-6 py-4 bg-brand-card hover:bg-slate-800 border border-brand-border text-white font-bold rounded-xl text-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
                     >
-                      <span>Linktree&apos;yi Aç</span>
-                      <ExternalLink size={13} />
+                      <Share2 size={18} className="text-brand-emerald" />
+                      <span>Sosyal Ağlarımıza Katılın</span>
+                      <ExternalLink size={14} className="text-slate-400" />
                     </a>
                   </div>
                 </motion.div>
