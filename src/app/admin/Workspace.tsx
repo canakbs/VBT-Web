@@ -224,22 +224,17 @@ export default function Workspace() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (isSandboxMode) {
-      alert("Sandbox mode active: GitHub upload is disabled. Image uploading will not work without a valid PAT.");
-      return;
-    }
-
     const reader = new FileReader();
     reader.onload = async (event) => {
       try {
         addConsoleLine(`STARTING IMAGE UPLOAD: ${file.name}...`);
         const base64String = (event.target?.result as string).split(',')[1];
-        const destFolder = activeTab === 'team' ? 'team' : 'events';
+        const destFolder = activeTab;
         const cleanName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
         const finalName = `${Date.now()}-${cleanName}`;
         
         const result = await uploadImageAction(
-          destFolder as 'events' | 'team', 
+          destFolder as 'events' | 'blog' | 'projects' | 'team', 
           finalName, 
           base64String
         );
@@ -412,25 +407,25 @@ ${content}
               className="flex items-center gap-1.5 px-3 py-1 bg-slate-900 border border-brand-border hover:border-slate-600 rounded font-mono text-xs text-slate-300 hover:text-white transition-colors"
             >
               <ArrowLeft size={12} />
-              <span>Back Home</span>
+              <span>Ana Sayfa</span>
             </Link>
             <div className="hidden sm:flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-brand-cyan" />
               <span className="font-mono text-xs text-white uppercase tracking-wider">
-                CMS System Workspace
+                Yönetim Kontrol Paneli
               </span>
             </div>
           </div>
           <div className="flex items-center gap-4">
             <span className="font-mono text-xs text-brand-emerald">
-              {isSandboxMode ? 'STATUS: SANDBOX_MODE' : 'STATUS: CLOUD_READY'}
+              {isSandboxMode ? 'DURUM: YEREL SİSTEM' : 'DURUM: BULUT BULUTU AKTİF'}
             </span>
             <button
               onClick={handleLogoutClick}
               className="flex items-center gap-1.5 px-3 py-1 bg-red-950/20 border border-red-900/50 hover:border-red-600 rounded font-mono text-[10px] text-red-400 hover:text-white transition-colors cursor-pointer"
             >
               <LogOut size={10} />
-              <span>TERMINATE SESSION</span>
+              <span>ÇIKIŞ YAP</span>
             </button>
           </div>
         </div>
@@ -448,10 +443,10 @@ ${content}
               <div>
                 <h1 className="text-2xl md:text-3xl font-mono font-bold text-white uppercase tracking-wider flex items-center gap-2">
                   <FolderOpen className="text-brand-cyan w-6 h-6" />
-                  <span>Database Repository Manager</span>
+                  <span>İçerik Yönetim Paneli</span>
                 </h1>
                 <p className="text-xs text-slate-500 font-mono mt-1">
-                  MANAGE EXCLUSIVELY DEPLOYED ASSETS AND DATA STREAM SOURCES
+                  ETKİNLİKLERİ, PROJELERİ, EKİBİ VE DUYURULARI BURADAN DÜZENLEYEBİLİRSİNİZ
                 </p>
               </div>
               
@@ -460,7 +455,7 @@ ${content}
                 className="flex items-center gap-2 px-5 py-2.5 bg-brand-emerald hover:bg-brand-emerald/80 text-black font-mono font-bold text-xs rounded transition-all duration-300 shadow-[0_0_15px_rgba(0,245,160,0.1)] hover:shadow-[0_0_25px_rgba(0,245,160,0.2)] cursor-pointer"
               >
                 <PlusCircle size={14} />
-                <span>COMPILE NEW ENTRY</span>
+                <span>YENİ İÇERİK EKLE</span>
               </button>
             </div>
 

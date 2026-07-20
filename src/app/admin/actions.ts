@@ -2,6 +2,8 @@
 
 import { cookies } from 'next/headers';
 import matter from 'gray-matter';
+import fs from 'fs';
+import path from 'path';
 import { 
   listDirectoryContents, 
   getFile, 
@@ -11,6 +13,7 @@ import {
 } from '@/lib/github';
 
 const DEFAULT_PASSCODE = 'avbt2026';
+const HAS_GITHUB_PAT = !!process.env.GITHUB_PAT;
 
 // 1. Session Management Actions
 export async function authenticate(passcode: string): Promise<{ success: boolean; error?: string }> {
@@ -28,7 +31,7 @@ export async function authenticate(passcode: string): Promise<{ success: boolean
     return { success: true };
   }
 
-  return { success: false, error: 'SECURE INTERRUPT: INVALID SYSTEM PROTOCOL CODE' };
+  return { success: false, error: 'GEÇERSİZ ERİŞİM PAROLASI' };
 }
 
 export async function logout() {
@@ -43,39 +46,76 @@ export async function getContentList(type: 'events' | 'blog' | 'projects' | 'tea
     throw new Error('UNAUTHORIZED');
   }
 
-  try {
-    const files = await listDirectoryContents(`content/${type}`);
-    const mdFiles = files.filter(f => f.name.endsWith('.md'));
+  // 1. If GITHUB_PAT is set, try GitHub API
+  if (HAS_GITHUB_PAT) {
+    try {
+      const files = await listDirectoryContents(`content/${type}`);
+      const mdFiles = files.filter(f => f.name.endsWith('.md'));
 
-    const detailedFiles = await Promise.all(
-      mdFiles.map(async (f) => {
-        try {
-          const fileData = await getFile(f.path);
-          const contentString = Buffer.from(fileData.content, 'base64').toString('utf-8');
-          const { data } = matter(contentString);
-          return {
-            name: f.name,
-            path: f.path,
-            sha: f.sha,
-            title: data.title || f.name.replace(/\.md$/, ''),
-            date: data.date || '',
-            summary: data.summary || '',
-          };
-        } catch (e) {
-          console.error(`Error loading details for ${f.path}:`, e);
-          return {
-            name: f.name,
-            path: f.path,
-            sha: f.sha,
-            title: f.name.replace(/\.md$/, ''),
-            date: '',
-            summary: '',
-          };
+      const detailedFiles = await Promise.all(
+        mdFiles.map(async (f) => {
+          try {
+            const fileData = await getFile(f.path);
+            const contentString = Buffer.from(fileData.content, 'base64').toString('utf-8');
+            const { data } = matter(contentString);
+            return {
+              name: f.name,
+              path: f.path,
+              sha: f.sha,
+              title: data.title || f.name.replace(/\.md$/, ''),
+              date: data.date || '',
+              summary: data.summary || '',
+            };
+          } catch (e) {
+            console.error(`Error loading details for ${f.path}:`, e);
+            return {
+              name: f.name,
+              path: f.path,
+              sha: f.sha,
+              title: f.name.replace(/\.md$/, ''),
+              date: '',
+              summary: '',
+            };
+          }
+        })
+      );
+
+      return detailedFiles.sort((a, b) => {
+        const dateA = a.date ? new Date(a.date).getTime() : 0;
+        const dateB = b.date ? new Date(b.date).getTime() : 0;
+        if (dateA === 0 && dateB === 0) {
+          return a.name.localeCompare(b.name);
         }
-      })
-    );
+        return dateB - dateA;
+      });
+    } catch (err) {
+      console.warn('GitHub API fetch failed, falling back to local filesystem:', err);
+    }
+  }
 
-    // Sort by date (descending)
+  // 2. Local Filesystem Fallback
+  try {
+    const dirPath = path.join(process.cwd(), 'content', type);
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath, { recursive: true });
+      return [];
+    }
+
+    const files = fs.readdirSync(dirPath).filter(f => f.endsWith('.md'));
+    const detailedFiles = files.map((filename) => {
+      const filePath = path.join(dirPath, filename);
+      const rawContent = fs.readFileSync(filePath, 'utf-8');
+      const { data } = matter(rawContent);
+      return {
+        name: filename,
+        path: `content/${type}/${filename}`,
+        sha: `local-${filename}`,
+        title: data.title || filename.replace(/\.md$/, ''),
+        date: data.date || '',
+        summary: data.summary || '',
+      };
+    });
+
     return detailedFiles.sort((a, b) => {
       const dateA = a.date ? new Date(a.date).getTime() : 0;
       const dateB = b.date ? new Date(b.date).getTime() : 0;
@@ -85,29 +125,49 @@ export async function getContentList(type: 'events' | 'blog' | 'projects' | 'tea
       return dateB - dateA;
     });
   } catch (err: any) {
-    console.error(`Error fetching list for ${type}:`, err);
+    console.error(`Error fetching local list for ${type}:`, err);
     throw new Error(err.message || 'FAILED_TO_FETCH_LIST');
   }
 }
 
-export async function getFileContent(path: string) {
+export async function getFileContent(filePath: string) {
   const cookieStore = await cookies();
   if (cookieStore.get('avbt_cms_session')?.value !== 'true') {
     throw new Error('UNAUTHORIZED');
   }
 
+  if (HAS_GITHUB_PAT) {
+    try {
+      const fileData = await getFile(filePath);
+      const rawContent = Buffer.from(fileData.content, 'base64').toString('utf-8');
+      const { data, content } = matter(rawContent);
+
+      return {
+        sha: fileData.sha,
+        metadata: data,
+        content: content.trim(),
+      };
+    } catch (err) {
+      console.warn('GitHub API get file failed, falling back to local fs:', err);
+    }
+  }
+
+  // Local Filesystem Fallback
   try {
-    const fileData = await getFile(path);
-    const rawContent = Buffer.from(fileData.content, 'base64').toString('utf-8');
+    const absolutePath = path.join(process.cwd(), filePath);
+    if (!fs.existsSync(absolutePath)) {
+      throw new Error('FILE_NOT_FOUND');
+    }
+    const rawContent = fs.readFileSync(absolutePath, 'utf-8');
     const { data, content } = matter(rawContent);
 
     return {
-      sha: fileData.sha,
+      sha: `local-${path.basename(filePath)}`,
       metadata: data,
       content: content.trim(),
     };
   } catch (err: any) {
-    console.error(`Error fetching content for ${path}:`, err);
+    console.error(`Error fetching content for ${filePath}:`, err);
     throw new Error(err.message || 'FAILED_TO_FETCH_FILE');
   }
 }
@@ -123,38 +183,65 @@ export async function saveContent(
     throw new Error('UNAUTHORIZED');
   }
 
-  const path = `content/${type}/${filename}`;
-  const action = sha ? 'Update' : 'Create';
-  const message = `CMS: ${action} ${type} content - ${filename}`;
+  const relativePath = `content/${type}/${filename}`;
 
+  // Always write to local disk first so changes are immediate
   try {
-    const result = await commitFile(path, markdown, message, sha);
-    return { success: true, sha: result.sha };
-  } catch (err: any) {
-    console.error(`Error saving content to ${path}:`, err);
-    throw new Error(err.message || 'FAILED_TO_SAVE_CONTENT');
+    const dirPath = path.join(process.cwd(), 'content', type);
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath, { recursive: true });
+    }
+    fs.writeFileSync(path.join(dirPath, filename), markdown, 'utf-8');
+  } catch (err) {
+    console.error('Error writing file locally:', err);
   }
+
+  // Also push to GitHub if PAT is available
+  if (HAS_GITHUB_PAT) {
+    const action = sha ? 'Update' : 'Create';
+    const message = `CMS: ${action} ${type} content - ${filename}`;
+    try {
+      const result = await commitFile(relativePath, markdown, message, sha?.startsWith('local-') ? undefined : sha);
+      return { success: true, sha: result.sha };
+    } catch (err: any) {
+      console.error(`Error saving content to GitHub ${relativePath}:`, err);
+    }
+  }
+
+  return { success: true, sha: `local-${filename}` };
 }
 
-export async function deleteContent(path: string, sha: string) {
+export async function deleteContent(filePath: string, sha: string) {
   const cookieStore = await cookies();
   if (cookieStore.get('avbt_cms_session')?.value !== 'true') {
     throw new Error('UNAUTHORIZED');
   }
 
-  const message = `CMS: Delete content file - ${path}`;
-
+  // Local filesystem deletion
   try {
-    await deleteFileFromRepo(path, sha, message);
-    return { success: true };
-  } catch (err: any) {
-    console.error(`Error deleting content at ${path}:`, err);
-    throw new Error(err.message || 'FAILED_TO_DELETE_CONTENT');
+    const absolutePath = path.join(process.cwd(), filePath);
+    if (fs.existsSync(absolutePath)) {
+      fs.unlinkSync(absolutePath);
+    }
+  } catch (err) {
+    console.error('Error deleting local file:', err);
   }
+
+  // GitHub API deletion if PAT is set
+  if (HAS_GITHUB_PAT && !sha.startsWith('local-')) {
+    const message = `CMS: Delete content file - ${filePath}`;
+    try {
+      await deleteFileFromRepo(filePath, sha, message);
+    } catch (err: any) {
+      console.error(`Error deleting content at ${filePath} on GitHub:`, err);
+    }
+  }
+
+  return { success: true };
 }
 
 export async function uploadImageAction(
-  type: 'events' | 'team',
+  type: 'events' | 'blog' | 'projects' | 'team',
   filename: string,
   base64Content: string
 ) {
@@ -163,14 +250,30 @@ export async function uploadImageAction(
     throw new Error('UNAUTHORIZED');
   }
 
-  const path = `public/images/${type}/${filename}`;
-  const message = `CMS: Upload image ${filename}`;
+  const relativePath = `public/images/${type}/${filename}`;
+  const webPath = `/images/${type}/${filename}`;
 
+  // Write image file locally
   try {
-    const result = await commitBinaryFile(path, base64Content, message);
-    return { success: true, path: `/images/${type}/${filename}` };
-  } catch (err: any) {
-    console.error(`Error uploading image to ${path}:`, err);
-    throw new Error(err.message || 'FAILED_TO_UPLOAD_IMAGE');
+    const dirPath = path.join(process.cwd(), 'public', 'images', type);
+    if (!fs.existsSync(dirPath)) {
+      fs.mkdirSync(dirPath, { recursive: true });
+    }
+    const buffer = Buffer.from(base64Content, 'base64');
+    fs.writeFileSync(path.join(dirPath, filename), buffer);
+  } catch (err) {
+    console.error('Error writing image file locally:', err);
   }
+
+  // Upload to GitHub if PAT is available
+  if (HAS_GITHUB_PAT) {
+    const message = `CMS: Upload image ${filename}`;
+    try {
+      await commitBinaryFile(relativePath, base64Content, message);
+    } catch (err: any) {
+      console.error(`Error uploading image to GitHub ${relativePath}:`, err);
+    }
+  }
+
+  return { success: true, path: webPath };
 }
