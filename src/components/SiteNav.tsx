@@ -8,7 +8,7 @@ const NAV_LINKS = [
   { href: '#community-impact', label: 'Rakamlar' },
   { href: '#event-archive', label: 'Etkinlikler' },
   { href: '#project-showcase', label: 'Projeler' },
-  { href: '#team', label: 'Ekibimiz' },
+  { href: '/ekibimiz', label: 'Ekibimiz' },
   { href: '/veri-bilimi-nedir', label: 'Veri Bilimi Nedir?' },
   { href: '#contact', label: 'İletişim' },
 ];
@@ -51,13 +51,13 @@ export default function SiteNav() {
         {/* Desktop nav */}
         <div className="hidden lg:flex items-center gap-1">
           {NAV_LINKS.map((link) => (
-            <a
+            <Link
               key={link.href}
               href={link.href}
               className="px-3.5 py-2 text-xs font-mono text-brand-muted hover:text-white hover:bg-brand-card/50 transition-all rounded-lg"
             >
               {link.label}
-            </a>
+            </Link>
           ))}
           <a
             href="#join-us"
@@ -83,14 +83,14 @@ export default function SiteNav() {
         <div className="lg:hidden bg-[#090d16]/95 backdrop-blur-xl border-b border-brand-border">
           <div className="max-w-7xl mx-auto px-4 py-4 flex flex-col gap-1.5">
             {NAV_LINKS.map((link) => (
-              <a
+              <Link
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
                 className="px-4 py-3 text-sm text-brand-muted hover:text-white hover:bg-brand-card rounded-lg transition-colors"
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
             <a
               href="#join-us"

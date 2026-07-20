@@ -2,17 +2,15 @@ import { getFilesFromDir } from "@/lib/markdown";
 import Hero3D from "@/components/Hero3D";
 import EventTimeline from "@/components/EventTimeline";
 import ProjectPipeline from "@/components/ProjectPipeline";
-import TeamNetwork from "@/components/TeamNetwork";
 import ImpactDashboard from "@/components/ImpactDashboard";
 import JoinOnboarding from "@/components/JoinOnboarding";
 import ContactSection from "@/components/ContactSection";
 import NeuralBackground from "@/components/NeuralBackground";
 
 export default function Home() {
-  // Read events, projects, and team members from content markdown files
+  // Read events and projects from content markdown files
   const events = getFilesFromDir("events");
   const projects = getFilesFromDir("projects");
-  const teamFiles = getFilesFromDir("team");
 
   return (
     <>
@@ -31,13 +29,10 @@ export default function Home() {
       {/* 4. Projelerimiz (Completed Community Projects) */}
       <ProjectPipeline projects={projects} />
 
-      {/* 5. Ekibimiz (Core Management Team with Link to Full Team Page) */}
-      <TeamNetwork variant="core" teamFiles={teamFiles} />
-
-      {/* 6. Bize Katıl (Final Application Wizard Flow) */}
+      {/* 5. Bize Katıl (Final Application Wizard Flow) */}
       <JoinOnboarding />
 
-      {/* 7. İletişim & İş Birliği (Questions, Inquiries, Collaborations Form) */}
+      {/* 6. İletişim & İş Birliği (Questions, Inquiries, Collaborations Form) */}
       <ContactSection />
 
       {/* Scientific Community Footer */}
@@ -52,7 +47,7 @@ export default function Home() {
             <a href="#community-impact" className="hover:text-brand-cyan transition-colors">Rakamlar</a>
             <a href="#event-archive" className="hover:text-brand-cyan transition-colors">Etkinlikler</a>
             <a href="#project-showcase" className="hover:text-brand-cyan transition-colors">Projeler</a>
-            <a href="#team" className="hover:text-brand-cyan transition-colors">Ekibimiz</a>
+            <a href="/ekibimiz" className="hover:text-brand-cyan transition-colors">Ekibimiz</a>
             <a href="/veri-bilimi-nedir" className="hover:text-brand-cyan transition-colors">Veri Bilimi Nedir?</a>
             <a href="#contact" className="hover:text-brand-cyan transition-colors">İletişim</a>
             <a href="#join-us" className="hover:text-brand-emerald transition-colors font-bold">BİZE KATIL</a>
