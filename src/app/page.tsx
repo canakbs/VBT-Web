@@ -40,7 +40,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
           <div className="flex items-center gap-3">
             <img 
-              src="/logo.png" 
+              src="/logo.svg" 
               alt="Akdeniz Veri Bilimi Logo" 
               className="w-10 h-10 rounded-full object-contain border border-brand-border bg-slate-950 p-1"
             />
