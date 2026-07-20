@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Akdeniz Veri Bilimi Topluluğu — Web Platformu
 
-## Getting Started
+Akdeniz Üniversitesi Veri Bilimi Topluluğu web sitesi ve içerik yönetim paneli projesi. Next.js 16, Tailwind CSS 4, Three.js ve React Three Fiber kullanılarak geliştirilmiştir.
 
-First, run the development server:
+---
+
+## 🚀 Yerel Geliştirme (Locally Running)
+
+Projeyi kendi bilgisayarınızda çalıştırmak için aşağıdaki adımları sırasıyla uygulayın:
+
+### 1. Gerekli Bağımlılıkları Yükleyin
+Proje dizininde terminali açın ve bağımlılıkları yükleyin:
+
+```bash
+npm install
+```
+
+### 2. Geliştirme Sunucusunu Başlatın
+Geliştirme sunucusunu çalıştırmak için:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 3. Tarayıcıda Açın
+Sunucu başladıktan sonra tarayıcınızdan aşağıdaki adrese gidin:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+👉 **[http://localhost:3000](http://localhost:3000)**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🛠️ Sayfalar ve Erişim Adresleri
 
-To learn more about Next.js, take a look at the following resources:
+- **Ana Sayfa:** `http://localhost:3000/`
+- **Veri Bilimi Nedir?:** `http://localhost:3000/veri-bilimi-nedir`
+- **Ekibimiz:** `http://localhost:3000/ekibimiz`
+- **Etkinlik Arşivi:** `http://localhost:3000/events`
+- **Yönetici Paneli (CMS):** `http://localhost:3000/admin`
+  - **Varsayılan Parola:** `avbt2026`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📦 Proje Komutları
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Komut | Açıklama |
+|---|---|
+| `npm run dev` | Geliştirme sunucusunu başlatır (`localhost:3000`). |
+| `npm run build` | Üretim (Production) derlemesini oluşturur ve doğrulama yapar. |
+| `npm run start` | Derlenmiş üretim sunucusunu başlatır. |
