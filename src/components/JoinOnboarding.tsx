@@ -3,7 +3,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { ArrowRight, ArrowLeft, Send, ExternalLink, Share2, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Send, ExternalLink, Share2, CheckCircle2, Loader2, Sparkles } from 'lucide-react';
+import { sendApplicationAction } from '@/app/actions/sendApplication';
 
 const INTERESTS = ['Machine Learning', 'Deep Learning', 'Computer Vision', 'Natural Language Processing', 'MLOps & Deployment', 'Exploratory Data Analysis', 'Academic Research'];
 const LEVELS = ['Başlangıç (Öğrenmeye hazırım)', 'Orta Seviye (Proje geliştirdim)', 'İleri Seviye (Araştırma / Mühendislik)'];
@@ -22,6 +23,10 @@ export default function JoinOnboarding() {
   const [goals, setGoals] = useState('');
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
+
+  // Submission State
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleInterestToggle = (interest: string) => {
     setSelectedInterests((prev) =>
@@ -53,12 +58,50 @@ ${goals || 'Henüz belirtilmedi.'}`;
     return `mailto:${TARGET_EMAIL}?subject=${subject}&body=${body}`;
   };
 
+  const handleSubmitApplication = async () => {
+    if (isSubmitting || isSubmitted) return;
+    setIsSubmitting(true);
+
+    try {
+      // 1. Submit to server action
+      await sendApplicationAction({
+        fullName,
+        email,
+        selectedInterests,
+        level,
+        department,
+        goals,
+      });
+
+      // 2. Trigger mailto window fallback
+      try {
+        window.open(getMailtoLink(), '_blank');
+      } catch (e) {
+        console.log('Mailto fallback triggered:', e);
+      }
+
+      // 3. Trigger confetti & success state
+      confetti({
+        particleCount: 120,
+        spread: 80,
+        origin: { y: 0.6 },
+        colors: ['#00f2fe', '#00f5a0', '#3b82f6'],
+      });
+
+      setIsSubmitted(true);
+    } catch (err) {
+      console.error('Submission error:', err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const handleNext = () => {
     if (step < 5) setStep(step + 1);
     if (step === 4) {
       confetti({
-        particleCount: 100,
-        spread: 70,
+        particleCount: 80,
+        spread: 60,
         origin: { y: 0.6 },
         colors: ['#00f2fe', '#00f5a0', '#3b82f6'],
       });
@@ -262,39 +305,78 @@ ${goals || 'Henüz belirtilmedi.'}`;
                   exit={{ opacity: 0, scale: 0.95 }}
                   className="space-y-8 py-2"
                 >
-                  <div className="flex items-center gap-4 pb-6 border-b border-brand-border/40">
-                    <div className="w-12 h-12 rounded-full bg-brand-emerald/20 border border-brand-emerald flex items-center justify-center text-brand-emerald shrink-0">
-                      <CheckCircle2 size={24} />
-                    </div>
-                    <div>
-                      <h3 className="text-xl md:text-2xl font-bold text-white">Formunuz Tamamlandı!</h3>
-                      <p className="text-sm text-slate-300 mt-1">
-                        Aşağıdaki buton ile başvurunuzu e-posta olarak gönderebilir ve sosyal topluluk kanallarımıza katılabilirsiniz.
-                      </p>
-                    </div>
-                  </div>
+                  {isSubmitted ? (
+                    <div className="p-6 bg-brand-emerald/10 border border-brand-emerald/40 rounded-2xl flex flex-col items-center text-center space-y-4">
+                      <div className="w-14 h-14 rounded-full bg-brand-emerald/20 border border-brand-emerald flex items-center justify-center text-brand-emerald">
+                        <CheckCircle2 size={32} />
+                      </div>
+                      <div>
+                        <h3 className="text-xl md:text-2xl font-bold text-white mb-2">Başvurunuz Başarıyla İletildi!</h3>
+                        <p className="text-sm text-slate-300 max-w-md mx-auto leading-relaxed">
+                          Başvuru bilgileriniz topluluk ekibimize iletildi. En kısa sürede sizinle iletişime geçeceğiz.
+                        </p>
+                      </div>
 
-                  {/* Direct Action Buttons */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <a
-                      href={getMailtoLink()}
-                      className="flex items-center justify-center gap-2.5 px-6 py-4 bg-brand-cyan text-[#090d16] font-bold rounded-xl text-sm hover:bg-brand-cyan/90 transition-all shadow-lg shadow-brand-cyan/25 hover:scale-[1.02] active:scale-[0.98]"
-                    >
-                      <Send size={18} />
-                      <span>Başvuruyu Gönder</span>
-                    </a>
+                      <a
+                        href={SOCIAL_LINK}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-2 inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-brand-emerald text-[#090d16] font-bold rounded-xl text-sm hover:bg-brand-emerald/90 transition-all shadow-lg shadow-brand-emerald/25 hover:scale-105 active:scale-95"
+                      >
+                        <Share2 size={18} />
+                        <span>Sosyal Ağlarımıza Katılın</span>
+                        <ExternalLink size={14} />
+                      </a>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="flex items-center gap-4 pb-6 border-b border-brand-border/40">
+                        <div className="w-12 h-12 rounded-full bg-brand-cyan/20 border border-brand-cyan flex items-center justify-center text-brand-cyan shrink-0">
+                          <Sparkles size={24} />
+                        </div>
+                        <div>
+                          <h3 className="text-xl md:text-2xl font-bold text-white">
+                            Başvuruyu tamamlamak için e-posta ile gönderin
+                          </h3>
+                          <p className="text-sm text-slate-300 mt-1">
+                            Bilgileriniz hazırlandı. Aşağıdaki butona tıklayarak başvurunuzu anında iletebilirsiniz.
+                          </p>
+                        </div>
+                      </div>
 
-                    <a
-                      href={SOCIAL_LINK}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2.5 px-6 py-4 bg-brand-card hover:bg-slate-800 border border-brand-border text-white font-bold rounded-xl text-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
-                    >
-                      <Share2 size={18} className="text-brand-emerald" />
-                      <span>Sosyal Ağlarımıza Katılın</span>
-                      <ExternalLink size={14} className="text-slate-400" />
-                    </a>
-                  </div>
+                      {/* Direct Action Buttons */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <button
+                          onClick={handleSubmitApplication}
+                          disabled={isSubmitting}
+                          className="flex items-center justify-center gap-2.5 px-6 py-4 bg-brand-cyan text-[#090d16] font-bold rounded-xl text-sm hover:bg-brand-cyan/90 transition-all shadow-lg shadow-brand-cyan/25 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                        >
+                          {isSubmitting ? (
+                            <>
+                              <Loader2 size={18} className="animate-spin" />
+                              <span>Gönderiliyor...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Send size={18} />
+                              <span>Başvuruyu Gönder</span>
+                            </>
+                          )}
+                        </button>
+
+                        <a
+                          href={SOCIAL_LINK}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-center gap-2.5 px-6 py-4 bg-brand-card hover:bg-slate-800 border border-brand-border text-white font-bold rounded-xl text-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
+                        >
+                          <Share2 size={18} className="text-brand-emerald" />
+                          <span>Sosyal Ağlarımıza Katılın</span>
+                          <ExternalLink size={14} className="text-slate-400" />
+                        </a>
+                      </div>
+                    </>
+                  )}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -305,7 +387,7 @@ ${goals || 'Henüz belirtilmedi.'}`;
             {step > 1 && step < 5 ? (
               <button
                 onClick={handleBack}
-                className="flex items-center gap-1.5 px-4 py-2 border border-brand-border hover:border-slate-500 font-mono text-xs rounded transition-colors text-slate-400 hover:text-white"
+                className="flex items-center gap-1.5 px-4 py-2 border border-brand-border hover:border-slate-500 font-mono text-xs rounded transition-colors text-slate-400 hover:text-white cursor-pointer"
               >
                 <ArrowLeft size={12} />
                 <span>GERİ</span>
@@ -318,7 +400,7 @@ ${goals || 'Henüz belirtilmedi.'}`;
               <button
                 onClick={handleNext}
                 disabled={step === 1 && (!fullName || !email)}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded font-mono text-xs transition-colors shrink-0 ${
+                className={`flex items-center gap-1.5 px-4 py-2 rounded font-mono text-xs transition-colors shrink-0 cursor-pointer ${
                   step === 1 && (!fullName || !email)
                     ? 'bg-slate-800 border border-brand-border text-brand-muted cursor-not-allowed'
                     : 'bg-brand-cyan hover:bg-brand-cyan/80 text-black font-semibold'
@@ -329,8 +411,11 @@ ${goals || 'Henüz belirtilmedi.'}`;
               </button>
             ) : (
               <button
-                onClick={() => setStep(1)}
-                className="px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-brand-border rounded font-mono text-xs text-white transition-colors"
+                onClick={() => {
+                  setStep(1);
+                  setIsSubmitted(false);
+                }}
+                className="px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-brand-border rounded font-mono text-xs text-white transition-colors cursor-pointer"
               >
                 YENİ BAŞVURU
               </button>
