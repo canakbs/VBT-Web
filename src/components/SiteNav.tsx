@@ -44,11 +44,11 @@ export default function SiteNav() {
         <Link href="/" className="flex items-center gap-2.5 group">
           <img 
             src="/logo.svg" 
-            alt="Akdeniz Veri Bilimi" 
-            className="w-7 h-7 rounded-full object-contain border border-brand-cyan/40 group-hover:scale-110 transition-transform"
+            alt="Akdeniz Veri Bilimi Topluluğu" 
+            className="w-8 h-8 rounded-full object-contain border border-brand-cyan/40 group-hover:scale-110 transition-transform"
           />
           <span className="text-sm font-bold text-white tracking-wide">
-            Akdeniz Veri Bilimi
+            Akdeniz Veri Bilimi Topluluğu
           </span>
         </Link>
 
