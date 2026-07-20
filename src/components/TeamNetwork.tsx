@@ -2,9 +2,10 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { UserCheck, ShieldAlert, Award, Briefcase } from 'lucide-react';
+import { UserCheck, Award, ArrowRight } from 'lucide-react';
+import Link from 'next/link';
 
-interface TeamMember {
+export interface TeamMember {
   id: string;
   name: string;
   role: string;
@@ -12,31 +13,31 @@ interface TeamMember {
   skills: string[];
   bio: string;
   linkedin?: string;
-  x: number; // concentric coordinate maps
+  x: number;
   y: number;
 }
 
-const TEAM_MEMBERS: TeamMember[] = [
-  // Center/Advisor layer
+export const TEAM_MEMBERS: TeamMember[] = [
+  // Danışmanlar
   {
     id: 'adv_ahmet',
     name: 'Prof. Dr. Ahmet Yılmaz',
     role: 'Akademik Danışman',
     department: 'Danışmanlar',
-    skills: ['Computer Science', 'Academic Research', 'Distributed Systems'],
-    bio: 'Akdeniz Üniversitesi bilgisayar mühendisliği bölümünde profesör, topluluğa akademik yapay zeka araştırmaları konusunda danışmanlık yapıyor.',
+    skills: ['Yapay Zekâ', 'Akademik Araştırma', 'Dağıtık Sistemler'],
+    bio: 'Akdeniz Üniversitesi Bilgisayar Mühendisliği bölümünde öğretim üyesi. Topluluğumuza akademik danışmanlık yapıyor.',
     linkedin: 'https://linkedin.com',
     x: 50,
     y: 15,
   },
-  // Board Layer
+  // Yönetim
   {
     id: 'board_pres',
     name: 'Alperen Demir',
     role: 'Topluluk Başkanı',
     department: 'Yönetim',
-    skills: ['Deep Learning', 'NLP', 'Mamba SSMs', 'PyTorch'],
-    bio: 'Bilgisayar Mühendisliği öğrencisi. Organizasyonel büyümeyi yönetiyor ve NLP Araştırma laboratuvarına liderlik ediyor.',
+    skills: ['Derin Öğrenme', 'NLP', 'PyTorch'],
+    bio: 'Bilgisayar Mühendisliği öğrencisi. Topluluğun genel koordinasyonunu ve NLP çalışma grubunu yürütüyor.',
     linkedin: 'https://linkedin.com',
     x: 50,
     y: 45,
@@ -46,21 +47,20 @@ const TEAM_MEMBERS: TeamMember[] = [
     name: 'Begüm Kaya',
     role: 'Başkan Yardımcısı',
     department: 'Yönetim',
-    skills: ['Data Wrangling', 'Scikit-Learn', 'Statistical Inference'],
-    bio: 'Endüstri Mühendisliği öğrencisi. Eğitim müfredatlarını, etkinlik planlamasını ve sponsor ilişkilerini yönetiyor.',
+    skills: ['Veri Analizi', 'Scikit-Learn', 'İstatistik'],
+    bio: 'Endüstri Mühendisliği öğrencisi. Eğitim programlarını ve etkinlik planlamasını koordine ediyor.',
     linkedin: 'https://linkedin.com',
     x: 35,
     y: 45,
   },
-
-  // Department Leads Layer
+  // Takım Liderleri
   {
     id: 'lead_mlops',
     name: 'Caner Öztürk',
     role: 'MLOps Lideri',
     department: 'Takım Liderleri',
     skills: ['Docker', 'FastAPI', 'MLflow', 'Kubernetes'],
-    bio: 'Dağıtım süreçlerini ve altyapıyı yöneterek model paketleme ve izleme işlemlerini sağlar.',
+    bio: 'Model dağıtımı ve altyapı süreçlerinden sorumlu.',
     linkedin: 'https://linkedin.com',
     x: 20,
     y: 70,
@@ -70,8 +70,8 @@ const TEAM_MEMBERS: TeamMember[] = [
     name: 'Zeynep Aslan',
     role: 'Bilgisayarlı Görü Lideri',
     department: 'Takım Liderleri',
-    skills: ['YOLOv8', 'OpenCV', 'TensorRT', 'C++'],
-    bio: 'Ulusal yarışmalar için kamera otomasyon sistemlerini ve görüntü işleme projelerini koordine eder.',
+    skills: ['YOLOv8', 'OpenCV', 'TensorRT'],
+    bio: 'Görüntü işleme projelerini ve yarışma ekiplerini koordine ediyor.',
     linkedin: 'https://linkedin.com',
     x: 40,
     y: 70,
@@ -81,8 +81,8 @@ const TEAM_MEMBERS: TeamMember[] = [
     name: 'Mert Yılmaz',
     role: 'Eğitim Lideri',
     department: 'Takım Liderleri',
-    skills: ['Python Foundations', 'Numpy/Pandas', 'Course Design'],
-    bio: 'Bootcamp lojistiğini, müfredat hazırlığını ve temel veri analitiği mentorluk programlarını yönetir.',
+    skills: ['Python', 'NumPy/Pandas', 'Müfredat Tasarımı'],
+    bio: 'Bootcamp ve mentorluk programlarının içeriğini hazırlıyor.',
     linkedin: 'https://linkedin.com',
     x: 60,
     y: 70,
@@ -92,21 +92,20 @@ const TEAM_MEMBERS: TeamMember[] = [
     name: 'Selin Demir',
     role: 'Operasyon & Etkinlik Lideri',
     department: 'Takım Liderleri',
-    skills: ['Communications', 'Event Management', 'Public Relations'],
-    bio: 'Teknoloji buluşmaları düzenler, konuk konuşmacılarla koordinasyonu sağlar ve topluluk ilişkilerini geliştirir.',
+    skills: ['Etkinlik Yönetimi', 'İletişim', 'Halkla İlişkiler'],
+    bio: 'Topluluk etkinliklerini ve dış ilişkileri yönetiyor.',
     linkedin: 'https://linkedin.com',
     x: 80,
     y: 70,
   },
-
-  // Mentors Layer
+  // Mentörler
   {
     id: 'mentor_python',
     name: 'Burak Yıldız',
     role: 'Python Mentörü',
     department: 'Mentörler',
-    skills: ['Python Syntax', 'Git Versioning', 'Object OOP'],
-    bio: 'Başlangıç seviyesindeki öğrencilere kod sözdizimi hatalarını ayıklama ve git depoları oluşturma konusunda yardımcı olur.',
+    skills: ['Python', 'Git', 'Nesne Yönelimli Programlama'],
+    bio: 'Yeni başlayan öğrencilere Python ve Git konularında destek veriyor.',
     linkedin: 'https://linkedin.com',
     x: 50,
     y: 90,
@@ -116,34 +115,37 @@ const TEAM_MEMBERS: TeamMember[] = [
     name: 'Kaan Kaya',
     role: 'Derin Öğrenme Mentörü',
     department: 'Mentörler',
-    skills: ['Transformers', 'PyTorch CNNs', 'TensorBoard'],
-    bio: 'İleri düzey öğrencilere eğitim döngüleri ve hiperparametre optimizasyon laboratuvarlarında rehberlik eder.',
+    skills: ['Transformers', 'PyTorch', 'TensorBoard'],
+    bio: 'İleri düzey öğrencilere model eğitimi ve optimizasyon konularda rehberlik ediyor.',
     linkedin: 'https://linkedin.com',
     x: 70,
     y: 90,
   },
 ];
 
+const CORE_DEPARTMENTS = ['Yönetim', 'Danışmanlar'];
+
 const TEAM_EDGES = [
-  // Advisor to President
   { from: 'adv_ahmet', to: 'board_pres' },
-
-  // Board connections
   { from: 'board_pres', to: 'board_vpres' },
-
-  // Board to Leads
   { from: 'board_pres', to: 'lead_mlops' },
   { from: 'board_pres', to: 'lead_cv' },
   { from: 'board_pres', to: 'lead_edu' },
   { from: 'board_pres', to: 'lead_ops' },
-
-  // Leads to Mentors
   { from: 'lead_edu', to: 'mentor_python' },
   { from: 'lead_cv', to: 'mentor_dl' },
 ];
 
-export default function TeamNetwork() {
-  const [selectedMember, setSelectedMember] = useState<TeamMember>(TEAM_MEMBERS[1]); // Default to President
+interface TeamNetworkProps {
+  variant?: 'core' | 'full';
+}
+
+export default function TeamNetwork({ variant = 'core' }: TeamNetworkProps) {
+  const members = variant === 'core'
+    ? TEAM_MEMBERS.filter((m) => CORE_DEPARTMENTS.includes(m.department))
+    : TEAM_MEMBERS;
+
+  const [selectedMember, setSelectedMember] = useState<TeamMember>(members[1] || members[0]);
 
   const getDepartmentBadge = (dept: string) => {
     switch (dept) {
@@ -174,11 +176,27 @@ export default function TeamNetwork() {
             [ EKİBİMİZ ]
           </span>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white">
-            Ekibimiz <br />
-            <span className="bg-gradient-to-r from-brand-cyan to-brand-emerald bg-clip-text text-transparent">
-              &amp; Organizasyon
-            </span>
+            {variant === 'core' ? (
+              <>
+                İletişime Geçebileceğin <br />
+                <span className="bg-gradient-to-r from-brand-cyan to-brand-emerald bg-clip-text text-transparent">
+                  Yönetim Ekibimiz
+                </span>
+              </>
+            ) : (
+              <>
+                Topluluğumuzun <br />
+                <span className="bg-gradient-to-r from-brand-cyan to-brand-emerald bg-clip-text text-transparent">
+                  Tüm Ekibi
+                </span>
+              </>
+            )}
           </h2>
+          <p className="text-slate-400 text-sm md:text-base max-w-lg mt-3 leading-relaxed">
+            {variant === 'core'
+              ? 'Topluluğun yönetim ekibi ve akademik danışmanımız. Sorularınız ve iş birliği talepleriniz için doğrudan ulaşabilirsiniz.'
+              : 'Topluluğumuzu ileri taşıyan yönetim ekibimiz, takım liderlerimiz ve mentörlerimiz.'}
+          </p>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-12 items-center">
@@ -190,8 +208,10 @@ export default function TeamNetwork() {
             >
               {/* Draw Edges */}
               {TEAM_EDGES.map((edge, index) => {
-                const fromMember = TEAM_MEMBERS.find(m => m.id === edge.from)!;
-                const toMember = TEAM_MEMBERS.find(m => m.id === edge.to)!;
+                const fromMember = members.find(m => m.id === edge.from);
+                const toMember = members.find(m => m.id === edge.to);
+                if (!fromMember || !toMember) return null;
+
                 const isEdgeActive = selectedMember.id === fromMember.id || selectedMember.id === toMember.id;
 
                 return (
@@ -209,7 +229,7 @@ export default function TeamNetwork() {
               })}
 
               {/* Draw Nodes */}
-              {TEAM_MEMBERS.map((member) => {
+              {members.map((member) => {
                 const isSelected = selectedMember.id === member.id;
                 let r = 3.5;
                 if (member.department === 'Danışmanlar') r = 4.5;
@@ -256,7 +276,7 @@ export default function TeamNetwork() {
                     <text
                       x={member.x}
                       y={member.y - r - 2}
-                      className="fill-slate-300 font-mono text-[2px] font-semibold text-center pointer-events-none select-none"
+                      className="fill-slate-300 font-mono text-[2.5px] font-semibold text-center pointer-events-none select-none"
                       textAnchor="middle"
                     >
                       {member.name.split(' ').slice(-1)[0]}
@@ -266,20 +286,19 @@ export default function TeamNetwork() {
               })}
             </svg>
 
-            {/* Network diagnostic dashboard panel */}
+            {/* Diagnostics label */}
             <div className="absolute top-3 left-3 font-mono text-[9px] text-brand-muted/70 pointer-events-none uppercase">
-              NODE_TREE: Board_Org.cfg <br />
-              MEMBERS: {TEAM_MEMBERS.length} UNITS
+              EKİP HARİTASI <br />
+              KAPASİTE: {members.length} KİŞİ
             </div>
             <div className="absolute bottom-3 right-3 font-mono text-[8px] text-brand-emerald pointer-events-none uppercase">
-              ● İNTERAKTİF HİYERARŞİ HARİTASI
+              ● KİŞİLERİN ÜZERİNE GELEREK İNCELEYİN
             </div>
           </div>
 
           {/* Member Profile Card Column */}
           <div className="w-full lg:w-5/12">
             <div className="bg-brand-card border border-brand-border rounded p-6 md:p-8 backdrop-blur-sm relative overflow-hidden min-h-[400px] flex flex-col justify-between">
-              {/* Digital fingerprint corner decoration */}
               <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-brand-cyan/5 to-transparent pointer-events-none" />
 
               <div>
@@ -326,7 +345,7 @@ export default function TeamNetwork() {
                       {selectedMember.bio}
                     </p>
 
-                    {/* Skills index */}
+                    {/* Skills */}
                     <div>
                       <h4 className="font-mono text-xs text-brand-emerald tracking-wider uppercase mb-3 flex items-center gap-1.5">
                         <Award size={12} />
@@ -336,7 +355,7 @@ export default function TeamNetwork() {
                         {selectedMember.skills.map((skill) => (
                           <span 
                             key={skill} 
-                            className="px-2.5 py-1 bg-slate-900 border border-brand-border rounded font-mono text-[11px] text-slate-300 hover:text-brand-cyan hover:border-brand-cyan/35 transition-colors"
+                            className="px-2.5 py-1 bg-slate-900 border border-brand-border rounded font-mono text-[11px] text-slate-300"
                           >
                             {skill}
                           </span>
@@ -347,11 +366,19 @@ export default function TeamNetwork() {
                 </AnimatePresence>
               </div>
 
-              {/* Console log footer */}
-              <div className="mt-8 pt-4 border-t border-brand-border/30 flex justify-between font-mono text-[10px] text-brand-muted">
-                <span>Topluluk Ekibi</span>
-                <span>Akdeniz Veri Bilimi</span>
-              </div>
+              {/* Link to full team if core variant */}
+              {variant === 'core' && (
+                <div className="mt-8 pt-4 border-t border-brand-border/30 flex justify-between items-center">
+                  <span className="font-mono text-[10px] text-brand-muted">YÖNETİM KADROSU</span>
+                  <Link
+                    href="/ekibimiz"
+                    className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-brand-cyan hover:text-white transition-colors"
+                  >
+                    <span>Tüm Ekibi Gör</span>
+                    <ArrowRight size={13} />
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useRef, useState, useEffect } from 'react';
-import { Terminal, ArrowDown } from 'lucide-react';
+import { Terminal, ArrowRight, Users } from 'lucide-react';
+import SiteNav from '@/components/SiteNav';
 
 interface Point2D {
   x: number;
@@ -22,7 +23,7 @@ export default function Hero3D() {
     fit: '0.00',
   });
 
-  // Generate 45 initial data points along a general linear trend with noise
+  // Generate 42 initial data points along a general linear trend with noise
   const points = useRef<Point2D[]>([]);
 
   // Initialize points on first load relative to canvas size
@@ -115,36 +116,31 @@ export default function Hero3D() {
             // Attraction radius
             if (dist < 180) {
               const force = (180 - dist) / 180;
-              // Gravitational pull toward mouse coordinate
               p.x += dx * force * 0.12;
               p.y += dy * force * 0.12;
             } else {
-              // Return to initial coordinates
               p.x += (p.initX - p.x) * 0.05;
               p.y += (p.initY - p.y) * 0.05;
             }
           } else {
-            // Decelerate back to clean layout
             p.x += (p.initX - p.x) * 0.05;
             p.y += (p.initY - p.y) * 0.05;
           }
         });
 
         // 2. Perform 2D Linear Regression (Least Squares Method): y = m*x + c
-        let sumX = 0, sumY = 0, sumXY = 0, sumXX = 0;
+        let sumX = 0, sumY = 0, sumXX = 0;
         const n = pts.length;
 
         pts.forEach((p) => {
           sumX += p.x;
           sumY += p.y;
-          sumXY += p.x * p.y;
           sumXX += p.x * p.x;
         });
 
         const meanX = sumX / n;
         const meanY = sumY / n;
 
-        // Calculate slope (m) and intercept (c)
         let num = 0;
         let den = 0;
         pts.forEach((p) => {
@@ -166,16 +162,14 @@ export default function Hero3D() {
         });
 
         const r2 = ssTot === 0 ? 1 : 1 - ssRes / ssTot;
-        const mse = ssRes / n;
 
-        // Draw Residual lines (Actual to Regression Predictions)
+        // Draw Residual lines
         ctx.lineWidth = 1;
         pts.forEach((p) => {
           const predY = slope * p.x + intercept;
           const error = Math.abs(p.y - predY);
           const intensity = Math.min(1, error / 150);
 
-          // Red lines for high error, green/cyan for small error
           ctx.strokeStyle = `rgba(${Math.floor(intensity * 255)}, ${Math.floor((1 - intensity) * 240 + 15)}, 255, 0.35)`;
           ctx.beginPath();
           ctx.setLineDash([2, 3]);
@@ -183,7 +177,7 @@ export default function Hero3D() {
           ctx.lineTo(p.x, predY);
           ctx.stroke();
         });
-        ctx.setLineDash([]); // Reset dash
+        ctx.setLineDash([]);
 
         // Draw Regression line
         const startX = 0;
@@ -199,7 +193,7 @@ export default function Hero3D() {
         ctx.moveTo(startX, startY);
         ctx.lineTo(endX, endY);
         ctx.stroke();
-        ctx.shadowBlur = 0; // Reset shadow
+        ctx.shadowBlur = 0;
 
         // Draw data points
         ctx.fillStyle = '#00f5a0';
@@ -210,9 +204,7 @@ export default function Hero3D() {
           ctx.fill();
         });
 
-        // Update stats once per frame
-        // Map pixel coordinates to dry mathematical space
-        const mathSlope = -slope; // Invert for cartesian visual alignment
+        const mathSlope = -slope;
         const mathIntercept = canvas.height - intercept;
         setStats({
           equation: `y = ${mathSlope.toFixed(2)}x + ${mathIntercept.toFixed(0)}`,
@@ -261,9 +253,9 @@ export default function Hero3D() {
   return (
     <section 
       ref={containerRef}
-      className="relative h-screen w-full flex flex-col justify-between overflow-hidden bg-transparent border-b border-brand-border"
+      className="relative min-h-screen w-full flex flex-col justify-between overflow-hidden bg-transparent border-b border-brand-border"
     >
-      {/* 2D Canvas Layer */}
+      {/* 2D Canvas Interactive Physics Layer */}
       <canvas
         ref={canvasRef}
         onMouseMove={handleMouseMove}
@@ -273,96 +265,95 @@ export default function Hero3D() {
         className="absolute inset-0 w-full h-full cursor-crosshair bg-transparent"
       />
 
-      {/* Header Overlay */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pt-8 flex justify-between items-center pointer-events-none">
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-brand-emerald animate-pulse" />
-          <span className="font-mono text-xs tracking-widest text-brand-emerald uppercase">
-            Topluluk: Aktif // Öğrenmeye Devam
-          </span>
-        </div>
-        <a 
-          href="/admin" 
-          className="pointer-events-auto flex items-center gap-1.5 px-3 py-1 bg-brand-card hover:bg-brand-cyan/10 border border-brand-border rounded font-mono text-xs text-brand-cyan transition-all duration-300"
-        >
-          <Terminal size={12} />
-          <span>CMS Portal</span>
-        </a>
-      </div>
+      {/* Navigation Bar Header */}
+      <SiteNav />
 
-      {/* Hero Headline and Live Regression Console Overlay */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between flex-grow gap-12 mt-16 md:mt-0 pointer-events-none">
+      {/* Hero Headline & Action Area */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 flex flex-col lg:flex-row items-center justify-between flex-grow gap-8 pt-28 pb-16 pointer-events-none">
         
-        {/* Left Side: Copy */}
-        <div className="max-w-xl text-left pointer-events-none">
-          <h1 className="text-4xl md:text-7xl font-bold tracking-tight text-white mb-4 leading-none">
-            AKDENİZ <br />
-            <span className="bg-gradient-to-r from-brand-cyan to-brand-emerald bg-clip-text text-transparent">
-              VERİ BİLİMİ
+        {/* Left Side: Headline & Natural Turkish Copy */}
+        <div className="max-w-2xl text-left pointer-events-none">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-cyan/10 border border-brand-cyan/30 rounded-full mb-6">
+            <div className="w-2 h-2 rounded-full bg-brand-emerald animate-pulse" />
+            <span className="text-xs font-mono text-brand-cyan font-medium">
+              Akdeniz Üniversitesi Veri Bilimi Topluluğu
+            </span>
+          </div>
+
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white mb-6 leading-[1.1]">
+            Veri bilimini <br />
+            <span className="bg-gradient-to-r from-brand-cyan via-blue-400 to-brand-emerald bg-clip-text text-transparent">
+              birlikte keşfediyoruz
             </span>
           </h1>
-          <p className="font-mono text-xs md:text-sm text-brand-muted tracking-wider uppercase mb-6">
-            [ Akdeniz Üniversitesi Veri Bilimi Topluluğu ]
+
+          <p className="text-base sm:text-lg text-slate-300 mb-8 leading-relaxed max-w-xl">
+            Yapay zekâ, makine öğrenmesi ve veri analitiği alanında çalıştaylar düzenliyor,
+            açık kaynak projeler geliştiriyor ve deneyimlerimizi paylaşıyoruz. Merakın varsa aramıza katıl!
           </p>
-          <p className="text-base md:text-lg text-slate-300 mb-8 leading-relaxed">
-            Veri bilimi, yapay zekâ ve makine öğrenmesi alanlarında birlikte öğrenen, projeler geliştiren ve etkinlikler düzenleyen bir öğrenci topluluğuyuz. Herkese açık, merak eden herkes hoş geldi!
-          </p>
 
-          <div className="flex flex-wrap gap-4 font-mono text-xs text-slate-400">
-            <div className="px-3 py-2 bg-brand-card/50 border border-brand-border rounded backdrop-blur-sm">
-              <span className="text-brand-cyan">📍</span> Akdeniz Üniversitesi, Antalya
-            </div>
-            <div className="px-3 py-2 bg-brand-card/50 border border-brand-border rounded backdrop-blur-sm">
-              <span className="text-brand-emerald">🎯</span> Veri Bilimi &amp; Yapay Zekâ
-            </div>
+          {/* Large Action Buttons */}
+          <div className="pointer-events-auto flex flex-wrap items-center gap-4 mb-10">
+            <a
+              href="#join-us"
+              className="inline-flex items-center gap-2.5 px-8 py-4 text-base font-bold bg-brand-cyan text-[#090d16] rounded-xl hover:bg-brand-cyan/90 transition-all shadow-lg shadow-brand-cyan/25 hover:scale-105 active:scale-95"
+            >
+              <span>Bize Katıl</span>
+              <ArrowRight size={18} />
+            </a>
+            <a
+              href="#team"
+              className="inline-flex items-center gap-2.5 px-8 py-4 text-base font-semibold bg-brand-card/90 text-white border border-brand-border rounded-xl hover:border-brand-cyan/40 hover:bg-brand-card transition-all backdrop-blur-md hover:scale-105 active:scale-95"
+            >
+              <Users size={18} />
+              <span>Ekibimiz</span>
+            </a>
+          </div>
+
+          <div className="flex flex-wrap gap-6 text-xs font-mono text-brand-muted">
+            <span className="flex items-center gap-1.5">📍 Antalya</span>
+            <span className="flex items-center gap-1.5">👥 440+ üye</span>
+            <span className="flex items-center gap-1.5">📅 24+ etkinlik</span>
           </div>
         </div>
 
-        {/* Right Side: Floating Scientific Math Console */}
-        <div className="w-full max-w-[320px] p-6 bg-brand-card/80 border border-brand-border rounded backdrop-blur-md font-mono text-xs text-slate-300 relative overflow-hidden">
-          <div className="absolute top-0 right-0 p-3 text-[8px] text-brand-muted select-none">
-            AVBT_DASHBOARD
+        {/* Right Side: Interactive Linear Regression Mathematical Console */}
+        <div className="pointer-events-auto w-full max-w-[320px] p-6 bg-[#090d16]/85 border border-brand-border rounded-2xl backdrop-blur-xl font-mono text-xs text-slate-300 shadow-2xl shadow-black/50 relative overflow-hidden">
+          <div className="flex items-center justify-between pb-3 border-b border-brand-border/40 mb-4">
+            <div className="flex items-center gap-2">
+              <Terminal size={14} className="text-brand-cyan" />
+              <span className="text-brand-cyan font-bold uppercase tracking-wider text-[11px]">
+                Regresyon Simülatörü
+              </span>
+            </div>
+            <span className="text-[9px] text-brand-muted">CANLI ANALİZ</span>
           </div>
-          
-          <div className="space-y-4">
-            <div className="text-brand-cyan font-bold uppercase tracking-wider pb-2 border-b border-brand-border/40">
-              ■ Topluluk Özeti
-            </div>
+
+          <div className="space-y-3.5">
             <div>
-              <div className="text-[10px] text-brand-muted">AKTİF ÜYELER:</div>
-              <div className="text-white text-sm font-semibold mt-0.5">440+ Öğrenci</div>
+              <div className="text-[10px] text-brand-muted uppercase">DENKLEM METRİĞİ</div>
+              <div className="text-white text-xs font-mono font-semibold mt-1 p-2 bg-brand-card/60 border border-brand-border/40 rounded">
+                {stats.equation}
+              </div>
             </div>
-            <div>
-              <div className="text-[10px] text-brand-muted">ETKİNLİK SAYISI:</div>
-              <div className="text-brand-emerald text-sm font-semibold mt-0.5">24+ Etkinlik</div>
+
+            <div className="grid grid-cols-2 gap-2">
+              <div className="p-2 bg-brand-card/40 border border-brand-border/30 rounded">
+                <div className="text-[9px] text-brand-muted">VERİ NOKTASI</div>
+                <div className="text-brand-emerald text-sm font-bold mt-0.5">{stats.pointCount}</div>
+              </div>
+              <div className="p-2 bg-brand-card/40 border border-brand-border/30 rounded">
+                <div className="text-[9px] text-brand-muted">UYUM (R²)</div>
+                <div className="text-brand-cyan text-sm font-bold mt-0.5">{stats.fit}</div>
+              </div>
             </div>
-            <div>
-              <div className="text-[10px] text-brand-muted">AKTİF PROJELER:</div>
-              <div className="text-brand-blue text-sm font-semibold mt-0.5">8 Açık Kaynak Repo</div>
-            </div>
-            
-            <div className="pt-2 border-t border-brand-border/40 text-[9px] text-brand-muted uppercase">
-              İmlecinizi grafik alanı üzerinde gezdirerek noktaları hareket ettirin.
-            </div>
+
+            <p className="text-[10px] text-brand-muted leading-relaxed pt-1">
+              💡 Fareyi grafik üzerinde gezdirerek veri noktalarını çekip canlı regresyon çizgisini değiştirebilirsiniz.
+            </p>
           </div>
         </div>
 
-      </div>
-
-      {/* Footer / Scroll hint */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 pb-12 flex justify-between items-end pointer-events-none">
-        <div className="hidden md:flex flex-col gap-1 font-mono text-[10px] text-slate-500">
-          <div>KURULUŞ: 2024 // ANTALYA</div>
-          <div>PLATFORM: Akdeniz Veri Bilimi Topluluğu</div>
-        </div>
-
-        <a 
-          href="#who-we-are" 
-          className="pointer-events-auto group flex items-center gap-3 px-4 py-3 bg-brand-card border border-brand-border rounded-full hover:border-brand-cyan/50 hover:bg-brand-cyan/5 transition-all duration-300 font-mono text-xs text-brand-cyan"
-        >
-          <span>KEŞFETMEYE BAŞLA</span>
-          <ArrowDown size={14} className="group-hover:translate-y-1 transition-transform" />
-        </a>
       </div>
     </section>
   );

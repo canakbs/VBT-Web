@@ -1,39 +1,50 @@
 import { getFilesFromDir } from "@/lib/markdown";
 import EventTimeline from "@/components/EventTimeline";
+import NeuralBackground from "@/components/NeuralBackground";
+import SiteNav from "@/components/SiteNav";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Etkinlik Arşivi | Akdeniz Veri Bilimi Topluluğu",
+  description: "Akdeniz Veri Bilimi Topluluğu etkinlik arşivi — workshoplar, hackathonlar ve teknoloji buluşmaları.",
+};
 
 export default function EventsArchivePage() {
   const allEvents = getFilesFromDir("events");
 
   return (
-    <main className="min-h-screen bg-brand-bg flex flex-col justify-between">
-      {/* Background Grids */}
-      <div className="absolute inset-0 scientific-grid opacity-10 pointer-events-none" />
+    <>
+      <NeuralBackground />
 
-      {/* Navigation Header */}
-      <header className="w-full border-b border-brand-border bg-slate-950/70 py-4 px-6 relative z-30 backdrop-blur-md">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <Link 
-            href="/"
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 border border-brand-border hover:border-slate-600 rounded font-mono text-xs text-slate-300 hover:text-white transition-colors"
-          >
-            <ArrowLeft size={12} />
-            <span>Ana Sayfaya Dön</span>
-          </Link>
-          <span className="font-mono text-xs text-brand-cyan uppercase">ETKİNLİK ARŞİVİ // TOPLAM: {allEvents.length} ETKİNLİK</span>
+      <div className="relative z-10 min-h-screen flex flex-col justify-between">
+        <SiteNav />
+
+        <div className="pt-24 pb-12 flex-grow">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4 pb-2 flex items-center justify-between">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 text-xs font-mono text-brand-muted hover:text-white transition-colors px-3 py-1.5 bg-brand-card/50 border border-brand-border rounded-lg"
+            >
+              <ArrowLeft size={14} />
+              <span>Ana Sayfaya Dön</span>
+            </Link>
+            <span className="font-mono text-xs text-brand-cyan uppercase">
+              TOPLAM {allEvents.length} ETKİNLİK
+            </span>
+          </div>
+
+          <EventTimeline events={allEvents} showMoreButton={false} />
         </div>
-      </header>
 
-      {/* Main Full Timeline Archives */}
-      <div className="flex-grow relative z-10">
-        <EventTimeline events={allEvents} showMoreButton={false} />
+        <footer className="bg-[#090d16] border-t border-brand-border py-8 px-6 text-center font-mono text-xs text-brand-muted">
+          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+            <span>© 2025 Akdeniz Veri Bilimi Topluluğu</span>
+            <Link href="/" className="hover:text-white transition-colors">Ana Sayfa</Link>
+          </div>
+        </footer>
       </div>
-
-      {/* Footer */}
-      <footer className="w-full border-t border-brand-border py-6 px-6 text-center font-mono text-[10px] text-brand-muted relative z-20 bg-slate-950">
-        AVBT ETKİNLİK ARŞİVİ
-      </footer>
-    </main>
+    </>
   );
 }

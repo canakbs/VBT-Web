@@ -158,6 +158,9 @@ export default function ImpactDashboard() {
               Rakamlarla
             </span>
           </h2>
+          <p className="text-slate-400 text-sm md:text-base max-w-lg mt-3 leading-relaxed">
+            Düzenlediğimiz etkinlikler, açık kaynak projelerimiz ve büyüyen üye sayımızla topluluk istatistiklerimiz.
+          </p>
         </div>
 
         {/* Telemetry Stats Grid */}

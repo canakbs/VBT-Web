@@ -1,21 +1,21 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-bg: #05070f;
-  --color-brand-card: #0b0e1a;
+  --color-brand-bg: #090d16;
+  --color-brand-card: #111624;
   --color-brand-cyan: #00f2fe;
   --color-brand-emerald: #00f5a0;
   --color-brand-blue: #3b82f6;
   --color-brand-text: #e2e8f0;
-  --color-brand-muted: #64748b;
-  --color-brand-border: rgba(255, 255, 255, 0.07);
+  --color-brand-muted: #8493a8;
+  --color-brand-border: rgba(255, 255, 255, 0.08);
   --color-brand-grid: rgba(0, 242, 254, 0.015);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 :root {
-  --background: #05070f;
+  --background: #090d16;
   --foreground: #e2e8f0;
   --font-geist-sans: "Geist Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   --font-geist-mono: "Geist Mono", SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
@@ -60,22 +60,6 @@ body {
   text-shadow: 0 0 10px rgba(0, 255, 160, 0.6);
 }
 
-/* Custom Scanlines */
-.scanline::after {
-  content: " ";
-  display: block;
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
-  z-index: 9999;
-  background-size: 100% 4px, 6px 100%;
-  pointer-events: none;
-  opacity: 0.15;
-}
-
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
@@ -83,16 +67,15 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #05070f;
+  background: #090d16;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #0b0e1a;
+  background: #192033;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 242, 254, 0.3);
+  background: rgba(0, 242, 254, 0.4);
 }
-
