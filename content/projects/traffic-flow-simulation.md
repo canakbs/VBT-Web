@@ -1,11 +1,11 @@
 ---
 title: "Real-time Traffic Flow Optimisation"
-stage: "Development"
+stage: "Deployment"
 category: "Machine Learning & Reinforcement Learning"
 github: "https://github.com/akdeniz-veri/traffic-flow"
 stats: "Congestion Reduction: 22%, Latency: <50ms"
 summary: "A reinforcement learning agent that optimizes traffic light timing configurations dynamically based on real-time vehicle flow metrics."
-tags: ["Deep Q-Networks", "SUMO Simulation", "Python"]
+tags: ["Deep Q-Networks","SUMO Simulation","Python"]
 ---
 
 ### Project Architecture
