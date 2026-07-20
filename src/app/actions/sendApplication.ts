@@ -80,12 +80,13 @@ ${data.goals || 'Belirtilmedi'}
   `;
 
   // 3. Send email via Nodemailer SMTP if credentials provided
-  const smtpPass = process.env.SMTP_PASS || process.env.GMAIL_APP_PASSWORD;
-  const smtpUser = process.env.SMTP_USER || process.env.GMAIL_USER || 'akdenizveri07@gmail.com';
+  const rawPass = process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASS;
+  const cleanPass = rawPass ? rawPass.replace(/\s+/g, '') : '';
+  const smtpUser = process.env.GMAIL_USER || process.env.SMTP_USER || 'akdenizveri07@gmail.com';
   const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
   const smtpPort = Number(process.env.SMTP_PORT) || 587;
 
-  if (smtpPass) {
+  if (cleanPass) {
     try {
       const transporter = nodemailer.createTransport({
         host: smtpHost,
@@ -93,7 +94,7 @@ ${data.goals || 'Belirtilmedi'}
         secure: smtpPort === 465,
         auth: {
           user: smtpUser,
-          pass: smtpPass,
+          pass: cleanPass,
         },
       });
 
