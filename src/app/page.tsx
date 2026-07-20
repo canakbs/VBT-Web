@@ -9,9 +9,10 @@ import ContactSection from "@/components/ContactSection";
 import NeuralBackground from "@/components/NeuralBackground";
 
 export default function Home() {
-  // Read events and projects from content markdown files
+  // Read events, projects, and team members from content markdown files
   const events = getFilesFromDir("events");
   const projects = getFilesFromDir("projects");
+  const teamFiles = getFilesFromDir("team");
 
   return (
     <>
@@ -31,7 +32,7 @@ export default function Home() {
       <ProjectPipeline projects={projects} />
 
       {/* 5. Ekibimiz (Core Management Team with Link to Full Team Page) */}
-      <TeamNetwork variant="core" />
+      <TeamNetwork variant="core" teamFiles={teamFiles} />
 
       {/* 6. Bize Katıl (Final Application Wizard Flow) */}
       <JoinOnboarding />

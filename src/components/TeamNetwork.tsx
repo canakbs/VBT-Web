@@ -4,123 +4,144 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UserCheck, Award, ArrowRight, Network, Sparkles, Users } from 'lucide-react';
 import Link from 'next/link';
+import { MarkdownFile } from '@/lib/markdown';
 
 export interface TeamMember {
   id: string;
   name: string;
   role: string;
-  department: 'Yönetim' | 'Danışmanlar' | 'Takım Liderleri' | 'Mentörler';
+  department: string;
   skills: string[];
   bio: string;
   linkedin?: string;
+  connections: string[];
   x: number;
   y: number;
 }
 
-export const TEAM_MEMBERS: TeamMember[] = [
+export const DEFAULT_MEMBERS: TeamMember[] = [
   {
-    id: 'adv_ahmet',
+    id: 'prof-dr-ahmet-yilmaz',
     name: 'Prof. Dr. Ahmet Yılmaz',
     role: 'Akademik Danışman',
     department: 'Danışmanlar',
     skills: ['Yapay Zekâ', 'Akademik Araştırma', 'Dağıtık Sistemler'],
     bio: 'Akdeniz Üniversitesi Bilgisayar Mühendisliği öğretim üyesi. Topluluğumuza akademik danışmanlık sağlıyor.',
     linkedin: 'https://linkedin.com',
+    connections: ['Alperen Demir', 'Zeynep Aslan'],
     x: 30,
     y: 30,
   },
   {
-    id: 'board_pres',
+    id: 'alperen-demir',
     name: 'Alperen Demir',
     role: 'Topluluk Başkanı',
     department: 'Yönetim',
     skills: ['Derin Öğrenme', 'NLP', 'PyTorch'],
     bio: 'Bilgisayar Mühendisliği öğrencisi. Topluluğun genel koordinasyonunu ve NLP çalışma grubunu yürütüyor.',
     linkedin: 'https://linkedin.com',
+    connections: ['Caner Öztürk', 'Begüm Kaya'],
     x: 70,
     y: 30,
   },
   {
-    id: 'board_vpres',
+    id: 'begum-kaya',
     name: 'Begüm Kaya',
     role: 'Başkan Yardımcısı',
     department: 'Yönetim',
     skills: ['Veri Analizi', 'Scikit-Learn', 'İstatistik'],
     bio: 'Endüstri Mühendisliği öğrencisi. Eğitim programlarını ve etkinlik planlamasını koordine ediyor.',
     linkedin: 'https://linkedin.com',
+    connections: ['Mert Yılmaz', 'Selin Demir'],
     x: 25,
     y: 65,
   },
   {
-    id: 'lead_mlops',
+    id: 'caner-ozturk',
     name: 'Caner Öztürk',
     role: 'MLOps Lideri',
     department: 'Takım Liderleri',
     skills: ['Docker', 'FastAPI', 'MLflow', 'Kubernetes'],
     bio: 'Model dağıtımı ve altyapı süreçlerinden sorumlu.',
     linkedin: 'https://linkedin.com',
+    connections: ['Zeynep Aslan', 'Mert Yılmaz'],
     x: 50,
     y: 50,
   },
   {
-    id: 'lead_cv',
+    id: 'zeynep-aslan',
     name: 'Zeynep Aslan',
     role: 'Bilgisayarlı Görü Lideri',
     department: 'Takım Liderleri',
     skills: ['YOLOv8', 'OpenCV', 'TensorRT'],
     bio: 'Görüntü işleme projelerini ve yarışma ekiplerini koordine ediyor.',
     linkedin: 'https://linkedin.com',
+    connections: ['Prof. Dr. Ahmet Yılmaz', 'Caner Öztürk'],
     x: 75,
     y: 65,
   },
   {
-    id: 'lead_edu',
+    id: 'mert-yilmaz',
     name: 'Mert Yılmaz',
     role: 'Eğitim Lideri',
     department: 'Takım Liderleri',
     skills: ['Python', 'NumPy/Pandas', 'Müfredat Tasarımı'],
     bio: 'Bootcamp ve mentorluk programlarının içeriğini hazırlıyor.',
     linkedin: 'https://linkedin.com',
+    connections: ['Begüm Kaya', 'Caner Öztürk'],
     x: 40,
     y: 82,
   },
   {
-    id: 'lead_ops',
+    id: 'selin-demir',
     name: 'Selin Demir',
     role: 'Operasyon & Etkinlik Lideri',
     department: 'Takım Liderleri',
     skills: ['Etkinlik Yönetimi', 'İletişim', 'Halkla İlişkiler'],
     bio: 'Topluluk etkinliklerini ve dış ilişkileri yönetiyor.',
     linkedin: 'https://linkedin.com',
+    connections: ['Begüm Kaya'],
     x: 80,
     y: 82,
   },
 ];
 
-const CORE_DEPARTMENTS = ['Yönetim', 'Danışmanlar'];
-
-// Peer collaboration links (shared project & skill domain links, NO hierarchy)
-const PEER_CONNECTIONS = [
-  { from: 'adv_ahmet', to: 'board_pres' },
-  { from: 'adv_ahmet', to: 'lead_cv' },
-  { from: 'board_pres', to: 'lead_mlops' },
-  { from: 'board_vpres', to: 'lead_edu' },
-  { from: 'lead_mlops', to: 'lead_cv' },
-  { from: 'board_vpres', to: 'lead_ops' },
-  { from: 'lead_edu', to: 'lead_mlops' },
-];
-
 interface TeamNetworkProps {
   variant?: 'core' | 'full';
+  teamFiles?: MarkdownFile[];
 }
 
-export default function TeamNetwork({ variant = 'core' }: TeamNetworkProps) {
-  const members = variant === 'core'
-    ? TEAM_MEMBERS.filter((m) => CORE_DEPARTMENTS.includes(m.department))
-    : TEAM_MEMBERS;
+export default function TeamNetwork({ variant = 'core', teamFiles }: TeamNetworkProps) {
+  // Parse team dynamic files if available
+  const allMembers: TeamMember[] = teamFiles && teamFiles.length > 0
+    ? teamFiles.map((file, idx) => ({
+        id: file.slug,
+        name: file.metadata.title || file.slug,
+        role: file.metadata.role || 'Ekip Üyesi',
+        department: file.metadata.department || 'Takım Liderleri',
+        skills: Array.isArray(file.metadata.skills)
+          ? file.metadata.skills
+          : (file.metadata.skills ? String(file.metadata.skills).split(',').map((s) => s.trim()) : []),
+        bio: file.metadata.bio || file.content || '',
+        linkedin: file.metadata.linkedin || '',
+        connections: Array.isArray(file.metadata.connections)
+          ? file.metadata.connections
+          : (file.metadata.connections ? String(file.metadata.connections).split(',').map((s) => s.trim()) : []),
+        x: file.metadata.x ? Number(file.metadata.x) : (20 + (idx * 15) % 65),
+        y: file.metadata.y ? Number(file.metadata.y) : (30 + (idx * 18) % 55),
+      }))
+    : DEFAULT_MEMBERS;
 
-  const [selectedMember, setSelectedMember] = useState<TeamMember>(members[0]);
+  const coreDepartments = ['Yönetim', 'Danışmanlar'];
+  const members = variant === 'core'
+    ? allMembers.filter((m) => coreDepartments.includes(m.department))
+    : allMembers;
+
+  const [selectedMember, setSelectedMember] = useState<TeamMember>(members[0] || allMembers[0]);
   const [filterDepartment, setFilterDepartment] = useState<string>('Hepsi');
+
+  // Extract unique departments for dynamic filtering
+  const availableDepartments = ['Hepsi', ...Array.from(new Set(allMembers.map((m) => m.department)))];
 
   const filteredMembers = filterDepartment === 'Hepsi'
     ? members
@@ -132,9 +153,29 @@ export default function TeamNetwork({ variant = 'core' }: TeamNetworkProps) {
       case 'Yönetim': return 'bg-amber-950/60 text-amber-400 border border-amber-900/60';
       case 'Takım Liderleri': return 'bg-emerald-950/60 text-emerald-400 border border-emerald-900/60';
       case 'Mentörler': return 'bg-blue-950/60 text-blue-400 border border-blue-900/60';
-      default: return 'bg-slate-900 text-slate-400 border border-brand-border';
+      default: return 'bg-slate-900 text-slate-300 border border-brand-border';
     }
   };
+
+  // Build dynamic peer connection lines
+  const peerLines: { x1: number; y1: number; x2: number; y2: number; isActive: boolean }[] = [];
+  filteredMembers.forEach((m1) => {
+    m1.connections.forEach((targetNameOrId) => {
+      const m2 = filteredMembers.find(
+        (target) => target.id === targetNameOrId || target.name.toLowerCase() === targetNameOrId.toLowerCase()
+      );
+      if (m2 && m1.id !== m2.id) {
+        const isActive = selectedMember.id === m1.id || selectedMember.id === m2.id;
+        peerLines.push({
+          x1: m1.x,
+          y1: m1.y,
+          x2: m2.x,
+          y2: m2.y,
+          isActive,
+        });
+      }
+    });
+  });
 
   return (
     <section id="team" className="relative py-24 bg-transparent border-b border-brand-border">
@@ -172,7 +213,7 @@ export default function TeamNetwork({ variant = 'core' }: TeamNetworkProps) {
           {/* Department Filter Tabs */}
           {variant === 'full' && (
             <div className="flex flex-wrap gap-2">
-              {['Hepsi', 'Yönetim', 'Danışmanlar', 'Takım Liderleri', 'Mentörler'].map((dept) => (
+              {availableDepartments.map((dept) => (
                 <button
                   key={dept}
                   onClick={() => setFilterDepartment(dept)}
@@ -191,7 +232,7 @@ export default function TeamNetwork({ variant = 'core' }: TeamNetworkProps) {
 
         <div className="flex flex-col lg:flex-row gap-10 items-stretch">
           {/* Interactive Peer Constellation Network Panel */}
-          <div className="w-full lg:w-7/12 relative aspect-[4/3] border border-brand-border bg-brand-card/20 rounded-xl overflow-hidden backdrop-blur-sm shadow-xl flex flex-col justify-between p-4">
+          <div className="w-full lg:w-7/12 relative aspect-[4/3] border border-brand-border bg-brand-card/20 rounded-xl overflow-hidden backdrop-blur-sm shadow-xl flex flex-col justify-between p-4 min-h-[380px]">
             
             {/* Top diagnostic bar */}
             <div className="flex justify-between items-center font-mono text-[10px] text-brand-muted uppercase z-10">
@@ -208,27 +249,19 @@ export default function TeamNetwork({ variant = 'core' }: TeamNetworkProps) {
             <div className="absolute inset-0 top-8 bottom-8">
               <svg viewBox="0 0 100 100" className="w-full h-full select-none cursor-crosshair">
                 {/* Draw Peer Connection Lines */}
-                {PEER_CONNECTIONS.map((conn, idx) => {
-                  const m1 = members.find((m) => m.id === conn.from);
-                  const m2 = members.find((m) => m.id === conn.to);
-                  if (!m1 || !m2) return null;
-
-                  const isActive = selectedMember.id === m1.id || selectedMember.id === m2.id;
-
-                  return (
-                    <line
-                      key={idx}
-                      x1={m1.x}
-                      y1={m1.y}
-                      x2={m2.x}
-                      y2={m2.y}
-                      stroke={isActive ? '#00f2fe' : 'rgba(255, 255, 255, 0.12)'}
-                      strokeWidth={isActive ? 0.8 : 0.4}
-                      strokeDasharray={isActive ? 'none' : '1.5 1.5'}
-                      className="transition-all duration-300"
-                    />
-                  );
-                })}
+                {peerLines.map((line, idx) => (
+                  <line
+                    key={idx}
+                    x1={line.x1}
+                    y1={line.y1}
+                    x2={line.x2}
+                    y2={line.y2}
+                    stroke={line.isActive ? '#00f2fe' : 'rgba(255, 255, 255, 0.12)'}
+                    strokeWidth={line.isActive ? 0.8 : 0.4}
+                    strokeDasharray={line.isActive ? 'none' : '1.5 1.5'}
+                    className="transition-all duration-300"
+                  />
+                ))}
 
                 {/* Draw Member Interactive Nodes */}
                 {filteredMembers.map((member) => {
@@ -302,7 +335,7 @@ export default function TeamNetwork({ variant = 'core' }: TeamNetworkProps) {
 
           {/* Detailed Profile Card */}
           <div className="w-full lg:w-5/12 flex flex-col">
-            <div className="bg-brand-card border border-brand-border rounded-xl p-6 md:p-8 backdrop-blur-md relative overflow-hidden flex-grow flex flex-col justify-between shadow-xl">
+            <div className="bg-brand-card border border-brand-border rounded-xl p-6 md:p-8 backdrop-blur-md relative overflow-hidden flex-grow flex flex-col justify-between shadow-xl min-h-[380px]">
               <div>
                 <AnimatePresence mode="wait">
                   <motion.div

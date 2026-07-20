@@ -3,6 +3,7 @@ import NeuralBackground from "@/components/NeuralBackground";
 import SiteNav from "@/components/SiteNav";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
+import { getFilesFromDir } from "@/lib/markdown";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -11,6 +12,8 @@ export const metadata: Metadata = {
 };
 
 export default function EkibimizPage() {
+  const teamFiles = getFilesFromDir("team");
+
   return (
     <>
       <NeuralBackground />
@@ -29,7 +32,7 @@ export default function EkibimizPage() {
             </Link>
           </div>
 
-          <TeamNetwork variant="full" />
+          <TeamNetwork variant="full" teamFiles={teamFiles} />
         </div>
       </div>
 
