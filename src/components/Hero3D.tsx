@@ -36,11 +36,11 @@ export default function Hero3D() {
     const list: Point2D[] = [];
 
     for (let i = 0; i < 42; i++) {
-      // General positive linear trend: y = 0.5 * x + noise
-      const x = 50 + Math.random() * (width - 100);
-      const targetY = height / 2 + (x - width / 2) * 0.45;
-      const noise = (Math.random() - 0.5) * (height * 0.25);
-      const y = Math.max(50, Math.min(height - 50, targetY + noise));
+      // General positive linear trend: y = 0.5 * x + noise below header area (min Y = 120)
+      const x = 60 + Math.random() * (width - 120);
+      const targetY = height / 2 + (x - width / 2) * 0.35;
+      const noise = (Math.random() - 0.5) * (height * 0.2);
+      const y = Math.max(120, Math.min(height - 60, targetY + noise));
 
       list.push({
         x,
@@ -72,29 +72,35 @@ export default function Hero3D() {
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+      // Clip canvas drawing so canvas NEVER renders over the top header bar (top 85px)
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(0, 85, canvas.width, canvas.height - 85);
+      ctx.clip();
+
       // Draw Grid Background
       const gridSize = 40;
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.015)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.012)';
       ctx.lineWidth = 1;
       for (let x = 0; x < canvas.width; x += gridSize) {
         ctx.beginPath();
-        ctx.moveTo(x, 0);
+        ctx.moveTo(x, 85);
         ctx.lineTo(x, canvas.height);
         ctx.stroke();
       }
-      for (let y = 0; y < canvas.height; y += gridSize) {
+      for (let y = 85; y < canvas.height; y += gridSize) {
         ctx.beginPath();
         ctx.moveTo(0, y);
         ctx.lineTo(canvas.width, y);
         ctx.stroke();
       }
 
-      // Draw Axes lines
-      ctx.strokeStyle = 'rgba(0, 242, 254, 0.06)';
+      // Draw Axes lines (Soft background contrast)
+      ctx.strokeStyle = 'rgba(0, 242, 254, 0.04)';
       ctx.lineWidth = 1;
       // Y Axis
       ctx.beginPath();
-      ctx.moveTo(50, 0);
+      ctx.moveTo(50, 85);
       ctx.lineTo(50, canvas.height);
       ctx.stroke();
       // X Axis
@@ -126,6 +132,8 @@ export default function Hero3D() {
             p.x += (p.initX - p.x) * 0.05;
             p.y += (p.initY - p.y) * 0.05;
           }
+          // Clamp Y below header
+          if (p.y < 100) p.y = 100;
         });
 
         // 2. Perform 2D Linear Regression (Least Squares Method): y = m*x + c
@@ -163,14 +171,14 @@ export default function Hero3D() {
 
         const r2 = ssTot === 0 ? 1 : 1 - ssRes / ssTot;
 
-        // Draw Residual lines (Soft subtle opacity)
-        ctx.lineWidth = 1;
+        // Draw Residual lines (Ultra subtle background opacity)
+        ctx.lineWidth = 0.8;
         pts.forEach((p) => {
           const predY = slope * p.x + intercept;
           const error = Math.abs(p.y - predY);
           const intensity = Math.min(1, error / 150);
 
-          ctx.strokeStyle = `rgba(${Math.floor(intensity * 255)}, ${Math.floor((1 - intensity) * 200 + 20)}, 255, 0.15)`;
+          ctx.strokeStyle = `rgba(${Math.floor(intensity * 255)}, ${Math.floor((1 - intensity) * 200 + 20)}, 255, 0.08)`;
           ctx.beginPath();
           ctx.setLineDash([2, 3]);
           ctx.moveTo(p.x, p.y);
@@ -179,27 +187,25 @@ export default function Hero3D() {
         });
         ctx.setLineDash([]);
 
-        // Draw Regression line (Softened brightness & subtle glow)
+        // Draw Regression line (Softened low opacity 18%, 1.2px, zero glow)
         const startX = 0;
         const startY = intercept;
         const endX = canvas.width;
         const endY = slope * canvas.width + intercept;
 
-        ctx.strokeStyle = 'rgba(0, 242, 254, 0.45)';
-        ctx.lineWidth = 1.8;
-        ctx.shadowColor = 'rgba(0, 242, 254, 0.3)';
-        ctx.shadowBlur = 4;
+        ctx.strokeStyle = 'rgba(0, 242, 254, 0.22)';
+        ctx.lineWidth = 1.3;
+        ctx.shadowBlur = 0;
         ctx.beginPath();
         ctx.moveTo(startX, startY);
         ctx.lineTo(endX, endY);
         ctx.stroke();
-        ctx.shadowBlur = 0;
 
-        // Draw data points (Softened green dots)
-        ctx.fillStyle = 'rgba(0, 245, 160, 0.6)';
+        // Draw data points (Softened green dots, 25% opacity)
+        ctx.fillStyle = 'rgba(0, 245, 160, 0.35)';
         pts.forEach((p) => {
           ctx.beginPath();
-          ctx.arc(p.x, p.y, 3.5, 0, Math.PI * 2);
+          ctx.arc(p.x, p.y, 2.8, 0, Math.PI * 2);
           ctx.fill();
         });
 
@@ -212,6 +218,7 @@ export default function Hero3D() {
         });
       }
 
+      ctx.restore();
       animFrame = requestAnimationFrame(draw);
     };
 
@@ -223,8 +230,8 @@ export default function Hero3D() {
     };
   }, []);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    const rect = canvasRef.current?.getBoundingClientRect();
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = containerRef.current?.getBoundingClientRect();
     if (rect) {
       mouseRef.current = {
         x: e.clientX - rect.left,
@@ -238,8 +245,8 @@ export default function Hero3D() {
     mouseRef.current.active = false;
   };
 
-  const handleTouchMove = (e: React.TouchEvent<HTMLCanvasElement>) => {
-    const rect = canvasRef.current?.getBoundingClientRect();
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    const rect = containerRef.current?.getBoundingClientRect();
     if (rect && e.touches.length > 0) {
       mouseRef.current = {
         x: e.touches[0].clientX - rect.left,
@@ -252,20 +259,20 @@ export default function Hero3D() {
   return (
     <section 
       ref={containerRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleMouseLeave}
       className="relative min-h-screen w-full flex flex-col justify-between overflow-hidden bg-transparent border-b border-brand-border"
     >
-      {/* 2D Canvas Interactive Physics Layer — Placed in background z-0 */}
+      {/* Navigation Bar Header — Highest Z-Index (z-50) */}
+      <SiteNav />
+
+      {/* 2D Canvas Interactive Physics Layer — Placed strictly in background z-0 */}
       <canvas
         ref={canvasRef}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleMouseLeave}
-        className="absolute inset-0 w-full h-full cursor-crosshair bg-transparent z-0"
+        className="absolute inset-0 w-full h-full pointer-events-none bg-transparent z-0"
       />
-
-      {/* Navigation Bar Header */}
-      <SiteNav />
 
       {/* Hero Headline & Action Area — Placed above canvas in z-10 */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 flex flex-col lg:flex-row items-center justify-between flex-grow gap-8 pt-28 pb-16 pointer-events-none">
