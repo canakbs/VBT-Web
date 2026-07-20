@@ -112,7 +112,7 @@ interface TeamNetworkProps {
 }
 
 export default function TeamNetwork({ variant = 'core', teamFiles }: TeamNetworkProps) {
-  // Parse team dynamic files if available
+  // Parse all team dynamic files if available
   const allMembers: TeamMember[] = teamFiles && teamFiles.length > 0
     ? teamFiles.map((file, idx) => ({
         id: file.slug,
@@ -132,12 +132,10 @@ export default function TeamNetwork({ variant = 'core', teamFiles }: TeamNetwork
       }))
     : DEFAULT_MEMBERS;
 
-  const coreDepartments = ['Yönetim', 'Danışmanlar'];
-  const members = variant === 'core'
-    ? allMembers.filter((m) => coreDepartments.includes(m.department))
-    : allMembers;
+  // Show all members on both core (homepage) and full views for a rich interactive network!
+  const members = allMembers;
 
-  const [selectedMember, setSelectedMember] = useState<TeamMember>(members[0] || allMembers[0]);
+  const [selectedMember, setSelectedMember] = useState<TeamMember>(members[0] || DEFAULT_MEMBERS[0]);
   const [filterDepartment, setFilterDepartment] = useState<string>('Hepsi');
 
   // Extract unique departments for dynamic filtering
@@ -211,23 +209,21 @@ export default function TeamNetwork({ variant = 'core', teamFiles }: TeamNetwork
           </div>
 
           {/* Department Filter Tabs */}
-          {variant === 'full' && (
-            <div className="flex flex-wrap gap-2">
-              {availableDepartments.map((dept) => (
-                <button
-                  key={dept}
-                  onClick={() => setFilterDepartment(dept)}
-                  className={`px-3.5 py-1.5 rounded font-mono text-xs transition-colors cursor-pointer ${
-                    filterDepartment === dept
-                      ? 'bg-brand-cyan text-[#090d16] font-bold'
-                      : 'bg-slate-900 border border-brand-border text-slate-400 hover:text-white'
-                  }`}
-                >
-                  {dept}
-                </button>
-              ))}
-            </div>
-          )}
+          <div className="flex flex-wrap gap-2">
+            {availableDepartments.map((dept) => (
+              <button
+                key={dept}
+                onClick={() => setFilterDepartment(dept)}
+                className={`px-3.5 py-1.5 rounded font-mono text-xs transition-colors cursor-pointer ${
+                  filterDepartment === dept
+                    ? 'bg-brand-cyan text-[#090d16] font-bold'
+                    : 'bg-slate-900 border border-brand-border text-slate-400 hover:text-white'
+                }`}
+              >
+                {dept}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-10 items-stretch">

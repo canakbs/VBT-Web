@@ -17,7 +17,8 @@ import {
   User,
   Mail,
   Calendar,
-  Network
+  Network,
+  Crosshair
 } from 'lucide-react';
 import Link from 'next/link';
 import { 
@@ -126,6 +127,16 @@ export default function Workspace() {
   const addConsoleLine = (text: string) => {
     const timestamp = new Date().toLocaleTimeString();
     setConsoleLines(prev => [...prev, `[${timestamp}] ${text}`]);
+  };
+
+  // Handle interactive SVG map position selection
+  const handleMapClick = (e: React.MouseEvent<SVGSVGElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const xPct = Math.round(((e.clientX - rect.left) / rect.width) * 100);
+    const yPct = Math.round(((e.clientY - rect.top) / rect.height) * 100);
+    setTeamX(Math.max(5, Math.min(95, xPct)));
+    setTeamY(Math.max(5, Math.min(95, yPct)));
+    addConsoleLine(`AĞ HARİTASI KONUMU GÜNCELLENDİ: X=${xPct}%, Y=${yPct}%`);
   };
 
   // Switch to create mode
@@ -790,28 +801,59 @@ ${content || teamBio}
                       <span className="text-[10px] text-slate-500 mt-1">İnteraktif ağ grafiğinde bu üyenin kimlerle çizgi bağlantısı olacağını belirler.</span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4 pt-2 border-t border-brand-border/30">
-                      <div className="flex flex-col">
-                        <label className="text-slate-400 mb-1 uppercase text-[10px]">Ağ X Konumu (%: {teamX})</label>
-                        <input
-                          type="range"
-                          min={10}
-                          max={90}
-                          value={teamX}
-                          onChange={(e) => setTeamX(Number(e.target.value))}
-                          className="w-full accent-brand-cyan cursor-pointer"
-                        />
+                    {/* Interactive Graphical Node Position Picker */}
+                    <div className="space-y-2 pt-3 border-t border-brand-border/40">
+                      <div className="flex justify-between items-center">
+                        <label className="text-brand-cyan font-bold uppercase text-[11px] flex items-center gap-1.5">
+                          <Crosshair size={13} />
+                          <span>GÖRSEL AĞ KONUMU SEÇİCİ</span>
+                        </label>
+                        <span className="font-mono text-xs text-brand-emerald font-bold">
+                          X: %{teamX} | Y: %{teamY}
+                        </span>
                       </div>
-                      <div className="flex flex-col">
-                        <label className="text-slate-400 mb-1 uppercase text-[10px]">Ağ Y Konumu (%: {teamY})</label>
-                        <input
-                          type="range"
-                          min={10}
-                          max={90}
-                          value={teamY}
-                          onChange={(e) => setTeamY(Number(e.target.value))}
-                          className="w-full accent-brand-cyan cursor-pointer"
-                        />
+
+                      <div className="relative aspect-[4/3] bg-slate-900 border border-brand-cyan/40 rounded-xl overflow-hidden cursor-crosshair group shadow-inner">
+                        <div className="absolute inset-0 scientific-grid opacity-20 pointer-events-none" />
+                        
+                        <svg
+                          viewBox="0 0 100 100"
+                          className="w-full h-full select-none"
+                          onClick={handleMapClick}
+                        >
+                          {/* Grid crosshair guides */}
+                          <line x1={teamX} y1={0} x2={teamX} y2={100} stroke="rgba(0, 242, 254, 0.2)" strokeWidth={0.3} strokeDasharray="1 1" />
+                          <line x1={0} y1={teamY} x2={100} y2={teamY} stroke="rgba(0, 242, 254, 0.2)" strokeWidth={0.3} strokeDasharray="1 1" />
+
+                          {/* Existing team nodes */}
+                          {contentList.map((item, idx) => {
+                            const isCurrent = item.title === title || item.path.includes(editingFilename);
+                            if (isCurrent) return null;
+                            const px = item.x ? Number(item.x) : (20 + (idx * 15) % 65);
+                            const py = item.y ? Number(item.y) : (30 + (idx * 18) % 55);
+                            return (
+                              <g key={item.name || idx}>
+                                <circle cx={px} cy={py} r={3} fill="#1e293b" stroke="#475569" strokeWidth={0.5} />
+                                <text x={px} y={py + 5} fill="#64748b" fontSize="2.5" textAnchor="middle" className="font-mono">
+                                  {item.title ? item.title.split(' ')[0] : 'Üye'}
+                                </text>
+                              </g>
+                            );
+                          })}
+
+                          {/* Target active member node */}
+                          <g>
+                            <circle cx={teamX} cy={teamY} r={7} fill="rgba(0, 242, 254, 0.15)" stroke="#00f2fe" strokeWidth={0.5} />
+                            <circle cx={teamX} cy={teamY} r={4} fill="#00f2fe" />
+                            <text x={teamX} y={teamY - 6} fill="#ffffff" fontSize="3.2" fontWeight="bold" textAnchor="middle">
+                              {title || 'Yeni Üye'}
+                            </text>
+                          </g>
+                        </svg>
+
+                        <div className="absolute bottom-2 left-2 text-[9px] font-mono text-slate-400 bg-slate-950/80 px-2 py-0.5 rounded border border-brand-border">
+                          👉 Haritada istediğiniz noktaya tıklayarak konumu belirleyin
+                        </div>
                       </div>
                     </div>
                   </div>
