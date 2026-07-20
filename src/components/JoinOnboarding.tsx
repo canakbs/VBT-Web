@@ -10,7 +10,6 @@ const INTERESTS = ['Machine Learning', 'Deep Learning', 'Computer Vision', 'Natu
 const LEVELS = ['Başlangıç (Öğrenmeye hazırım)', 'Orta Seviye (Proje geliştirdim)', 'İleri Seviye (Araştırma / Mühendislik)'];
 const DEPARTMENTS = ['Araştırma & Geliştirme (Ar-Ge)', 'Eğitim & Workshop', 'İletişim & Sosyal Medya'];
 
-const TARGET_EMAIL = 'akdenizveri07@gmail.com';
 const SOCIAL_LINK = 'https://linktr.ee/akdenizveribilimi';
 
 export default function JoinOnboarding() {
@@ -34,36 +33,12 @@ export default function JoinOnboarding() {
     );
   };
 
-  const generateEmailBody = () => {
-    return `Ad Soyad: ${fullName || 'Belirtilmedi'}
-E-posta: ${email || 'Belirtilmedi'}
-Tarih: ${new Date().toLocaleDateString('tr-TR')}
-
-İlgi Alanları:
-${selectedInterests.map((interest) => `- ${interest}`).join('\n') || '- Seçim yapılmadı'}
-
-Teknik Seviye:
-- ${level}
-
-Tercih Edilen Departman:
-- ${department}
-
-Hedefler & Proje Fikirleri:
-${goals || 'Henüz belirtilmedi.'}`;
-  };
-
-  const getMailtoLink = () => {
-    const subject = encodeURIComponent(`Topluluk Üyelik Başvurusu - ${fullName || 'Yeni Üye'}`);
-    const body = encodeURIComponent(generateEmailBody());
-    return `mailto:${TARGET_EMAIL}?subject=${subject}&body=${body}`;
-  };
-
   const handleSubmitApplication = async () => {
     if (isSubmitting || isSubmitted) return;
     setIsSubmitting(true);
 
     try {
-      // 1. Submit to server action
+      // Direct Server Action execution — NO blank browser tab opens
       await sendApplicationAction({
         fullName,
         email,
@@ -73,14 +48,7 @@ ${goals || 'Henüz belirtilmedi.'}`;
         goals,
       });
 
-      // 2. Trigger mailto window fallback
-      try {
-        window.open(getMailtoLink(), '_blank');
-      } catch (e) {
-        console.log('Mailto fallback triggered:', e);
-      }
-
-      // 3. Trigger confetti & success state
+      // Confetti celebration
       confetti({
         particleCount: 120,
         spread: 80,
@@ -306,13 +274,15 @@ ${goals || 'Henüz belirtilmedi.'}`;
                   className="space-y-8 py-2"
                 >
                   {isSubmitted ? (
-                    <div className="p-6 bg-brand-emerald/10 border border-brand-emerald/40 rounded-2xl flex flex-col items-center text-center space-y-4">
-                      <div className="w-14 h-14 rounded-full bg-brand-emerald/20 border border-brand-emerald flex items-center justify-center text-brand-emerald">
-                        <CheckCircle2 size={32} />
+                    <div className="p-8 bg-brand-emerald/10 border border-brand-emerald/40 rounded-2xl flex flex-col items-center text-center space-y-5">
+                      <div className="w-16 h-16 rounded-full bg-brand-emerald/20 border border-brand-emerald flex items-center justify-center text-brand-emerald">
+                        <CheckCircle2 size={36} />
                       </div>
                       <div>
-                        <h3 className="text-xl md:text-2xl font-bold text-white mb-2">Başvurunuz Başarıyla İletildi!</h3>
-                        <p className="text-sm text-slate-300 max-w-md mx-auto leading-relaxed">
+                        <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                          Başvurunuz Başarıyla İletildi!
+                        </h3>
+                        <p className="text-sm md:text-base text-slate-300 max-w-md mx-auto leading-relaxed">
                           Başvuru bilgileriniz topluluk ekibimize iletildi. En kısa sürede sizinle iletişime geçeceğiz.
                         </p>
                       </div>
@@ -321,7 +291,7 @@ ${goals || 'Henüz belirtilmedi.'}`;
                         href={SOCIAL_LINK}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="mt-2 inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-brand-emerald text-[#090d16] font-bold rounded-xl text-sm hover:bg-brand-emerald/90 transition-all shadow-lg shadow-brand-emerald/25 hover:scale-105 active:scale-95"
+                        className="mt-4 inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-brand-emerald text-[#090d16] font-bold rounded-xl text-sm hover:bg-brand-emerald/90 transition-all shadow-lg shadow-brand-emerald/25 hover:scale-105 active:scale-95"
                       >
                         <Share2 size={18} />
                         <span>Sosyal Ağlarımıza Katılın</span>
@@ -339,7 +309,7 @@ ${goals || 'Henüz belirtilmedi.'}`;
                             Başvuruyu tamamlamak için e-posta ile gönderin
                           </h3>
                           <p className="text-sm text-slate-300 mt-1">
-                            Bilgileriniz hazırlandı. Aşağıdaki butona tıklayarak başvurunuzu anında iletebilirsiniz.
+                            Bilgileriniz hazırlandı. Aşağıdaki &quot;Başvuruyu Gönder&quot; butonuna tıklayarak başvurunuzu anında iletebilirsiniz.
                           </p>
                         </div>
                       </div>
@@ -354,7 +324,7 @@ ${goals || 'Henüz belirtilmedi.'}`;
                           {isSubmitting ? (
                             <>
                               <Loader2 size={18} className="animate-spin" />
-                              <span>Gönderiliyor...</span>
+                              <span>E-posta Gönderiliyor...</span>
                             </>
                           ) : (
                             <>
