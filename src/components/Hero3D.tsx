@@ -74,7 +74,7 @@ export default function Hero3D() {
 
       // Draw Grid Background
       const gridSize = 40;
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.025)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.015)';
       ctx.lineWidth = 1;
       for (let x = 0; x < canvas.width; x += gridSize) {
         ctx.beginPath();
@@ -90,8 +90,8 @@ export default function Hero3D() {
       }
 
       // Draw Axes lines
-      ctx.strokeStyle = 'rgba(0, 242, 254, 0.1)';
-      ctx.lineWidth = 1.5;
+      ctx.strokeStyle = 'rgba(0, 242, 254, 0.06)';
+      ctx.lineWidth = 1;
       // Y Axis
       ctx.beginPath();
       ctx.moveTo(50, 0);
@@ -163,14 +163,14 @@ export default function Hero3D() {
 
         const r2 = ssTot === 0 ? 1 : 1 - ssRes / ssTot;
 
-        // Draw Residual lines
+        // Draw Residual lines (Soft subtle opacity)
         ctx.lineWidth = 1;
         pts.forEach((p) => {
           const predY = slope * p.x + intercept;
           const error = Math.abs(p.y - predY);
           const intensity = Math.min(1, error / 150);
 
-          ctx.strokeStyle = `rgba(${Math.floor(intensity * 255)}, ${Math.floor((1 - intensity) * 240 + 15)}, 255, 0.35)`;
+          ctx.strokeStyle = `rgba(${Math.floor(intensity * 255)}, ${Math.floor((1 - intensity) * 200 + 20)}, 255, 0.15)`;
           ctx.beginPath();
           ctx.setLineDash([2, 3]);
           ctx.moveTo(p.x, p.y);
@@ -179,28 +179,27 @@ export default function Hero3D() {
         });
         ctx.setLineDash([]);
 
-        // Draw Regression line
+        // Draw Regression line (Softened brightness & subtle glow)
         const startX = 0;
         const startY = intercept;
         const endX = canvas.width;
         const endY = slope * canvas.width + intercept;
 
-        ctx.strokeStyle = '#00f2fe';
-        ctx.lineWidth = 3;
-        ctx.shadowColor = '#00f2fe';
-        ctx.shadowBlur = 10;
+        ctx.strokeStyle = 'rgba(0, 242, 254, 0.45)';
+        ctx.lineWidth = 1.8;
+        ctx.shadowColor = 'rgba(0, 242, 254, 0.3)';
+        ctx.shadowBlur = 4;
         ctx.beginPath();
         ctx.moveTo(startX, startY);
         ctx.lineTo(endX, endY);
         ctx.stroke();
         ctx.shadowBlur = 0;
 
-        // Draw data points
-        ctx.fillStyle = '#00f5a0';
-        ctx.shadowColor = '#00f5a0';
+        // Draw data points (Softened green dots)
+        ctx.fillStyle = 'rgba(0, 245, 160, 0.6)';
         pts.forEach((p) => {
           ctx.beginPath();
-          ctx.arc(p.x, p.y, 4.5, 0, Math.PI * 2);
+          ctx.arc(p.x, p.y, 3.5, 0, Math.PI * 2);
           ctx.fill();
         });
 
@@ -255,20 +254,20 @@ export default function Hero3D() {
       ref={containerRef}
       className="relative min-h-screen w-full flex flex-col justify-between overflow-hidden bg-transparent border-b border-brand-border"
     >
-      {/* 2D Canvas Interactive Physics Layer */}
+      {/* 2D Canvas Interactive Physics Layer — Placed in background z-0 */}
       <canvas
         ref={canvasRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleMouseLeave}
-        className="absolute inset-0 w-full h-full cursor-crosshair bg-transparent"
+        className="absolute inset-0 w-full h-full cursor-crosshair bg-transparent z-0"
       />
 
       {/* Navigation Bar Header */}
       <SiteNav />
 
-      {/* Hero Headline & Action Area */}
+      {/* Hero Headline & Action Area — Placed above canvas in z-10 */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 flex flex-col lg:flex-row items-center justify-between flex-grow gap-8 pt-28 pb-16 pointer-events-none">
         
         {/* Left Side: Headline & Natural Turkish Copy */}
@@ -295,14 +294,14 @@ export default function Hero3D() {
           {/* Large Action Buttons */}
           <div className="pointer-events-auto flex flex-wrap items-center gap-4 mb-10">
             <a
-              href="#join-us"
+              href="/#join-us"
               className="inline-flex items-center gap-2.5 px-8 py-4 text-base font-bold bg-brand-cyan text-[#090d16] rounded-xl hover:bg-brand-cyan/90 transition-all shadow-lg shadow-brand-cyan/25 hover:scale-105 active:scale-95"
             >
               <span>Bize Katıl</span>
               <ArrowRight size={18} />
             </a>
             <a
-              href="#team"
+              href="/ekibimiz"
               className="inline-flex items-center gap-2.5 px-8 py-4 text-base font-semibold bg-brand-card/90 text-white border border-brand-border rounded-xl hover:border-brand-cyan/40 hover:bg-brand-card transition-all backdrop-blur-md hover:scale-105 active:scale-95"
             >
               <Users size={18} />
@@ -318,7 +317,7 @@ export default function Hero3D() {
         </div>
 
         {/* Right Side: Interactive Linear Regression Mathematical Console */}
-        <div className="pointer-events-auto w-full max-w-[320px] p-6 bg-[#090d16]/85 border border-brand-border rounded-2xl backdrop-blur-xl font-mono text-xs text-slate-300 shadow-2xl shadow-black/50 relative overflow-hidden">
+        <div className="pointer-events-auto w-full max-w-[320px] p-6 bg-[#090d16]/90 border border-brand-border rounded-2xl backdrop-blur-xl font-mono text-xs text-slate-300 shadow-2xl shadow-black/50 relative overflow-hidden z-20">
           <div className="flex items-center justify-between pb-3 border-b border-brand-border/40 mb-4">
             <div className="flex items-center gap-2">
               <Terminal size={14} className="text-brand-cyan" />
