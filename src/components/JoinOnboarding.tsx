@@ -3,11 +3,14 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { ArrowRight, ArrowLeft, Terminal, Copy, Check, Info } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Terminal, Copy, Check, Mail, ExternalLink, Share2 } from 'lucide-react';
 
 const INTERESTS = ['Machine Learning', 'Deep Learning', 'Computer Vision', 'Natural Language Processing', 'MLOps & Deployment', 'Exploratory Data Analysis', 'Academic Research'];
 const LEVELS = ['Başlangıç (Öğrenmeye hazırım)', 'Orta Seviye (Proje geliştirdim)', 'İleri Seviye (Araştırma / Mühendislik)'];
 const DEPARTMENTS = ['Araştırma & Geliştirme (Ar-Ge)', 'Eğitim & Workshop', 'İletişim & Sosyal Medya'];
+
+const TARGET_EMAIL = 'akdenizveri07@gmail.com';
+const LINKTREE_URL = 'https://linktr.ee/akdenizveribilimi';
 
 export default function JoinOnboarding() {
   const [step, setStep] = useState(1);
@@ -44,29 +47,26 @@ export default function JoinOnboarding() {
     if (step > 1) setStep(step - 1);
   };
 
-  // Generate markdown application summary
+  // Generate application summary
   const generateApplicationSummary = () => {
     return `---
-APPLICANT_SHEET
+BAŞVURU FORMU - AKDENİZ VERİ BİLİMİ TOPLULUĞU
 ---
-İSİM: "${fullName || 'Anonim kullanıcı'}"
-E-POSTA: "${email || 'Yok'}"
-TARİH: "${new Date().toISOString().split('T')[0]}"
+Ad Soyad: ${fullName || 'Belirtilmedi'}
+E-posta: ${email || 'Belirtilmedi'}
+Tarih: ${new Date().toLocaleDateString('tr-TR')}
 
-[İLGİ ALANLARI]
+İlgi Alanları:
 ${selectedInterests.map((interest) => `- ${interest}`).join('\n') || '- Seçim yapılmadı'}
 
-[TEKNİK SEVİYE]
+Teknik Seviye:
 - ${level}
 
-[İSTENİLEN DEPARTMAN]
+Tercih Edilen Departman:
 - ${department}
 
-[PROJELER & AKADEMİK HEDEFLER]
-"${goals || 'Henüz hedef belirtilmedi.'}"
-
----
-EOF
+Hedefler & Proje Fikirleri:
+${goals || 'Henüz belirtilmedi.'}
 ---`;
   };
 
@@ -74,6 +74,13 @@ EOF
     navigator.clipboard.writeText(generateApplicationSummary());
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  // Mailto link for 1-click email submission
+  const getMailtoLink = () => {
+    const subject = encodeURIComponent(`Topluluk Üyelik Başvurusu - ${fullName || 'Yeni Üye'}`);
+    const body = encodeURIComponent(generateApplicationSummary());
+    return `mailto:${TARGET_EMAIL}?subject=${subject}&body=${body}`;
   };
 
   return (
@@ -95,7 +102,7 @@ EOF
         </div>
 
         {/* Wizard Panel */}
-        <div className="bg-brand-card border border-brand-border rounded p-6 md:p-8 backdrop-blur-sm relative overflow-hidden min-h-[460px] flex flex-col justify-between">
+        <div className="bg-brand-card border border-brand-border rounded-xl p-6 md:p-8 backdrop-blur-sm relative overflow-hidden min-h-[460px] flex flex-col justify-between">
           {/* Top Wizard Steps Diagnostic bar */}
           <div className="flex justify-between items-center pb-4 border-b border-brand-border/40 font-mono text-[10px] text-brand-muted uppercase">
             <span>KAYIT FORMU</span>
@@ -122,17 +129,17 @@ EOF
                       <label className="font-mono text-[10px] text-slate-400 uppercase mb-2">Ad Soyad</label>
                       <input
                         type="text"
-                        placeholder="e.g. Alperen Demir"
+                        placeholder="Örn: Alperen Demir"
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
                         className="p-3 bg-slate-900 border border-brand-border rounded font-mono text-sm text-white focus:border-brand-cyan focus:outline-none transition-colors"
                       />
                     </div>
                     <div className="flex flex-col">
-                      <label className="font-mono text-[10px] text-slate-400 uppercase mb-2">E-posta</label>
+                      <label className="font-mono text-[10px] text-slate-400 uppercase mb-2">E-posta Adresi</label>
                       <input
                         type="email"
-                        placeholder="e.g. alperen@email.com"
+                        placeholder="Örn: alperen@email.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         className="p-3 bg-slate-900 border border-brand-border rounded font-mono text-sm text-white focus:border-brand-cyan focus:outline-none transition-colors"
@@ -253,7 +260,7 @@ EOF
                   </div>
                   <textarea
                     rows={4}
-                    placeholder="örn. YOLO tabanlı nesne tespiti projesi yapmak istiyorum veya NLP alanında çalışmalar yapmak istiyorum."
+                    placeholder="Örn: YOLO tabanlı nesne tespiti projesi yapmak istiyorum veya NLP alanında çalışmalara katılmak istiyorum."
                     value={goals}
                     onChange={(e) => setGoals(e.target.value)}
                     className="w-full p-4 bg-slate-900 border border-brand-border rounded font-mono text-xs md:text-sm text-white focus:border-brand-cyan focus:outline-none transition-colors"
@@ -270,40 +277,72 @@ EOF
                   className="space-y-6"
                 >
                   <div className="flex items-center gap-3.5 pb-4 border-b border-brand-border/40">
-                    <div className="w-8 h-8 rounded-full bg-brand-emerald/20 border border-brand-emerald flex items-center justify-center text-brand-emerald">
-                      ✔
+                    <div className="w-10 h-10 rounded-full bg-brand-emerald/20 border border-brand-emerald flex items-center justify-center text-brand-emerald font-bold text-lg">
+                      ✓
                     </div>
                     <div>
-                      <h3 className="text-lg md:text-xl font-bold text-white">Kayıt Tamamlandı!</h3>
-                      <p className="text-xs md:text-sm text-brand-muted">Başvuru özetin hazır. Kopyala ve bize e-posta ile gönder: info@avbt.org</p>
+                      <h3 className="text-lg md:text-xl font-bold text-white">Başvurunuz Hazır! 🎉</h3>
+                      <p className="text-xs md:text-sm text-brand-muted">
+                        Aşağıdaki buton ile başvurunuzu doğrudan <strong className="text-brand-cyan">{TARGET_EMAIL}</strong> adresine gönderebilirsiniz.
+                      </p>
                     </div>
                   </div>
 
+                  {/* Quick Action Buttons */}
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <a
+                      href={getMailtoLink()}
+                      className="flex-1 flex items-center justify-center gap-2 px-6 py-3.5 bg-brand-cyan text-[#090d16] font-bold rounded-lg text-xs hover:bg-brand-cyan/90 transition-all shadow-lg shadow-brand-cyan/20"
+                    >
+                      <Mail size={16} />
+                      <span>E-posta Uygulamasıyla Gönder ({TARGET_EMAIL})</span>
+                    </a>
+                    <button
+                      onClick={copyToClipboard}
+                      className="flex items-center justify-center gap-2 px-5 py-3.5 bg-slate-900 border border-brand-border hover:border-slate-500 rounded text-xs font-mono text-white transition-all"
+                    >
+                      {copied ? <Check size={14} className="text-brand-emerald" /> : <Copy size={14} />}
+                      <span>{copied ? 'Kopyalandı!' : 'Özeti Kopyala'}</span>
+                    </button>
+                  </div>
+
                   {/* Terminal Display */}
-                  <div className="border border-brand-border bg-slate-950 rounded overflow-hidden">
+                  <div className="border border-brand-border bg-slate-950 rounded-lg overflow-hidden">
                     <div className="px-4 py-2 bg-slate-900 border-b border-brand-border flex justify-between items-center">
                       <div className="flex items-center gap-2 font-mono text-[10px] text-brand-muted uppercase">
                         <Terminal size={10} />
-                        <span>output_log.md</span>
+                        <span>basvuru_ozeti.md</span>
                       </div>
-                      <button
-                        onClick={copyToClipboard}
-                        className="flex items-center gap-1 font-mono text-[10px] text-brand-cyan hover:text-white transition-colors"
-                      >
-                        {copied ? <Check size={10} /> : <Copy size={10} />}
-                        <span>{copied ? 'Kopyalandı' : 'Kopyala'}</span>
-                      </button>
+                      <span className="font-mono text-[9px] text-brand-emerald uppercase">ALICI: {TARGET_EMAIL}</span>
                     </div>
-                    <pre className="p-4 overflow-x-auto text-[11px] md:text-xs font-mono text-slate-300 leading-relaxed max-h-[200px]">
+                    <pre className="p-4 overflow-x-auto text-[11px] md:text-xs font-mono text-slate-300 leading-relaxed max-h-[180px]">
                       <code>{generateApplicationSummary()}</code>
                     </pre>
                   </div>
 
-                  <div className="p-3 bg-slate-900 border border-brand-border rounded-lg flex items-start gap-2.5">
-                    <Info size={16} className="text-brand-cyan mt-0.5 shrink-0" />
-                    <span className="text-brand-muted font-mono text-[10px] uppercase leading-relaxed">
-                      Oluşturulan başvuru formunu info@avbt.org adresine veya topluluk yönetimine göndererek üyeliğinizi aktifleştirin.
-                    </span>
+                  {/* Linktree Social Networks Promotion Card */}
+                  <div className="p-4 bg-gradient-to-r from-brand-cyan/10 via-slate-900 to-brand-emerald/10 border border-brand-cyan/30 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2.5 bg-brand-cyan/20 border border-brand-cyan/40 rounded-lg text-brand-cyan">
+                        <Share2 size={20} />
+                      </div>
+                      <div>
+                        <h4 className="text-white font-bold text-sm">Sosyal Ağlarımıza Katılın</h4>
+                        <p className="text-slate-400 text-xs mt-0.5">
+                          Discord, Instagram ve diğer kanallarımıza Linktree bağlantımızdan ulaşabilirsiniz.
+                        </p>
+                      </div>
+                    </div>
+
+                    <a
+                      href={LINKTREE_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-5 py-2.5 bg-brand-emerald text-[#090d16] font-bold rounded-lg text-xs hover:bg-brand-emerald/90 transition-all flex items-center gap-1.5 shrink-0 shadow-md shadow-brand-emerald/20"
+                    >
+                      <span>Linktree&apos;yi Aç</span>
+                      <ExternalLink size={13} />
+                    </a>
                   </div>
                 </motion.div>
               )}
@@ -342,7 +381,7 @@ EOF
                 onClick={() => setStep(1)}
                 className="px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-brand-border rounded font-mono text-xs text-white transition-colors"
               >
-                TEKRAR BAŞLA
+                YENİ BAŞVURU
               </button>
             )}
           </div>
