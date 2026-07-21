@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Sparkles, ArrowRight, ExternalLink, ShieldCheck, Mail, Send, CheckCircle2 } from 'lucide-react';
+import { Sparkles, ExternalLink, Send, CheckCircle2 } from 'lucide-react';
 
 export default function MaintenanceOverlay({ children }: { children: React.ReactNode }) {
   const [isMaintenance, setIsMaintenance] = useState(true);
@@ -12,22 +12,13 @@ export default function MaintenanceOverlay({ children }: { children: React.React
   useEffect(() => {
     setMounted(true);
     const params = new URLSearchParams(window.location.search);
+    const isDev = process.env.NODE_ENV === 'development';
     
-    // Preview bypass mechanism
-    if (params.get('preview') === 'true') {
-      localStorage.setItem('vbt_preview', 'true');
-      setIsMaintenance(false);
-      return;
-    }
-
-    if (params.get('preview') === 'false') {
-      localStorage.removeItem('vbt_preview');
-      setIsMaintenance(true);
-      return;
-    }
-
-    const savedPreview = localStorage.getItem('vbt_preview');
-    if (savedPreview === 'true') {
+    // In local development or if secret preview param / localStorage is set, allow full site access
+    if (isDev || params.get('preview') === 'true' || localStorage.getItem('vbt_preview') === 'true') {
+      if (params.get('preview') === 'true') {
+        localStorage.setItem('vbt_preview', 'true');
+      }
       setIsMaintenance(false);
     } else {
       setIsMaintenance(true);
@@ -44,25 +35,7 @@ export default function MaintenanceOverlay({ children }: { children: React.React
   if (!mounted) return <>{children}</>;
 
   if (!isMaintenance) {
-    return (
-      <>
-        {/* Admin Preview Mode Banner */}
-        <div className="bg-brand-cyan/20 border-b border-brand-cyan/40 py-1.5 px-4 text-center font-mono text-xs text-brand-cyan flex items-center justify-center gap-2 sticky top-0 z-[100] backdrop-blur-md">
-          <ShieldCheck size={14} />
-          <span>ÖNİZLEME MODU AKTİF — Canlı ziyaretçiler şu an bakım ekranını görüyor.</span>
-          <button 
-            onClick={() => {
-              localStorage.removeItem('vbt_preview');
-              window.location.href = '/?preview=false';
-            }}
-            className="underline text-white hover:text-brand-cyan ml-2 cursor-pointer font-bold"
-          >
-            [Bakım Modunu Aç]
-          </button>
-        </div>
-        {children}
-      </>
-    );
+    return <>{children}</>;
   }
 
   return (
@@ -153,39 +126,23 @@ export default function MaintenanceOverlay({ children }: { children: React.React
           )}
         </div>
 
-        {/* Social Links */}
-        <div className="flex flex-wrap items-center justify-center gap-4 text-xs font-mono text-slate-300">
+        {/* Social Link */}
+        <div className="flex items-center justify-center text-xs font-mono text-slate-300">
           <a
             href="https://linktr.ee/akdenizveribilimi"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-4 py-2.5 bg-slate-900/80 border border-white/10 rounded-xl hover:border-brand-cyan/40 hover:text-white transition-all backdrop-blur-md"
+            className="flex items-center gap-2 px-5 py-2.5 bg-slate-900/80 border border-white/10 rounded-xl hover:border-brand-cyan/40 hover:text-white transition-all backdrop-blur-md"
           >
             <span>Linktree / Sosyal Medya</span>
             <ExternalLink size={13} className="text-brand-cyan" />
           </a>
-          <a
-            href="mailto:contact@akdenizveribilimi.org"
-            className="flex items-center gap-2 px-4 py-2.5 bg-slate-900/80 border border-white/10 rounded-xl hover:border-brand-cyan/40 hover:text-white transition-all backdrop-blur-md"
-          >
-            <Mail size={13} className="text-brand-emerald" />
-            <span>İletişim E-Posta</span>
-          </a>
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="w-full max-w-7xl mx-auto px-6 py-6 border-t border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] font-mono text-slate-500 relative z-20">
+      {/* Clean Footer */}
+      <footer className="w-full max-w-7xl mx-auto px-6 py-6 border-t border-white/5 flex justify-center items-center text-[11px] font-mono text-slate-500 relative z-20">
         <span>© 2025 Akdeniz Veri Bilimi Topluluğu</span>
-        <button 
-          onClick={() => {
-            localStorage.setItem('vbt_preview', 'true');
-            window.location.href = '/?preview=true';
-          }}
-          className="text-slate-600 hover:text-slate-400 transition-colors cursor-pointer"
-        >
-          [Yönetici Önizleme Girişi]
-        </button>
       </footer>
     </div>
   );
