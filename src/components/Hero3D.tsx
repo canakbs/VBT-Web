@@ -374,32 +374,8 @@ export default function Hero3D() {
             </span>
           </h1>
 
-          {/* Description */}
-          <p className="text-sm sm:text-base text-slate-300 max-w-md leading-relaxed">
-            Yapay zekâ, makine öğrenmesi ve veri analitiği alanında çalıştaylar düzenliyor,
-            açık kaynak projeler geliştiriyor ve deneyimlerimizi paylaşıyoruz. Merakın varsa aramıza katıl!
-          </p>
-
-          {/* Action Buttons */}
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
-            <a
-              href="/#join-us"
-              className="inline-flex items-center gap-2 px-6 py-3 text-sm font-bold bg-brand-cyan text-[#090d16] rounded-xl hover:bg-brand-cyan/90 transition-all shadow-lg shadow-brand-cyan/25 hover:scale-105 active:scale-95"
-            >
-              <span>Bize Katıl</span>
-              <ArrowRight size={16} />
-            </a>
-            <a
-              href="/ekibimiz"
-              className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold bg-brand-card/90 text-white border border-brand-border rounded-xl hover:border-brand-cyan/40 hover:bg-brand-card transition-all backdrop-blur-md hover:scale-105 active:scale-95"
-            >
-              <Users size={16} />
-              <span>Ekibimiz</span>
-            </a>
-          </div>
-
-          {/* Community Vision Quote & Compact Stat Metrics */}
-          <div className="w-full max-w-md mt-2 p-4 bg-[#090d16]/90 border border-brand-border/80 rounded-xl backdrop-blur-xl text-slate-300 shadow-xl shadow-black/50 relative overflow-hidden group hover:border-brand-cyan/40 transition-all">
+          {/* Community Vision Quote & Compact Stat Metrics Widget */}
+          <div className="w-full max-w-md mt-1 p-4 bg-[#090d16]/90 border border-brand-border/80 rounded-xl backdrop-blur-xl text-slate-300 shadow-xl shadow-black/50 relative overflow-hidden group hover:border-brand-cyan/40 transition-all">
             <div className="absolute top-0 right-0 w-28 h-28 bg-brand-cyan/5 rounded-full blur-2xl group-hover:bg-brand-cyan/10 transition-all pointer-events-none" />
 
             <div className="space-y-3">
@@ -437,6 +413,24 @@ export default function Hero3D() {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Action Buttons (at the very bottom) */}
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <a
+              href="/#join-us"
+              className="inline-flex items-center gap-2 px-6 py-3 text-sm font-bold bg-brand-cyan text-[#090d16] rounded-xl hover:bg-brand-cyan/90 transition-all shadow-lg shadow-brand-cyan/25 hover:scale-105 active:scale-95"
+            >
+              <span>Bize Katıl</span>
+              <ArrowRight size={16} />
+            </a>
+            <a
+              href="/ekibimiz"
+              className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold bg-brand-card/90 text-white border border-brand-border rounded-xl hover:border-brand-cyan/40 hover:bg-brand-card transition-all backdrop-blur-md hover:scale-105 active:scale-95"
+            >
+              <Users size={16} />
+              <span>Ekibimiz</span>
+            </a>
           </div>
 
         </div>
