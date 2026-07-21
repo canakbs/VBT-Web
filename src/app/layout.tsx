@@ -30,7 +30,10 @@ export default function RootLayout({
       className="h-full antialiased dark"
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col bg-brand-bg text-[#e2e8f0] selection:bg-brand-cyan/30 selection:text-white font-sans">
+      <body 
+        className="min-h-full flex flex-col bg-brand-bg text-[#e2e8f0] selection:bg-brand-cyan/30 selection:text-white font-sans"
+        suppressHydrationWarning
+      >
         <MaintenanceOverlay>
           <SmoothScroll>
             <div className="flex flex-col min-h-screen relative z-10 scanline">

@@ -241,6 +241,75 @@ export default function Hero3D() {
     }
   };
 
+  const polaroidPhotos = [
+    {
+      id: 'workshop',
+      src: '/images/hero/workshop.png',
+      alt: 'Akdeniz Veri Bilimi Çalıştayı',
+      caption: 'Çalıştaylar #2025',
+      position: 'top-[12%] left-[1.5%] xl:left-[3.5%]',
+      size: 'w-44 xl:w-52',
+      baseRotate: '-rotate-6',
+      hoverRotate: 'hover:-rotate-1',
+      zIndex: 'z-10',
+    },
+    {
+      id: 'hackathon',
+      src: '/images/hero/hackathon.png',
+      alt: 'Med Hackathon Etkinliği',
+      caption: 'Med Hackathon',
+      position: 'top-[36%] left-[0.5%] xl:left-[2%]',
+      size: 'w-52 xl:w-60',
+      baseRotate: 'rotate-4',
+      hoverRotate: 'hover:rotate-0',
+      zIndex: 'z-12',
+    },
+    {
+      id: 'community',
+      src: '/images/hero/community.png',
+      alt: 'Topluluk Ekibi',
+      caption: 'Topluluk Ekibi',
+      position: 'bottom-[8%] left-[2%] xl:left-[4%]',
+      size: 'w-40 xl:w-48',
+      baseRotate: '-rotate-4',
+      hoverRotate: 'hover:-rotate-1',
+      zIndex: 'z-10',
+    },
+    {
+      id: 'speakers',
+      src: '/images/hero/speakers.png',
+      alt: 'Yapay Zekâ Semineri',
+      caption: 'Yapay Zekâ Semineri',
+      position: 'top-[13%] right-[1.5%] xl:right-[3.5%]',
+      size: 'w-44 xl:w-52',
+      baseRotate: 'rotate-5',
+      hoverRotate: 'hover:rotate-1',
+      zIndex: 'z-10',
+    },
+    {
+      id: 'coding',
+      src: '/images/hero/coding.png',
+      alt: 'Model Eğitimi & Kodlama',
+      caption: 'Model Eğitimi',
+      position: 'top-[37%] right-[0.5%] xl:right-[2%]',
+      size: 'w-52 xl:w-60',
+      baseRotate: '-rotate-5',
+      hoverRotate: 'hover:-rotate-1',
+      zIndex: 'z-12',
+    },
+    {
+      id: 'team',
+      src: '/images/hero/team.png',
+      alt: 'Birlikte Öğreniyoruz',
+      caption: 'Birlikte Öğreniyoruz',
+      position: 'bottom-[9%] right-[2%] xl:right-[4%]',
+      size: 'w-40 xl:w-48',
+      baseRotate: 'rotate-3',
+      hoverRotate: 'hover:rotate-0',
+      zIndex: 'z-10',
+    },
+  ];
+
   return (
     <section 
       ref={containerRef}
@@ -259,90 +328,118 @@ export default function Hero3D() {
         className="absolute inset-0 w-full h-full pointer-events-none bg-transparent z-0"
       />
 
-      {/* Hero Headline & Action Area — Placed above canvas in z-10 */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 flex flex-col lg:flex-row items-center justify-between flex-grow gap-8 pt-28 pb-16 pointer-events-none">
-        
-        {/* Left Side: Headline & Natural Turkish Copy */}
-        <div className="max-w-2xl text-left pointer-events-none">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-cyan/10 border border-brand-cyan/30 rounded-full mb-6">
+      {/* Side Margins Polaroid Photos (Absolute Positioned, Scattered) */}
+      {polaroidPhotos.map((photo) => (
+        <div
+          key={photo.id}
+          className={`absolute ${photo.position} ${photo.size} ${photo.baseRotate} ${photo.hoverRotate} ${photo.zIndex} 
+            hidden lg:block pointer-events-auto group cursor-pointer
+            transition-all duration-300 ease-out
+            hover:scale-105 hover:-translate-y-2 hover:z-30
+            p-2 pb-6 bg-slate-100/95 border border-white/80 rounded-md
+            shadow-xl shadow-black/80 hover:shadow-2xl hover:shadow-brand-cyan/30`}
+        >
+          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-sm bg-slate-900 border border-slate-300/40">
+            <img
+              src={photo.src}
+              alt={photo.alt}
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          </div>
+          <div className="mt-2 text-center">
+            <span className="block text-[11px] font-mono font-bold text-slate-800 tracking-tight truncate">
+              {photo.caption}
+            </span>
+          </div>
+        </div>
+      ))}
+
+      {/* Hero Headline & Action Area — Centered vertically & horizontally, max-width ~45-50% */}
+      <div className="relative z-20 w-full flex-1 flex flex-col items-center justify-center text-center px-4 sm:px-6 pt-24 pb-12 pointer-events-none">
+        <div className="w-full max-w-xl lg:max-w-[48%] min-w-[320px] mx-auto flex flex-col items-center pointer-events-auto space-y-4">
+          
+          {/* Badge */}
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-brand-cyan/10 border border-brand-cyan/30 rounded-full">
             <div className="w-2 h-2 rounded-full bg-brand-emerald animate-pulse" />
             <span className="text-xs font-mono text-brand-cyan font-medium">
               Akdeniz Veri Bilimi Topluluğu
             </span>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white mb-6 leading-[1.1]">
+          {/* Headline */}
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-[1.15]">
             Veri bilimini <br />
             <span className="bg-gradient-to-r from-brand-cyan via-blue-400 to-brand-emerald bg-clip-text text-transparent">
               birlikte keşfediyoruz
             </span>
           </h1>
 
-          <p className="text-base sm:text-lg text-slate-300 mb-8 leading-relaxed max-w-xl">
+          {/* Description */}
+          <p className="text-sm sm:text-base text-slate-300 max-w-md leading-relaxed">
             Yapay zekâ, makine öğrenmesi ve veri analitiği alanında çalıştaylar düzenliyor,
             açık kaynak projeler geliştiriyor ve deneyimlerimizi paylaşıyoruz. Merakın varsa aramıza katıl!
           </p>
 
-          {/* Large Action Buttons */}
-          <div className="pointer-events-auto flex flex-wrap items-center gap-4">
+          {/* Action Buttons */}
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
             <a
               href="/#join-us"
-              className="inline-flex items-center gap-2.5 px-8 py-4 text-base font-bold bg-brand-cyan text-[#090d16] rounded-xl hover:bg-brand-cyan/90 transition-all shadow-lg shadow-brand-cyan/25 hover:scale-105 active:scale-95"
+              className="inline-flex items-center gap-2 px-6 py-3 text-sm font-bold bg-brand-cyan text-[#090d16] rounded-xl hover:bg-brand-cyan/90 transition-all shadow-lg shadow-brand-cyan/25 hover:scale-105 active:scale-95"
             >
               <span>Bize Katıl</span>
-              <ArrowRight size={18} />
+              <ArrowRight size={16} />
             </a>
             <a
               href="/ekibimiz"
-              className="inline-flex items-center gap-2.5 px-8 py-4 text-base font-semibold bg-brand-card/90 text-white border border-brand-border rounded-xl hover:border-brand-cyan/40 hover:bg-brand-card transition-all backdrop-blur-md hover:scale-105 active:scale-95"
+              className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold bg-brand-card/90 text-white border border-brand-border rounded-xl hover:border-brand-cyan/40 hover:bg-brand-card transition-all backdrop-blur-md hover:scale-105 active:scale-95"
             >
-              <Users size={18} />
+              <Users size={16} />
               <span>Ekibimiz</span>
             </a>
           </div>
-        </div>
 
-        {/* Right Side: Community Vision & Compact Stat Metrics */}
-        <div className="pointer-events-auto w-full max-w-[360px] p-6 bg-[#090d16]/90 border border-brand-border rounded-2xl backdrop-blur-xl text-slate-300 shadow-2xl shadow-black/50 relative overflow-hidden z-20 hover:border-brand-cyan/40 transition-all group">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-brand-cyan/5 rounded-full blur-2xl group-hover:bg-brand-cyan/10 transition-all pointer-events-none" />
+          {/* Community Vision Quote & Compact Stat Metrics */}
+          <div className="w-full max-w-md mt-2 p-4 bg-[#090d16]/90 border border-brand-border/80 rounded-xl backdrop-blur-xl text-slate-300 shadow-xl shadow-black/50 relative overflow-hidden group hover:border-brand-cyan/40 transition-all">
+            <div className="absolute top-0 right-0 w-28 h-28 bg-brand-cyan/5 rounded-full blur-2xl group-hover:bg-brand-cyan/10 transition-all pointer-events-none" />
 
-          <div className="space-y-5">
-            <blockquote className="text-base font-semibold text-white italic leading-relaxed border-l-2 border-brand-cyan pl-3.5 my-1">
-              “Veri bilimi etrafında; birlikte üreten, birlikte öğrenen ve bilgisini topluma aktaran bir topluluk inşa ediyoruz.”
-            </blockquote>
+            <div className="space-y-3">
+              <blockquote className="text-xs sm:text-sm font-semibold text-white italic leading-relaxed border-l-2 border-brand-cyan pl-3 my-0.5 text-left">
+                “Veri bilimi etrafında; birlikte üreten, birlikte öğrenen ve bilgisini topluma aktaran bir topluluk inşa ediyoruz.”
+              </blockquote>
 
-            {/* Compact Stat Cards (Replaces 01/02/03 steps, no graphics, no emojis) */}
-            <div className="grid grid-cols-3 gap-2.5 pt-2">
-              <div className="p-3 bg-brand-card/50 border border-brand-border/40 rounded-xl text-center flex flex-col justify-center">
-                <div className="text-xl font-extrabold text-white tracking-tight font-mono">
-                  <StatCounter value={370} suffix="+" />
+              {/* Stat Cards */}
+              <div className="grid grid-cols-3 gap-2 pt-1">
+                <div className="p-2.5 bg-brand-card/50 border border-brand-border/40 rounded-lg text-center flex flex-col justify-center">
+                  <div className="text-lg font-extrabold text-white tracking-tight font-mono">
+                    <StatCounter value={370} suffix="+" />
+                  </div>
+                  <div className="text-[10px] text-brand-muted mt-0.5 leading-tight font-sans font-medium">
+                    Kayıtlı Üye
+                  </div>
                 </div>
-                <div className="text-[11px] text-brand-muted mt-1 leading-tight font-sans font-medium">
-                  Kayıtlı Üye
-                </div>
-              </div>
 
-              <div className="p-3 bg-brand-card/50 border border-brand-border/40 rounded-xl text-center flex flex-col justify-center">
-                <div className="text-xl font-extrabold text-brand-cyan tracking-tight font-mono">
-                  <StatCounter value={30} suffix="+" />
+                <div className="p-2.5 bg-brand-card/50 border border-brand-border/40 rounded-lg text-center flex flex-col justify-center">
+                  <div className="text-lg font-extrabold text-brand-cyan tracking-tight font-mono">
+                    <StatCounter value={30} suffix="+" />
+                  </div>
+                  <div className="text-[10px] text-brand-muted mt-0.5 leading-tight font-sans font-medium">
+                    Etkinlik
+                  </div>
                 </div>
-                <div className="text-[11px] text-brand-muted mt-1 leading-tight font-sans font-medium">
-                  Etkinlik
-                </div>
-              </div>
 
-              <div className="p-3 bg-brand-card/50 border border-brand-border/40 rounded-xl text-center flex flex-col justify-center">
-                <div className="text-xl font-extrabold text-brand-emerald tracking-tight font-mono">
-                  <StatCounter value={7} suffix="" />
-                </div>
-                <div className="text-[11px] text-brand-muted mt-1 leading-tight font-sans font-medium">
-                  Aktif Proje
+                <div className="p-2.5 bg-brand-card/50 border border-brand-border/40 rounded-lg text-center flex flex-col justify-center">
+                  <div className="text-lg font-extrabold text-brand-emerald tracking-tight font-mono">
+                    <StatCounter value={7} suffix="" />
+                  </div>
+                  <div className="text-[10px] text-brand-muted mt-0.5 leading-tight font-sans font-medium">
+                    Aktif Proje
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
 
+        </div>
       </div>
     </section>
   );
@@ -366,7 +463,7 @@ function StatCounter({ value, suffix }: { value: number; suffix: string }) {
   }, [value]);
 
   return (
-    <span>
+    <span suppressHydrationWarning>
       {count}
       {suffix}
     </span>

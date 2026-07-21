@@ -105,7 +105,7 @@ function Counter({ value, suffix }: { value: number; suffix: string }) {
   }, [value]);
 
   return (
-    <span ref={elementRef}>
+    <span ref={elementRef} suppressHydrationWarning>
       {count}
       {suffix}
     </span>

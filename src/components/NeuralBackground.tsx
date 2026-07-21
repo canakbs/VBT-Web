@@ -352,7 +352,7 @@ export default function NeuralBackground() {
   }, []);
 
   if (!mounted) {
-    return <div className="fixed inset-0 w-full h-full -z-10 bg-transparent" />;
+    return <div className="fixed inset-0 w-full h-full -z-10 bg-transparent" suppressHydrationWarning />;
   }
 
   return (
