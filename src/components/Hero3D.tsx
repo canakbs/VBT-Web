@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useRef, useState, useEffect } from 'react';
-import { Terminal, ArrowRight, Users } from 'lucide-react';
+import React, { useRef, useEffect } from 'react';
+import { Sparkles, ArrowRight, Users } from 'lucide-react';
 import SiteNav from '@/components/SiteNav';
 
 interface Point2D {
@@ -15,13 +15,6 @@ export default function Hero3D() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const mouseRef = useRef({ x: 0, y: 0, active: false });
-
-  // Live regression statistics state for UI display
-  const [stats, setStats] = useState({
-    equation: 'y = 0.00x + 0.00',
-    pointCount: '42',
-    fit: '0.00',
-  });
 
   // Generate 42 initial data points along a general linear trend with noise
   const points = useRef<Point2D[]>([]);
@@ -208,14 +201,6 @@ export default function Hero3D() {
           ctx.arc(p.x, p.y, 2.8, 0, Math.PI * 2);
           ctx.fill();
         });
-
-        const mathSlope = -slope;
-        const mathIntercept = canvas.height - intercept;
-        setStats({
-          equation: `y = ${mathSlope.toFixed(2)}x + ${mathIntercept.toFixed(0)}`,
-          pointCount: String(pts.length),
-          fit: Math.max(0, r2).toFixed(3),
-        });
       }
 
       ctx.restore();
@@ -323,39 +308,44 @@ export default function Hero3D() {
           </div>
         </div>
 
-        {/* Right Side: Interactive Linear Regression Mathematical Console */}
-        <div className="pointer-events-auto w-full max-w-[320px] p-6 bg-[#090d16]/90 border border-brand-border rounded-2xl backdrop-blur-xl font-mono text-xs text-slate-300 shadow-2xl shadow-black/50 relative overflow-hidden z-20">
+        {/* Right Side: Community Slogan & Vision Card */}
+        <div className="pointer-events-auto w-full max-w-[340px] p-6 bg-[#090d16]/90 border border-brand-border rounded-2xl backdrop-blur-xl text-slate-300 shadow-2xl shadow-black/50 relative overflow-hidden z-20 hover:border-brand-cyan/40 transition-all group">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-brand-cyan/5 rounded-full blur-2xl group-hover:bg-brand-cyan/10 transition-all pointer-events-none" />
+          
           <div className="flex items-center justify-between pb-3 border-b border-brand-border/40 mb-4">
             <div className="flex items-center gap-2">
-              <Terminal size={14} className="text-brand-cyan" />
-              <span className="text-brand-cyan font-bold uppercase tracking-wider text-[11px]">
-                Regresyon Simülatörü
+              <Sparkles size={16} className="text-brand-cyan animate-pulse" />
+              <span className="text-brand-cyan font-bold uppercase tracking-wider text-[11px] font-mono">
+                Topluluk Mottomuz
               </span>
             </div>
-            <span className="text-[9px] text-brand-muted">CANLI ANALİZ</span>
+            <span className="px-2 py-0.5 text-[10px] font-mono font-medium text-brand-emerald bg-brand-emerald/10 border border-brand-emerald/20 rounded-full">
+              VBT
+            </span>
           </div>
 
-          <div className="space-y-3.5">
-            <div>
-              <div className="text-[10px] text-brand-muted uppercase">DENKLEM METRİĞİ</div>
-              <div className="text-white text-xs font-mono font-semibold mt-1 p-2 bg-brand-card/60 border border-brand-border/40 rounded">
-                {stats.equation}
+          <div className="space-y-4">
+            <blockquote className="text-base font-semibold text-white italic leading-relaxed border-l-2 border-brand-cyan pl-3.5 my-2">
+              “Verinin gücüyle öğreniyor, birlikte geliştirip geleceği şekillendiriyoruz.”
+            </blockquote>
+
+            <div className="grid grid-cols-1 gap-2 pt-2 text-xs font-mono">
+              <div className="flex items-center gap-2.5 p-2.5 bg-brand-card/50 border border-brand-border/30 rounded-lg">
+                <span className="text-brand-cyan font-bold">01.</span>
+                <span className="text-slate-200">Merak Et & Analiz Et</span>
+              </div>
+              <div className="flex items-center gap-2.5 p-2.5 bg-brand-card/50 border border-brand-border/30 rounded-lg">
+                <span className="text-brand-emerald font-bold">02.</span>
+                <span className="text-slate-200">Üret & Paylaş</span>
+              </div>
+              <div className="flex items-center gap-2.5 p-2.5 bg-brand-card/50 border border-brand-border/30 rounded-lg">
+                <span className="text-blue-400 font-bold">03.</span>
+                <span className="text-slate-200">Birlikte Büyü</span>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-2">
-              <div className="p-2 bg-brand-card/40 border border-brand-border/30 rounded">
-                <div className="text-[9px] text-brand-muted">VERİ NOKTASI</div>
-                <div className="text-brand-emerald text-sm font-bold mt-0.5">{stats.pointCount}</div>
-              </div>
-              <div className="p-2 bg-brand-card/40 border border-brand-border/30 rounded">
-                <div className="text-[9px] text-brand-muted">UYUM (R²)</div>
-                <div className="text-brand-cyan text-sm font-bold mt-0.5">{stats.fit}</div>
-              </div>
-            </div>
-
-            <p className="text-[10px] text-brand-muted leading-relaxed pt-1">
-              💡 Fareyi grafik üzerinde gezdirerek veri noktalarını çekip canlı regresyon çizgisini değiştirebilirsiniz.
+            <p className="text-[11px] text-brand-muted leading-relaxed pt-1">
+              💡 Akdeniz Üniversitesi Veri Bilimi Topluluğu olarak veriye ilgi duyan herkesi tek bir çatıda buluşturuyoruz.
             </p>
           </div>
         </div>
