@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { Menu, X, ArrowRight } from 'lucide-react';
 
 const NAV_LINKS = [
-  { href: '/#community-impact', label: 'Rakamlar' },
   { href: '/#event-archive', label: 'Etkinlikler' },
   { href: '/#project-showcase', label: 'Projeler' },
   { href: '/ekibimiz', label: 'Ekibimiz' },

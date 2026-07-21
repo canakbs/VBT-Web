@@ -17,22 +17,19 @@ export default function Home() {
       {/* 3D Interactive Three.js Neural Network Canvas Background */}
       <NeuralBackground />
 
-      {/* 1. Hero Experience (2D Linear Regression Interactive Physics Canvas + Copy + Large CTAs) */}
+      {/* 1. Hero Experience (Copy + Slogan & Compact Stat Metrics Cards) */}
       <Hero3D />
 
-      {/* 2. Topluluğumuz Rakamlarla (Statistics Dashboard & Sparklines) */}
-      <ImpactDashboard />
-
-      {/* 3. Etkinliklerimiz (Milestone Events - Limit 3 on Homepage) */}
+      {/* 2. Etkinliklerimiz (Milestone Events - Limit 3 on Homepage) */}
       <EventTimeline events={events.slice(0, 3)} showMoreButton={events.length > 3} />
 
-      {/* 4. Projelerimiz (Completed Community Projects) */}
+      {/* 3. Projelerimiz (Completed Community Projects) */}
       <ProjectPipeline projects={projects} />
 
-      {/* 5. Bize Katıl (Final Application Wizard Flow) */}
+      {/* 4. Bize Katıl (Final Application Wizard Flow) */}
       <JoinOnboarding />
 
-      {/* 6. İletişim & İş Birliği (Questions, Inquiries, Collaborations Form) */}
+      {/* 5. İletişim & İş Birliği (Questions, Inquiries, Collaborations Form) */}
       <ContactSection />
 
       {/* Scientific Community Footer */}
@@ -51,7 +48,6 @@ export default function Home() {
           </div>
 
           <div className="flex flex-wrap justify-center gap-6 text-[11px]">
-            <a href="/#community-impact" className="hover:text-brand-cyan transition-colors">Rakamlar</a>
             <a href="/#event-archive" className="hover:text-brand-cyan transition-colors">Etkinlikler</a>
             <a href="/#project-showcase" className="hover:text-brand-cyan transition-colors">Projeler</a>
             <a href="/ekibimiz" className="hover:text-brand-cyan transition-colors">Ekibimiz</a>

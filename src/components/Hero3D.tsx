@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { Sparkles, ArrowRight, Users } from 'lucide-react';
 import SiteNav from '@/components/SiteNav';
 
@@ -302,27 +302,42 @@ export default function Hero3D() {
           </div>
         </div>
 
-        {/* Right Side: Community Vision Card */}
-        <div className="pointer-events-auto w-full max-w-[340px] p-6 bg-[#090d16]/90 border border-brand-border rounded-2xl backdrop-blur-xl text-slate-300 shadow-2xl shadow-black/50 relative overflow-hidden z-20 hover:border-brand-cyan/40 transition-all group">
+        {/* Right Side: Community Vision & Compact Stat Metrics */}
+        <div className="pointer-events-auto w-full max-w-[360px] p-6 bg-[#090d16]/90 border border-brand-border rounded-2xl backdrop-blur-xl text-slate-300 shadow-2xl shadow-black/50 relative overflow-hidden z-20 hover:border-brand-cyan/40 transition-all group">
           <div className="absolute top-0 right-0 w-32 h-32 bg-brand-cyan/5 rounded-full blur-2xl group-hover:bg-brand-cyan/10 transition-all pointer-events-none" />
 
-          <div className="space-y-4">
-            <blockquote className="text-base font-semibold text-white italic leading-relaxed border-l-2 border-brand-cyan pl-3.5 my-2">
+          <div className="space-y-5">
+            <blockquote className="text-base font-semibold text-white italic leading-relaxed border-l-2 border-brand-cyan pl-3.5 my-1">
               “Veri bilimi etrafında; birlikte üreten, birlikte öğrenen ve bilgisini topluma aktaran bir topluluk inşa ediyoruz.”
             </blockquote>
 
-            <div className="grid grid-cols-1 gap-2 pt-2 text-xs font-mono">
-              <div className="flex items-center gap-2.5 p-2.5 bg-brand-card/50 border border-brand-border/30 rounded-lg">
-                <span className="text-brand-cyan font-bold">01.</span>
-                <span className="text-slate-200">Merak Et</span>
+            {/* Compact Stat Cards (Replaces 01/02/03 steps, no graphics, no emojis) */}
+            <div className="grid grid-cols-3 gap-2.5 pt-2">
+              <div className="p-3 bg-brand-card/50 border border-brand-border/40 rounded-xl text-center flex flex-col justify-center">
+                <div className="text-xl font-extrabold text-white tracking-tight font-mono">
+                  <StatCounter value={440} suffix="+" />
+                </div>
+                <div className="text-[11px] text-brand-muted mt-1 leading-tight font-sans font-medium">
+                  Kayıtlı Üye
+                </div>
               </div>
-              <div className="flex items-center gap-2.5 p-2.5 bg-brand-card/50 border border-brand-border/30 rounded-lg">
-                <span className="text-brand-emerald font-bold">02.</span>
-                <span className="text-slate-200">Öğren &amp; Üret</span>
+
+              <div className="p-3 bg-brand-card/50 border border-brand-border/40 rounded-xl text-center flex flex-col justify-center">
+                <div className="text-xl font-extrabold text-brand-cyan tracking-tight font-mono">
+                  <StatCounter value={24} suffix="" />
+                </div>
+                <div className="text-[11px] text-brand-muted mt-1 leading-tight font-sans font-medium">
+                  Etkinlik
+                </div>
               </div>
-              <div className="flex items-center gap-2.5 p-2.5 bg-brand-card/50 border border-brand-border/30 rounded-lg">
-                <span className="text-blue-400 font-bold">03.</span>
-                <span className="text-slate-200">Paylaş</span>
+
+              <div className="p-3 bg-brand-card/50 border border-brand-border/40 rounded-xl text-center flex flex-col justify-center">
+                <div className="text-xl font-extrabold text-brand-emerald tracking-tight font-mono">
+                  <StatCounter value={8} suffix="" />
+                </div>
+                <div className="text-[11px] text-brand-muted mt-1 leading-tight font-sans font-medium">
+                  Aktif Proje
+                </div>
               </div>
             </div>
           </div>
@@ -330,5 +345,30 @@ export default function Hero3D() {
 
       </div>
     </section>
+  );
+}
+
+function StatCounter({ value, suffix }: { value: number; suffix: string }) {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let startTimestamp: number | null = null;
+    const duration = 1200;
+    const step = (timestamp: number) => {
+      if (!startTimestamp) startTimestamp = timestamp;
+      const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+      setCount(Math.floor(progress * value));
+      if (progress < 1) {
+        window.requestAnimationFrame(step);
+      }
+    };
+    window.requestAnimationFrame(step);
+  }, [value]);
+
+  return (
+    <span>
+      {count}
+      {suffix}
+    </span>
   );
 }
