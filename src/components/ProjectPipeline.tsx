@@ -21,7 +21,7 @@ export default function ProjectPipeline({ projects }: ProjectPipelineProps) {
   });
 
   return (
-    <section id="project-showcase" className="relative py-24 bg-transparent border-b border-brand-border">
+    <section id="project-showcase" className="relative pt-20 md:pt-24 pb-10 md:pb-12 bg-transparent border-b border-brand-border">
       {/* Background patterns */}
       <div className="absolute inset-0 scientific-grid opacity-10 pointer-events-none" />
 

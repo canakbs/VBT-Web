@@ -89,12 +89,12 @@ export default function JoinOnboarding() {
   };
 
   return (
-    <section id="join-us" className="relative pt-20 md:pt-24 pb-10 md:pb-12 bg-transparent border-b border-brand-border">
+    <section id="join-us" className="relative pt-10 md:pt-12 pb-10 md:pb-12 bg-transparent border-b border-brand-border">
       {/* Background patterns */}
       <div className="absolute inset-0 scientific-grid opacity-10 pointer-events-none" />
 
       <div className="max-w-4xl mx-auto px-6">
-        <div className="flex flex-col items-center text-center mb-16">
+        <div className="flex flex-col items-center text-center mb-10">
           <span className="font-mono text-xs text-brand-cyan tracking-widest uppercase mb-2">
             [ BİZE KATIL ]
           </span>
