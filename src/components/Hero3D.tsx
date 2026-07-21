@@ -315,7 +315,7 @@ export default function Hero3D() {
             <div className="grid grid-cols-3 gap-2.5 pt-2">
               <div className="p-3 bg-brand-card/50 border border-brand-border/40 rounded-xl text-center flex flex-col justify-center">
                 <div className="text-xl font-extrabold text-white tracking-tight font-mono">
-                  <StatCounter value={440} suffix="+" />
+                  <StatCounter value={370} suffix="+" />
                 </div>
                 <div className="text-[11px] text-brand-muted mt-1 leading-tight font-sans font-medium">
                   Kayıtlı Üye
@@ -324,7 +324,7 @@ export default function Hero3D() {
 
               <div className="p-3 bg-brand-card/50 border border-brand-border/40 rounded-xl text-center flex flex-col justify-center">
                 <div className="text-xl font-extrabold text-brand-cyan tracking-tight font-mono">
-                  <StatCounter value={24} suffix="" />
+                  <StatCounter value={30} suffix="+" />
                 </div>
                 <div className="text-[11px] text-brand-muted mt-1 leading-tight font-sans font-medium">
                   Etkinlik
@@ -333,7 +333,7 @@ export default function Hero3D() {
 
               <div className="p-3 bg-brand-card/50 border border-brand-border/40 rounded-xl text-center flex flex-col justify-center">
                 <div className="text-xl font-extrabold text-brand-emerald tracking-tight font-mono">
-                  <StatCounter value={8} suffix="" />
+                  <StatCounter value={7} suffix="" />
                 </div>
                 <div className="text-[11px] text-brand-muted mt-1 leading-tight font-sans font-medium">
                   Aktif Proje
