@@ -2,8 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { UserCheck, Award, ArrowRight, Network, Sparkles, Users } from 'lucide-react';
-import Link from 'next/link';
+import { ExternalLink, Users, Code, Sparkles, Shield, Activity, Share2, Cpu } from 'lucide-react';
 import { MarkdownFile } from '@/lib/markdown';
 
 export interface TeamMember {
@@ -14,95 +13,82 @@ export interface TeamMember {
   skills: string[];
   bio: string;
   linkedin?: string;
-  connections: string[];
-  x: number;
-  y: number;
+  github?: string;
+  connections?: string[];
+  x?: number;
+  y?: number;
 }
 
 export const DEFAULT_MEMBERS: TeamMember[] = [
   {
-    id: 'prof-dr-ahmet-yilmaz',
-    name: 'Prof. Dr. Ahmet Yılmaz',
-    role: 'Akademik Danışman',
-    department: 'Danışmanlar',
-    skills: ['Yapay Zekâ', 'Akademik Araştırma', 'Dağıtık Sistemler'],
-    bio: 'Akdeniz Üniversitesi Bilgisayar Mühendisliği öğretim üyesi. Topluluğumuza akademik danışmanlık sağlıyor.',
-    linkedin: 'https://linkedin.com',
-    connections: ['Alperen Demir', 'Zeynep Aslan'],
-    x: 30,
-    y: 30,
-  },
-  {
     id: 'alperen-demir',
     name: 'Alperen Demir',
     role: 'Topluluk Başkanı',
-    department: 'Yönetim',
+    department: 'Üst Yönetim',
     skills: ['Derin Öğrenme', 'NLP', 'PyTorch'],
     bio: 'Bilgisayar Mühendisliği öğrencisi. Topluluğun genel koordinasyonunu ve NLP çalışma grubunu yürütüyor.',
+    github: 'https://github.com',
     linkedin: 'https://linkedin.com',
-    connections: ['Caner Öztürk', 'Begüm Kaya'],
-    x: 70,
-    y: 30,
   },
   {
     id: 'begum-kaya',
     name: 'Begüm Kaya',
     role: 'Başkan Yardımcısı',
-    department: 'Yönetim',
+    department: 'Üst Yönetim',
     skills: ['Veri Analizi', 'Scikit-Learn', 'İstatistik'],
     bio: 'Endüstri Mühendisliği öğrencisi. Eğitim programlarını ve etkinlik planlamasını koordine ediyor.',
+    github: 'https://github.com',
     linkedin: 'https://linkedin.com',
-    connections: ['Mert Yılmaz', 'Selin Demir'],
-    x: 25,
-    y: 65,
+  },
+  {
+    id: 'prof-dr-ahmet-yilmaz',
+    name: 'Prof. Dr. Ahmet Yılmaz',
+    role: 'Akademik Danışman',
+    department: 'Üst Yönetim',
+    skills: ['Yapay Zekâ', 'Akademik Araştırma', 'Dağıtık Sistemler'],
+    bio: 'Akdeniz Üniversitesi Bilgisayar Mühendisliği öğretim üyesi. Topluluğumuza akademik danışmanlık sağlıyor.',
+    github: 'https://github.com',
+    linkedin: 'https://linkedin.com',
   },
   {
     id: 'caner-ozturk',
     name: 'Caner Öztürk',
-    role: 'MLOps Lideri',
-    department: 'Takım Liderleri',
+    role: 'ARGE & MLOps Lideri',
+    department: 'ARGE',
     skills: ['Docker', 'FastAPI', 'MLflow', 'Kubernetes'],
-    bio: 'Model dağıtımı ve altyapı süreçlerinden sorumlu.',
+    bio: 'Model dağıtımı, araştırma geliştirme ve altyapı süreçlerinden sorumlu.',
+    github: 'https://github.com',
     linkedin: 'https://linkedin.com',
-    connections: ['Zeynep Aslan', 'Mert Yılmaz'],
-    x: 50,
-    y: 50,
   },
   {
     id: 'zeynep-aslan',
     name: 'Zeynep Aslan',
-    role: 'Bilgisayarlı Görü Lideri',
-    department: 'Takım Liderleri',
+    role: 'ARGE & Görü Lideri',
+    department: 'ARGE',
     skills: ['YOLOv8', 'OpenCV', 'TensorRT'],
-    bio: 'Görüntü işleme projelerini ve yarışma ekiplerini koordine ediyor.',
+    bio: 'Görüntü işleme projelerini, AR-GE çalışmalarını ve yarışma ekiplerini koordine ediyor.',
+    github: 'https://github.com',
     linkedin: 'https://linkedin.com',
-    connections: ['Prof. Dr. Ahmet Yılmaz', 'Caner Öztürk'],
-    x: 75,
-    y: 65,
-  },
-  {
-    id: 'mert-yilmaz',
-    name: 'Mert Yılmaz',
-    role: 'Eğitim Lideri',
-    department: 'Takım Liderleri',
-    skills: ['Python', 'NumPy/Pandas', 'Müfredat Tasarımı'],
-    bio: 'Bootcamp ve mentorluk programlarının içeriğini hazırlıyor.',
-    linkedin: 'https://linkedin.com',
-    connections: ['Begüm Kaya', 'Caner Öztürk'],
-    x: 40,
-    y: 82,
   },
   {
     id: 'selin-demir',
     name: 'Selin Demir',
-    role: 'Operasyon & Etkinlik Lideri',
-    department: 'Takım Liderleri',
+    role: 'Etkinlik & Organizasyon Lideri',
+    department: 'Etkinlik & Organizasyon',
     skills: ['Etkinlik Yönetimi', 'İletişim', 'Halkla İlişkiler'],
     bio: 'Topluluk etkinliklerini ve dış ilişkileri yönetiyor.',
+    github: 'https://github.com',
     linkedin: 'https://linkedin.com',
-    connections: ['Begüm Kaya'],
-    x: 80,
-    y: 82,
+  },
+  {
+    id: 'mert-yilmaz',
+    name: 'Mert Yılmaz',
+    role: 'Sosyal Medya & İçerik Lideri',
+    department: 'Sosyal Medya',
+    skills: ['Sosyal Medya Yönetimi', 'İçerik Üretimi', 'Tasarım'],
+    bio: 'Topluluğumuzun sosyal medya mecralarını ve içerik üretim süreçlerini yönetiyor.',
+    github: 'https://github.com',
+    linkedin: 'https://linkedin.com',
   },
 ];
 
@@ -111,309 +97,200 @@ interface TeamNetworkProps {
   teamFiles?: MarkdownFile[];
 }
 
-export default function TeamNetwork({ variant = 'core', teamFiles }: TeamNetworkProps) {
-  // Parse all team dynamic files if available
+function GithubIcon({ className = "w-3.5 h-3.5" }: { className?: string }) {
+  return (
+    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+      <path fillRule="evenodd" clipRule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
+    </svg>
+  );
+}
+
+function LinkedinIcon({ className = "w-3.5 h-3.5" }: { className?: string }) {
+  return (
+    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+      <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.25V10.9H6.46M7.86 6.77a1.6 1.6 0 1 0 0 3.2 1.6 1.6 0 0 0 0-3.2z" />
+    </svg>
+  );
+}
+
+function getInitials(name: string) {
+  const parts = name.replace(/Prof\.|Dr\.|Doç\./gi, '').trim().split(' ').filter(Boolean);
+  if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+}
+
+export default function TeamNetwork({ teamFiles }: TeamNetworkProps) {
+  // Parse team dynamic files if available
   const allMembers: TeamMember[] = teamFiles && teamFiles.length > 0
-    ? teamFiles.map((file, idx) => ({
+    ? teamFiles.map((file) => ({
         id: file.slug,
         name: file.metadata.title || file.slug,
         role: file.metadata.role || 'Ekip Üyesi',
-        department: file.metadata.department || 'Takım Liderleri',
+        department: file.metadata.department || 'ARGE',
         skills: Array.isArray(file.metadata.skills)
           ? file.metadata.skills
           : (file.metadata.skills ? String(file.metadata.skills).split(',').map((s) => s.trim()) : []),
         bio: file.metadata.bio || file.content || '',
-        linkedin: file.metadata.linkedin || '',
-        connections: Array.isArray(file.metadata.connections)
-          ? file.metadata.connections
-          : (file.metadata.connections ? String(file.metadata.connections).split(',').map((s) => s.trim()) : []),
-        x: file.metadata.x ? Number(file.metadata.x) : (20 + (idx * 15) % 65),
-        y: file.metadata.y ? Number(file.metadata.y) : (30 + (idx * 18) % 55),
+        linkedin: file.metadata.linkedin || 'https://linkedin.com',
+        github: file.metadata.github || 'https://github.com',
       }))
     : DEFAULT_MEMBERS;
 
-  // Show all members on both core (homepage) and full views for a rich interactive network!
-  const members = allMembers;
+  const [activeDepartment, setActiveDepartment] = useState<string>('Tümü');
 
-  const [selectedMember, setSelectedMember] = useState<TeamMember>(members[0] || DEFAULT_MEMBERS[0]);
-  const [filterDepartment, setFilterDepartment] = useState<string>('Hepsi');
+  const DEPARTMENTS = ['Tümü', 'Üst Yönetim', 'Etkinlik & Organizasyon', 'Sosyal Medya', 'ARGE'];
 
-  // Extract unique departments for dynamic filtering
-  const availableDepartments = ['Hepsi', ...Array.from(new Set(allMembers.map((m) => m.department)))];
+  const filteredMembers = activeDepartment === 'Tümü'
+    ? allMembers
+    : allMembers.filter((m) => m.department === activeDepartment);
 
-  const filteredMembers = filterDepartment === 'Hepsi'
-    ? members
-    : members.filter((m) => m.department === filterDepartment);
-
-  const getDepartmentBadge = (dept: string) => {
+  const getDepartmentBadgeStyle = (dept: string) => {
     switch (dept) {
-      case 'Danışmanlar': return 'bg-purple-950/60 text-purple-400 border border-purple-900/60';
-      case 'Yönetim': return 'bg-amber-950/60 text-amber-400 border border-amber-900/60';
-      case 'Takım Liderleri': return 'bg-emerald-950/60 text-emerald-400 border border-emerald-900/60';
-      case 'Mentörler': return 'bg-blue-950/60 text-blue-400 border border-blue-900/60';
-      default: return 'bg-slate-900 text-slate-300 border border-brand-border';
+      case 'Üst Yönetim':
+        return 'bg-amber-500/10 text-amber-400 border-amber-500/30';
+      case 'Etkinlik & Organizasyon':
+        return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
+      case 'Sosyal Medya':
+        return 'bg-purple-500/10 text-purple-400 border-purple-500/30';
+      case 'ARGE':
+        return 'bg-brand-cyan/10 text-brand-cyan border-brand-cyan/30';
+      default:
+        return 'bg-slate-800 text-slate-300 border-slate-700';
     }
   };
 
-  // Build dynamic peer connection lines
-  const peerLines: { x1: number; y1: number; x2: number; y2: number; isActive: boolean }[] = [];
-  filteredMembers.forEach((m1) => {
-    m1.connections.forEach((targetNameOrId) => {
-      const m2 = filteredMembers.find(
-        (target) => target.id === targetNameOrId || target.name.toLowerCase() === targetNameOrId.toLowerCase()
-      );
-      if (m2 && m1.id !== m2.id) {
-        const isActive = selectedMember.id === m1.id || selectedMember.id === m2.id;
-        peerLines.push({
-          x1: m1.x,
-          y1: m1.y,
-          x2: m2.x,
-          y2: m2.y,
-          isActive,
-        });
-      }
-    });
-  });
-
   return (
     <section id="team" className="relative py-24 bg-transparent border-b border-brand-border">
-      {/* Background patterns */}
+      {/* Background grid pattern */}
       <div className="absolute inset-0 scientific-grid opacity-10 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-6">
-        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
+        {/* Section Header */}
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-6">
           <div>
             <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white">
-              {variant === 'core' ? (
-                <>
-                  Ekip &amp; Çalışma <br />
-                  <span className="bg-gradient-to-r from-brand-cyan to-brand-emerald bg-clip-text text-transparent">
-                    Ağımız
-                  </span>
-                </>
-              ) : (
-                <>
-                  Topluluğumuzun <br />
-                  <span className="bg-gradient-to-r from-brand-cyan to-brand-emerald bg-clip-text text-transparent">
-                    Tüm Ekibi
-                  </span>
-                </>
-              )}
+              Topluluk <br />
+              <span className="bg-gradient-to-r from-brand-cyan to-brand-emerald bg-clip-text text-transparent">
+                Ekibimiz
+              </span>
             </h2>
             <p className="text-slate-400 text-sm md:text-base max-w-lg mt-3 leading-relaxed">
-              Herkesin birbiriyle eşit düzeyde iş birliği yaptığı interaktif veri bilimi ekibimiz. Detaylar için bir kişiye tıklayın.
+              Akdeniz Veri Bilimi Topluluğu bünyesinde birlikte üreten, eğitim ve projeleri koordine eden ekibimiz.
             </p>
           </div>
 
-          {/* Department Filter Tabs */}
+          {/* Department Filter Buttons */}
           <div className="flex flex-wrap gap-2">
-            {availableDepartments.map((dept) => (
-              <button
-                key={dept}
-                onClick={() => setFilterDepartment(dept)}
-                className={`px-3.5 py-1.5 rounded font-mono text-xs transition-colors cursor-pointer ${
-                  filterDepartment === dept
-                    ? 'bg-brand-cyan text-[#090d16] font-bold'
-                    : 'bg-slate-900 border border-brand-border text-slate-400 hover:text-white'
-                }`}
+            {DEPARTMENTS.map((dept) => {
+              const isActive = activeDepartment === dept;
+              return (
+                <button
+                  key={dept}
+                  onClick={() => setActiveDepartment(dept)}
+                  className={`px-4 py-2 rounded-xl text-xs font-mono font-medium transition-all duration-200 cursor-pointer flex items-center gap-1.5 ${
+                    isActive
+                      ? 'bg-brand-cyan text-[#090d16] font-bold shadow-lg shadow-brand-cyan/20 scale-105'
+                      : 'bg-[#090d16]/80 text-slate-400 border border-brand-border hover:border-brand-cyan/40 hover:text-white backdrop-blur-md'
+                  }`}
+                >
+                  <span>{dept}</span>
+                  {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#090d16]" />}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Member Cards Grid (Compact Cards, No Profile Photos) */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeDepartment}
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -15 }}
+            transition={{ duration: 0.25 }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5"
+          >
+            {filteredMembers.map((member) => (
+              <div
+                key={member.id}
+                className="p-5 bg-[#090d16]/90 border border-brand-border hover:border-brand-cyan/40 rounded-2xl backdrop-blur-xl shadow-xl transition-all duration-300 relative overflow-hidden group flex flex-col justify-between"
               >
-                {dept}
-              </button>
-            ))}
-          </div>
-        </div>
+                {/* Subtle Hover Glow Background */}
+                <div className="absolute top-0 right-0 w-24 h-24 bg-brand-cyan/5 rounded-full blur-xl group-hover:bg-brand-cyan/10 transition-all pointer-events-none" />
 
-        <div className="flex flex-col lg:flex-row gap-10 items-stretch">
-          {/* Interactive Peer Constellation Network Panel */}
-          <div className="w-full lg:w-7/12 relative aspect-[4/3] border border-brand-border bg-brand-card/20 rounded-xl overflow-hidden backdrop-blur-sm shadow-xl flex flex-col justify-between p-4 min-h-[380px]">
-            
-            {/* Top diagnostic bar */}
-            <div className="flex justify-between items-center font-mono text-[10px] text-brand-muted uppercase z-10">
-              <div className="flex items-center gap-2">
-                <Network className="w-3.5 h-3.5 text-brand-cyan" />
-                <span>VERİ BİLİMİ AĞI — {filteredMembers.length} ÜYE</span>
-              </div>
-              <span className="text-brand-emerald flex items-center gap-1">
-                <Sparkles size={10} /> İŞ BİRLİĞİ DÜĞÜMLERİ
-              </span>
-            </div>
+                <div>
+                  {/* Header Row: Initials Badge & Department Tag */}
+                  <div className="flex items-center justify-between gap-2 mb-3">
+                    {/* Initials Avatar Badge */}
+                    <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-brand-cyan/20 via-brand-cyan/10 to-brand-emerald/20 border border-brand-cyan/30 text-white font-bold font-mono text-sm flex items-center justify-center shadow-md shadow-brand-cyan/10 shrink-0 group-hover:border-brand-cyan/60 transition-colors">
+                      {getInitials(member.name)}
+                    </div>
 
-            {/* Interactive SVG Network Mesh */}
-            <div className="absolute inset-0 top-8 bottom-8">
-              <svg viewBox="0 0 100 100" className="w-full h-full select-none cursor-crosshair">
-                {/* Draw Peer Connection Lines */}
-                {peerLines.map((line, idx) => (
-                  <line
-                    key={idx}
-                    x1={line.x1}
-                    y1={line.y1}
-                    x2={line.x2}
-                    y2={line.y2}
-                    stroke={line.isActive ? '#00f2fe' : 'rgba(255, 255, 255, 0.12)'}
-                    strokeWidth={line.isActive ? 0.8 : 0.4}
-                    strokeDasharray={line.isActive ? 'none' : '1.5 1.5'}
-                    className="transition-all duration-300"
-                  />
-                ))}
+                    {/* Department Tag */}
+                    <span className={`text-[10px] font-mono font-medium px-2.5 py-1 rounded-lg border ${getDepartmentBadgeStyle(member.department)}`}>
+                      {member.department}
+                    </span>
+                  </div>
 
-                {/* Draw Member Interactive Nodes */}
-                {filteredMembers.map((member) => {
-                  const isSelected = selectedMember.id === member.id;
-                  const r = isSelected ? 4.8 : 4.0;
+                  {/* Name & Role */}
+                  <h3 className="text-base font-bold text-white tracking-tight group-hover:text-brand-cyan transition-colors">
+                    {member.name}
+                  </h3>
+                  <p className="text-xs text-brand-cyan font-mono mt-0.5 font-medium">
+                    {member.role}
+                  </p>
 
-                  return (
-                    <g
-                      key={member.id}
-                      className="cursor-pointer group"
-                      onClick={() => setSelectedMember(member)}
-                      onMouseEnter={() => setSelectedMember(member)}
-                    >
-                      {/* Outer glow ring on hover/select */}
-                      {isSelected && (
-                        <motion.circle
-                          cx={member.x}
-                          cy={member.y}
-                          r={r + 3}
-                          className="fill-none stroke-brand-cyan/40"
-                          strokeWidth={0.5}
-                          animate={{ r: [r + 2, r + 3.5, r + 2] }}
-                          transition={{ repeat: Infinity, duration: 2 }}
-                        />
-                      )}
+                  {/* Bio snippet */}
+                  <p className="text-xs text-slate-300 leading-relaxed mt-2.5 line-clamp-2 font-sans">
+                    {member.bio}
+                  </p>
 
-                      {/* Main Node Circle */}
-                      <circle
-                        cx={member.x}
-                        cy={member.y}
-                        r={r}
-                        className={`transition-all duration-300 ${
-                          isSelected
-                            ? 'fill-brand-cyan/25 stroke-brand-cyan'
-                            : 'fill-slate-900 stroke-slate-600 hover:stroke-brand-cyan'
-                        }`}
-                        strokeWidth={0.6}
-                      />
-
-                      {/* Center Point */}
-                      <circle
-                        cx={member.x}
-                        cy={member.y}
-                        r={1.2}
-                        className={isSelected ? 'fill-brand-cyan' : 'fill-slate-400'}
-                      />
-
-                      {/* Member Label */}
-                      <text
-                        x={member.x}
-                        y={member.y + r + 4}
-                        className={`font-mono text-[2.8px] font-semibold text-center pointer-events-none ${
-                          isSelected ? 'fill-brand-cyan' : 'fill-slate-300'
-                        }`}
-                        textAnchor="middle"
-                      >
-                        {member.name.split(' ').slice(-1)[0]}
-                      </text>
-                    </g>
-                  );
-                })}
-              </svg>
-            </div>
-
-            {/* Bottom Help Text */}
-            <div className="font-mono text-[9px] text-slate-500 uppercase z-10 flex justify-between">
-              <span>EŞİT DÜĞÜMLER HARİTASI</span>
-              <span className="text-brand-cyan">● İNCELEMEK İÇİN KİŞİYE TIKLAYIN</span>
-            </div>
-          </div>
-
-          {/* Detailed Profile Card */}
-          <div className="w-full lg:w-5/12 flex flex-col">
-            <div className="bg-brand-card border border-brand-border rounded-xl p-6 md:p-8 backdrop-blur-md relative overflow-hidden flex-grow flex flex-col justify-between shadow-xl min-h-[380px]">
-              <div>
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={selectedMember.id}
-                    initial={{ opacity: 0, x: 15 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -15 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    {/* Header */}
-                    <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-brand-border/40 mb-6">
-                      <div>
-                        <span className={`font-mono text-[10px] px-2.5 py-0.5 rounded uppercase ${getDepartmentBadge(selectedMember.department)}`}>
-                          {selectedMember.department}
-                        </span>
-                        <h3 className="text-xl md:text-2xl font-bold text-white mt-2 leading-tight">
-                          {selectedMember.name}
-                        </h3>
-                        <div className="font-mono text-xs text-brand-cyan mt-1 flex items-center gap-1.5">
-                          <UserCheck size={13} className="text-brand-cyan" />
-                          <span>{selectedMember.role}</span>
-                        </div>
-                      </div>
-
-                      {/* LinkedIn */}
-                      {selectedMember.linkedin && (
-                        <a
-                          href={selectedMember.linkedin}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-2.5 bg-slate-900 hover:bg-brand-cyan/20 border border-brand-border rounded-lg text-slate-400 hover:text-white transition-all"
-                          title="LinkedIn Profili"
+                  {/* Skill Badges */}
+                  {member.skills && member.skills.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mt-3">
+                      {member.skills.slice(0, 3).map((skill, i) => (
+                        <span
+                          key={i}
+                          className="px-2 py-0.5 bg-brand-card/60 border border-brand-border/40 rounded text-[10px] font-mono text-slate-400"
                         >
-                          <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden="true">
-                            <path fillRule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.779-1.75-1.75s.784-1.75 1.75-1.75 1.75.779 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clipRule="evenodd" />
-                          </svg>
-                        </a>
-                      )}
+                          {skill}
+                        </span>
+                      ))}
                     </div>
-
-                    {/* Bio */}
-                    <p className="text-slate-300 text-sm md:text-base leading-relaxed mb-6">
-                      {selectedMember.bio}
-                    </p>
-
-                    {/* Skills */}
-                    <div>
-                      <h4 className="font-mono text-xs text-brand-emerald tracking-wider uppercase mb-3 flex items-center gap-1.5 font-bold">
-                        <Award size={13} />
-                        <span>UZMANLIK VE İLGİ ALANLARI</span>
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {selectedMember.skills.map((skill) => (
-                          <span
-                            key={skill}
-                            className="px-3 py-1 bg-slate-900 border border-brand-border rounded-md font-mono text-xs text-slate-300 hover:border-brand-cyan/50 transition-colors"
-                          >
-                            {skill}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-
-              {/* Link to full team page if core variant */}
-              {variant === 'core' && (
-                <div className="mt-8 pt-4 border-t border-brand-border/30 flex justify-between items-center">
-                  <span className="font-mono text-[10px] text-slate-400 uppercase flex items-center gap-1">
-                    <Users size={12} className="text-brand-cyan" />
-                    <span>TOPLULUK KADROSU</span>
-                  </span>
-                  <Link
-                    href="/ekibimiz"
-                    className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-brand-cyan hover:text-white transition-colors"
-                  >
-                    <span>Tüm Ekibi İncele</span>
-                    <ArrowRight size={13} />
-                  </Link>
+                  )}
                 </div>
-              )}
-            </div>
-          </div>
-        </div>
+
+                {/* Footer Social Links: GitHub & LinkedIn */}
+                <div className="mt-5 pt-3 border-t border-brand-border/40 flex items-center justify-between font-mono text-xs text-slate-400">
+                  {member.github && (
+                    <a
+                      href={member.github}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 text-slate-300 hover:text-brand-cyan transition-colors"
+                    >
+                      <GithubIcon className="w-3.5 h-3.5" />
+                      <span>GitHub</span>
+                    </a>
+                  )}
+
+                  {member.linkedin && (
+                    <a
+                      href={member.linkedin}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 text-slate-300 hover:text-blue-400 transition-colors"
+                    >
+                      <LinkedinIcon className="w-3.5 h-3.5" />
+                      <span>LinkedIn</span>
+                    </a>
+                  )}
+                </div>
+              </div>
+            ))}
+          </motion.div>
+        </AnimatePresence>
       </div>
     </section>
   );

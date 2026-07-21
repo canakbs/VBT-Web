@@ -24,7 +24,7 @@ export default function EkibimizPage() {
         <div className="pt-24 pb-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4">
             <Link
-              href="/#team"
+              href="/"
               className="inline-flex items-center gap-2 text-xs font-mono text-brand-muted hover:text-white transition-colors px-3 py-1.5 bg-brand-card/50 border border-brand-border rounded-lg"
             >
               <ArrowLeft size={14} />

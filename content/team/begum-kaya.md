@@ -1,9 +1,10 @@
 ---
 title: "Begüm Kaya"
 role: "Başkan Yardımcısı"
-department: "Yönetim"
+department: "Üst Yönetim"
 skills: ["Veri Analizi", "Scikit-Learn", "İstatistik"]
 bio: "Endüstri Mühendisliği öğrencisi. Eğitim programlarını ve etkinlik planlamasını koordine ediyor."
+github: "https://github.com"
 linkedin: "https://linkedin.com"
 connections: ["Mert Yılmaz", "Selin Demir"]
 x: 25
