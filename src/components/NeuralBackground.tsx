@@ -114,8 +114,8 @@ function NeuralNetwork({
     }
   }, [nodeCount]);
 
-  // Pre-allocated line buffers for maximum performance (1600 connections to cover larger space)
-  const MAX_CONNECTIONS = 1600;
+  // Pre-allocated line buffers for maximum performance (800 connections)
+  const MAX_CONNECTIONS = 800;
   const positions = useMemo(() => new Float32Array(MAX_CONNECTIONS * 2 * 3), []);
   const colors = useMemo(() => new Float32Array(MAX_CONNECTIONS * 2 * 3), []);
 
@@ -144,21 +144,24 @@ function NeuralNetwork({
       node.y += (node.vy + driftY) * speedMultiplier;
       node.z += (node.vz + driftZ) * speedMultiplier;
 
-      // Keep them enclosed in the view box (bounce velocities on X/Y, relative wrap on Z)
+      // Keep them enclosed in the view box (bounce velocities on X, relative wrap on Y and Z)
       const boundX = 20;
-      const boundY = 16;
 
       if (node.x < -boundX || node.x > boundX) {
         node.vx = -node.vx;
         node.x = Math.max(-boundX, Math.min(boundX, node.x));
       }
-      if (node.y < -boundY || node.y > boundY) {
-        node.vy = -node.vy;
-        node.y = Math.max(-boundY, Math.min(boundY, node.y));
+
+      // Dynamically wrap Y and Z relative to camera position so particles never leave camera view at bottom of page
+      const camY = state.camera.position.y;
+      const camZ = state.camera.position.z;
+
+      if (node.y > camY + 14) {
+        node.y -= 28;
+      } else if (node.y < camY - 14) {
+        node.y += 28;
       }
 
-      // Dynamically wrap Z relative to camera position so particles never leave camera view
-      const camZ = state.camera.position.z;
       if (node.z > camZ + 8) {
         node.z -= 45;
       } else if (node.z < camZ - 38) {
@@ -177,7 +180,7 @@ function NeuralNetwork({
     }
     meshRef.current.instanceMatrix.needsUpdate = true;
 
-    // 2. Compute Connection lines and opacities (increased threshold to 4.8 due to wider space distribution)
+    // 2. Compute Connection lines and opacities
     const pos = posArray.current;
     const col = colArray.current;
     let lineCount = 0;
@@ -300,7 +303,7 @@ function NeuralNetwork({
 }
 
 export default function NeuralBackground() {
-  const [nodeCount, setNodeCount] = useState(320);
+  const [nodeCount, setNodeCount] = useState(160);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [mounted, setMounted] = useState(false);
 
@@ -311,12 +314,12 @@ export default function NeuralBackground() {
       setReducedMotion(mediaQuery.matches);
     });
 
-    // Optimize node counts for performance based on mobile width (slightly increased to fill larger depth)
+    // Optimize node counts for performance (reduced by 50% for sleeker look & higher performance)
     const checkMobile = () => {
       if (window.innerWidth < 768) {
-        setNodeCount(130);
+        setNodeCount(65);
       } else {
-        setNodeCount(320);
+        setNodeCount(160);
       }
     };
     checkMobile();
