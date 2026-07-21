@@ -336,37 +336,19 @@ export default function NeuralBackground() {
   }, []);
 
   if (!mounted) {
-    // Initial server-side render visual placeholder
-    return <div className="fixed inset-0 w-full h-full -z-10 bg-[#05070f]" />;
+    return <div className="fixed inset-0 w-full h-full -z-10 bg-transparent" />;
   }
 
   return (
-    <div className="fixed inset-0 w-full h-full -z-10 bg-[#05070f] overflow-hidden pointer-events-none">
+    <div className="fixed inset-0 w-full h-full -z-10 bg-transparent overflow-hidden pointer-events-none">
       {/* Three.js R3F Canvas */}
       <Canvas
-        camera={{ fov: 60, near: 0.1, far: 50, position: [0, 0, 8] }}
-        gl={{ antialias: true, alpha: false }}
+        camera={{ fov: 60, near: 0.1, far: 250, position: [0, 0, 8] }}
+        gl={{ antialias: true, alpha: true }}
         dpr={[1, 1.5]}
       >
-        <color attach="background" args={['#05070f']} />
         <NeuralNetwork nodeCount={nodeCount} reducedMotion={reducedMotion} />
       </Canvas>
-
-      {/* Layer 1: Dark Radial Vignette to mask mesh clipping at screen borders and add depth */}
-      <div 
-        className="absolute inset-0 pointer-events-none opacity-85"
-        style={{
-          background: 'radial-gradient(circle at center, transparent 30%, #05070f 95%)'
-        }}
-      />
-
-      {/* Layer 2: Subtle Vertical Gradients to ensure text readability on the home page */}
-      <div 
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: 'linear-gradient(to bottom, #05070f 0%, rgba(5, 7, 15, 0.4) 15%, rgba(5, 7, 15, 0.4) 85%, #05070f 100%)'
-        }}
-      />
     </div>
   );
 }

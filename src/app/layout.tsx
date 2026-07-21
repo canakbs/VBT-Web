@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import ScrollToTop from "@/components/ScrollToTop";
+import MaintenanceOverlay from "@/components/MaintenanceOverlay";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
@@ -27,14 +28,17 @@ export default function RootLayout({
     <html
       lang="tr"
       className="h-full antialiased dark"
+      suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-brand-bg text-[#e2e8f0] selection:bg-brand-cyan/30 selection:text-white font-sans">
-        <SmoothScroll>
-          <div className="flex flex-col min-h-screen relative z-10 scanline">
-            {children}
-          </div>
-          <ScrollToTop />
-        </SmoothScroll>
+        <MaintenanceOverlay>
+          <SmoothScroll>
+            <div className="flex flex-col min-h-screen relative z-10 scanline">
+              {children}
+            </div>
+            <ScrollToTop />
+          </SmoothScroll>
+        </MaintenanceOverlay>
         <Analytics />
         <SpeedInsights />
       </body>
