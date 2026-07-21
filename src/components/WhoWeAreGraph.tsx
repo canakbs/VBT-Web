@@ -238,9 +238,6 @@ export default function WhoWeAreGraph() {
         <div className="flex flex-col md:flex-row gap-12 items-center">
           {/* Information Column */}
           <div className="w-full md:w-5/12 flex flex-col items-start">
-            <span className="font-mono text-xs text-brand-cyan tracking-widest uppercase mb-2">
-              [ BİZ KİMİZ? ]
-            </span>
             <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-6">
               Topluluğumuzu <br />
               <span className="bg-gradient-to-r from-brand-cyan to-brand-emerald bg-clip-text text-transparent">

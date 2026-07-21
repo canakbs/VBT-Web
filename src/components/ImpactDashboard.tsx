@@ -25,15 +25,6 @@ const STATS: StatItem[] = [
     color: '#00f2fe',
   },
   {
-    id: 'workshops',
-    label: 'Workshop & Eğitim Saati',
-    value: 400,
-    suffix: 'h',
-    icon: <Clock className="w-5 h-5 text-brand-emerald" />,
-    sparkline: [40, 80, 150, 220, 290, 350, 400],
-    color: '#00f5a0',
-  },
-  {
     id: 'events',
     label: 'Düzenlenen Etkinlik',
     value: 24,
@@ -50,15 +41,6 @@ const STATS: StatItem[] = [
     icon: <CheckSquare className="w-5 h-5 text-brand-blue" />,
     sparkline: [1, 2, 4, 4, 6, 7, 8],
     color: '#3b82f6',
-  },
-  {
-    id: 'teams',
-    label: 'Yarışma Ekibi',
-    value: 15,
-    suffix: ' takım',
-    icon: <Award className="w-5 h-5 text-amber-400" />,
-    sparkline: [2, 4, 6, 9, 11, 13, 15],
-    color: '#fbbf24',
   },
 ];
 
@@ -149,9 +131,6 @@ export default function ImpactDashboard() {
 
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-col items-start mb-16">
-          <span className="font-mono text-xs text-brand-cyan tracking-widest uppercase mb-2">
-            [ TOPLULUK İSTATİSTİKLERİ ]
-          </span>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white">
             Topluluğumuz <br />
             <span className="bg-gradient-to-r from-brand-cyan to-brand-emerald bg-clip-text text-transparent">
@@ -164,7 +143,7 @@ export default function ImpactDashboard() {
         </div>
 
         {/* Telemetry Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {STATS.map((stat) => {
             const isHovered = hoveredCard === stat.id;
             const reg = regressions[stat.id];
@@ -191,9 +170,6 @@ export default function ImpactDashboard() {
                   <div className="p-2 bg-slate-900 border border-brand-border rounded">
                     {stat.icon}
                   </div>
-                  <span className="font-mono text-[9px] text-brand-muted select-none uppercase">
-                    METRIC_ID: {stat.id.toUpperCase()}
-                  </span>
                 </div>
 
                 {/* Numerical Value */}
@@ -262,25 +238,6 @@ export default function ImpactDashboard() {
                       </linearGradient>
                     </defs>
                   </svg>
-                </div>
-
-                {/* Status Bar */}
-                <div className="mt-4 pt-3 border-t border-brand-border/40 flex items-center justify-between font-mono text-[8.5px] min-h-[22px]">
-                  {isHovered ? (
-                    <motion.div 
-                      initial={{ opacity: 0, y: 3 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="text-brand-cyan flex justify-between w-full"
-                    >
-                      <span>Büyümeye devam 📈</span>
-                      <span>TREND: ARTIYOR</span>
-                    </motion.div>
-                  ) : (
-                    <div className="text-brand-muted flex justify-between w-full uppercase">
-                      <span>DURUM: AKTİF</span>
-                      <span>TREND: İYİ</span>
-                    </div>
-                  )}
                 </div>
               </div>
             );

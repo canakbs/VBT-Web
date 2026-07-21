@@ -59,9 +59,6 @@ export default function ContactSection() {
 
       <div className="max-w-4xl mx-auto px-6">
         <div className="flex flex-col items-center text-center mb-16">
-          <span className="font-mono text-xs text-brand-cyan tracking-widest uppercase mb-2">
-            [ İLETİŞİM &amp; İŞ BİRLİĞİ ]
-          </span>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white">
             Bizimle İletişime Geçin
           </h2>

@@ -284,7 +284,7 @@ export default function Hero3D() {
           </p>
 
           {/* Large Action Buttons */}
-          <div className="pointer-events-auto flex flex-wrap items-center gap-4 mb-10">
+          <div className="pointer-events-auto flex flex-wrap items-center gap-4">
             <a
               href="/#join-us"
               className="inline-flex items-center gap-2.5 px-8 py-4 text-base font-bold bg-brand-cyan text-[#090d16] rounded-xl hover:bg-brand-cyan/90 transition-all shadow-lg shadow-brand-cyan/25 hover:scale-105 active:scale-95"
@@ -300,53 +300,31 @@ export default function Hero3D() {
               <span>Ekibimiz</span>
             </a>
           </div>
-
-          <div className="flex flex-wrap gap-6 text-xs font-mono text-brand-muted">
-            <span className="flex items-center gap-1.5">📍 Antalya</span>
-            <span className="flex items-center gap-1.5">👥 440+ üye</span>
-            <span className="flex items-center gap-1.5">📅 24+ etkinlik</span>
-          </div>
         </div>
 
-        {/* Right Side: Community Slogan & Vision Card */}
+        {/* Right Side: Community Vision Card */}
         <div className="pointer-events-auto w-full max-w-[340px] p-6 bg-[#090d16]/90 border border-brand-border rounded-2xl backdrop-blur-xl text-slate-300 shadow-2xl shadow-black/50 relative overflow-hidden z-20 hover:border-brand-cyan/40 transition-all group">
           <div className="absolute top-0 right-0 w-32 h-32 bg-brand-cyan/5 rounded-full blur-2xl group-hover:bg-brand-cyan/10 transition-all pointer-events-none" />
-          
-          <div className="flex items-center justify-between pb-3 border-b border-brand-border/40 mb-4">
-            <div className="flex items-center gap-2">
-              <Sparkles size={16} className="text-brand-cyan animate-pulse" />
-              <span className="text-brand-cyan font-bold uppercase tracking-wider text-[11px] font-mono">
-                Topluluk Mottomuz
-              </span>
-            </div>
-            <span className="px-2 py-0.5 text-[10px] font-mono font-medium text-brand-emerald bg-brand-emerald/10 border border-brand-emerald/20 rounded-full">
-              VBT
-            </span>
-          </div>
 
           <div className="space-y-4">
             <blockquote className="text-base font-semibold text-white italic leading-relaxed border-l-2 border-brand-cyan pl-3.5 my-2">
-              “Verinin gücüyle öğreniyor, birlikte geliştirip geleceği şekillendiriyoruz.”
+              “Veri bilimi etrafında; birlikte üreten, birlikte öğrenen ve bilgisini topluma aktaran bir topluluk inşa ediyoruz.”
             </blockquote>
 
             <div className="grid grid-cols-1 gap-2 pt-2 text-xs font-mono">
               <div className="flex items-center gap-2.5 p-2.5 bg-brand-card/50 border border-brand-border/30 rounded-lg">
                 <span className="text-brand-cyan font-bold">01.</span>
-                <span className="text-slate-200">Merak Et & Analiz Et</span>
+                <span className="text-slate-200">Merak Et</span>
               </div>
               <div className="flex items-center gap-2.5 p-2.5 bg-brand-card/50 border border-brand-border/30 rounded-lg">
                 <span className="text-brand-emerald font-bold">02.</span>
-                <span className="text-slate-200">Üret & Paylaş</span>
+                <span className="text-slate-200">Öğren &amp; Üret</span>
               </div>
               <div className="flex items-center gap-2.5 p-2.5 bg-brand-card/50 border border-brand-border/30 rounded-lg">
                 <span className="text-blue-400 font-bold">03.</span>
-                <span className="text-slate-200">Birlikte Büyü</span>
+                <span className="text-slate-200">Paylaş</span>
               </div>
             </div>
-
-            <p className="text-[11px] text-brand-muted leading-relaxed pt-1">
-              💡 Akdeniz Veri Bilimi Topluluğu olarak veriye ilgi duyan herkesi tek bir çatıda buluşturuyoruz.
-            </p>
           </div>
         </div>
 

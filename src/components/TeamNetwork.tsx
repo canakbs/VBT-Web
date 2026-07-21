@@ -183,9 +183,6 @@ export default function TeamNetwork({ variant = 'core', teamFiles }: TeamNetwork
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
           <div>
-            <span className="font-mono text-xs text-brand-cyan tracking-widest uppercase mb-2 block">
-              [ EKİBİMİZ ]
-            </span>
             <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white">
               {variant === 'core' ? (
                 <>

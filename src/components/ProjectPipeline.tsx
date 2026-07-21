@@ -27,9 +27,6 @@ export default function ProjectPipeline({ projects }: ProjectPipelineProps) {
 
       <div className="max-w-7xl mx-auto px-6">
         <div className="flex flex-col items-start mb-16">
-          <span className="font-mono text-xs text-brand-cyan tracking-widest uppercase mb-2">
-            [ PROJELERİMİZ ]
-          </span>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white">
             Tamamlanan <br />
             <span className="bg-gradient-to-r from-brand-cyan to-brand-emerald bg-clip-text text-transparent">

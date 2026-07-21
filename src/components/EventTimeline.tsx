@@ -92,9 +92,6 @@ export default function EventTimeline({ events, showMoreButton = false }: EventT
         {/* Section Title */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16">
           <div className="flex flex-col items-start mb-6 md:mb-0">
-            <span className="font-mono text-xs text-brand-cyan tracking-widest uppercase mb-2">
-              [ ETKİNLİK ARŞİVİ ]
-            </span>
             <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white">
               Etkinliklerimiz &amp; <br />
               <span className="bg-gradient-to-r from-brand-cyan to-brand-emerald bg-clip-text text-transparent">

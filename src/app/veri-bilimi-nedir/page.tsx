@@ -29,10 +29,6 @@ export default function VeriBilimiNedirPage() {
               <span>Ana Sayfaya Dön</span>
             </Link>
 
-            <span className="font-mono text-xs text-brand-cyan uppercase tracking-widest block mb-3">
-              [ BİLGİ KILAVUZU ]
-            </span>
-
             <h1 className="text-3xl sm:text-5xl font-bold text-white tracking-tight mb-8 leading-tight">
               Veri Bilimi Nedir? <br />
               <span className="bg-gradient-to-r from-brand-cyan via-blue-400 to-brand-emerald bg-clip-text text-transparent">

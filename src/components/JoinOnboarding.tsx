@@ -95,9 +95,6 @@ export default function JoinOnboarding() {
 
       <div className="max-w-4xl mx-auto px-6">
         <div className="flex flex-col items-center text-center mb-10">
-          <span className="font-mono text-xs text-brand-cyan tracking-widest uppercase mb-2">
-            [ BİZE KATIL ]
-          </span>
           <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white">
             Bize Katıl
           </h2>
