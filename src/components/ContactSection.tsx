@@ -53,7 +53,7 @@ export default function ContactSection() {
   };
 
   return (
-    <section id="contact" className="relative py-24 bg-transparent border-b border-brand-border">
+    <section id="contact" className="relative pt-10 md:pt-12 pb-20 md:pb-24 bg-transparent border-b border-brand-border">
       {/* Background patterns */}
       <div className="absolute inset-0 scientific-grid opacity-10 pointer-events-none" />
 

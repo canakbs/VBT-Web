@@ -7,7 +7,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
   title: "Akdeniz Veri Bilimi Topluluğu | Mediterranean Data Science Community",
-  description: "Akdeniz Üniversitesi Veri Bilimi Topluluğu - Yapay Zeka, Makine Öğrenmesi, Veri Bilimi ve MLOps Araştırma Topluluğu.",
+  description: "Akdeniz Veri Bilimi Topluluğu - Yapay Zeka, Makine Öğrenmesi, Veri Bilimi ve MLOps Araştırma Topluluğu.",
   icons: {
     icon: [
       { url: "/favicon.png?v=4", type: "image/png", sizes: "512x512" },

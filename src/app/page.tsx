@@ -46,7 +46,7 @@ export default function Home() {
             />
             <div className="flex flex-col items-center md:items-start gap-0.5">
               <span className="text-white font-bold tracking-wider">AKDENİZ VERİ BİLİMİ</span>
-              <span>Akdeniz Üniversitesi Veri Bilimi Topluluğu // 2025</span>
+              <span>Akdeniz Veri Bilimi Topluluğu // 2025</span>
             </div>
           </div>
 

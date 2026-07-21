@@ -267,7 +267,7 @@ export default function Hero3D() {
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-cyan/10 border border-brand-cyan/30 rounded-full mb-6">
             <div className="w-2 h-2 rounded-full bg-brand-emerald animate-pulse" />
             <span className="text-xs font-mono text-brand-cyan font-medium">
-              Akdeniz Üniversitesi Veri Bilimi Topluluğu
+              Akdeniz Veri Bilimi Topluluğu
             </span>
           </div>
 
@@ -345,7 +345,7 @@ export default function Hero3D() {
             </div>
 
             <p className="text-[11px] text-brand-muted leading-relaxed pt-1">
-              💡 Akdeniz Üniversitesi Veri Bilimi Topluluğu olarak veriye ilgi duyan herkesi tek bir çatıda buluşturuyoruz.
+              💡 Akdeniz Veri Bilimi Topluluğu olarak veriye ilgi duyan herkesi tek bir çatıda buluşturuyoruz.
             </p>
           </div>
         </div>
