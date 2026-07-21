@@ -66,9 +66,10 @@ export default function Workspace() {
 
   // Team member specific fields
   const [teamRole, setTeamRole] = useState('');
-  const [teamDepartment, setTeamDepartment] = useState('Takım Liderleri');
+  const [teamDepartment, setTeamDepartment] = useState('Üst Yönetim');
   const [teamSkills, setTeamSkills] = useState('');
   const [teamBio, setTeamBio] = useState('');
+  const [teamGithub, setTeamGithub] = useState('');
   const [teamLinkedin, setTeamLinkedin] = useState('');
   const [teamConnections, setTeamConnections] = useState('');
   const [teamX, setTeamX] = useState(50);
@@ -164,9 +165,10 @@ export default function Workspace() {
     setProjectStats('');
 
     setTeamRole('');
-    setTeamDepartment('Takım Liderleri');
+    setTeamDepartment('Üst Yönetim');
     setTeamSkills('');
     setTeamBio('');
+    setTeamGithub('');
     setTeamLinkedin('');
     setTeamConnections('');
     setTeamX(50);
@@ -210,9 +212,10 @@ export default function Workspace() {
         setBlogStats(fileData.metadata.stats || '');
       } else if (activeTab === 'team') {
         setTeamRole(fileData.metadata.role || '');
-        setTeamDepartment(fileData.metadata.department || 'Takım Liderleri');
+        setTeamDepartment(fileData.metadata.department || 'Üst Yönetim');
         setTeamSkills(fileData.metadata.skills ? (Array.isArray(fileData.metadata.skills) ? fileData.metadata.skills.join(', ') : fileData.metadata.skills) : '');
         setTeamBio(fileData.metadata.bio || fileData.content || '');
+        setTeamGithub(fileData.metadata.github || '');
         setTeamLinkedin(fileData.metadata.linkedin || '');
         setTeamConnections(fileData.metadata.connections ? (Array.isArray(fileData.metadata.connections) ? fileData.metadata.connections.join(', ') : fileData.metadata.connections) : '');
         setTeamX(fileData.metadata.x ? Number(fileData.metadata.x) : 50);
@@ -361,6 +364,7 @@ role: "${teamRole}"
 department: "${teamDepartment}"
 skills: ${JSON.stringify(skillsArray)}
 bio: "${teamBio}"
+github: "${teamGithub}"
 linkedin: "${teamLinkedin}"
 connections: ${JSON.stringify(connArray)}
 x: ${teamX}
@@ -757,13 +761,16 @@ ${content || teamBio}
 
                       <div className="flex flex-col">
                         <label className="text-slate-400 mb-1 uppercase text-[10px]">Departman</label>
-                        <input
-                          type="text"
-                          placeholder="Örn: Yönetim, Danışmanlar, Takım Liderleri, AR-GE"
+                        <select
                           value={teamDepartment}
                           onChange={(e) => setTeamDepartment(e.target.value)}
                           className="p-2.5 bg-slate-900 border border-brand-border rounded text-white text-xs focus:border-brand-cyan focus:outline-none"
-                        />
+                        >
+                          <option value="Üst Yönetim">Üst Yönetim</option>
+                          <option value="Etkinlik &amp; Organizasyon">Etkinlik &amp; Organizasyon</option>
+                          <option value="Sosyal Medya">Sosyal Medya</option>
+                          <option value="ARGE">ARGE</option>
+                        </select>
                       </div>
                     </div>
 
@@ -778,15 +785,28 @@ ${content || teamBio}
                       />
                     </div>
 
-                    <div className="flex flex-col">
-                      <label className="text-slate-400 mb-1 uppercase text-[10px]">LinkedIn URL (İsteğe Bağlı)</label>
-                      <input
-                        type="url"
-                        placeholder="Örn: https://linkedin.com/in/kullanici"
-                        value={teamLinkedin}
-                        onChange={(e) => setTeamLinkedin(e.target.value)}
-                        className="p-2.5 bg-slate-900 border border-brand-border rounded text-white text-xs focus:border-brand-cyan focus:outline-none"
-                      />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div className="flex flex-col">
+                        <label className="text-slate-400 mb-1 uppercase text-[10px]">GitHub URL (İsteğe Bağlı)</label>
+                        <input
+                          type="url"
+                          placeholder="Örn: https://github.com/kullanici"
+                          value={teamGithub}
+                          onChange={(e) => setTeamGithub(e.target.value)}
+                          className="p-2.5 bg-slate-900 border border-brand-border rounded text-white text-xs focus:border-brand-cyan focus:outline-none"
+                        />
+                      </div>
+
+                      <div className="flex flex-col">
+                        <label className="text-slate-400 mb-1 uppercase text-[10px]">LinkedIn URL (İsteğe Bağlı)</label>
+                        <input
+                          type="url"
+                          placeholder="Örn: https://linkedin.com/in/kullanici"
+                          value={teamLinkedin}
+                          onChange={(e) => setTeamLinkedin(e.target.value)}
+                          className="p-2.5 bg-slate-900 border border-brand-border rounded text-white text-xs focus:border-brand-cyan focus:outline-none"
+                        />
+                      </div>
                     </div>
 
                     <div className="flex flex-col">

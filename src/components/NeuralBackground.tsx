@@ -60,11 +60,23 @@ function NeuralNetwork({
   const meshRef = useRef<THREE.InstancedMesh>(null);
   const linesGeomRef = useRef<THREE.BufferGeometry>(null);
 
-  // Scroll tracking from Lenis
+  // Scroll tracking from Lenis + native scroll fallback
   const scrollProgress = useRef(0);
   useLenis((lenis) => {
-    scrollProgress.current = lenis.progress; // Normalised scroll progress [0, 1]
+    scrollProgress.current = Math.min(Math.max(lenis.progress, 0), 1);
   });
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      if (maxScroll > 0) {
+        const p = window.scrollY / maxScroll;
+        scrollProgress.current = Math.min(Math.max(p, 0), 1);
+      }
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Mouse tracking for tilt parallax
   const mouse = useRef({ x: 0, y: 0 });
@@ -245,12 +257,14 @@ function NeuralNetwork({
     }
 
     // 3. Smooth Camera movement matching scroll progress & mouse coordinates
-    const progress = scrollProgress.current;
+    const rawProgress = scrollProgress.current;
+    // Strictly clamp progress between 0 and 1 to prevent overscroll / rubber-banding camera drift at page bottom
+    const progress = Math.min(Math.max(rawProgress, 0), 1);
 
     // Keep camera floating gracefully in front of the nodes field as you scroll the full page length
     const targetZ = THREE.MathUtils.lerp(8, 2, progress);
-    const scrollParallaxY = THREE.MathUtils.lerp(0, -6, progress);
-    const scrollParallaxX = Math.sin(progress * Math.PI * 2) * 2.5;
+    const scrollParallaxY = THREE.MathUtils.lerp(0, -3.5, progress);
+    const scrollParallaxX = Math.sin(progress * Math.PI * 2) * 2.0;
 
     // Mouse movement parallax (tilt)
     const mouseSpeed = reducedMotion ? 0.0 : 1.0;
