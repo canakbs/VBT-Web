@@ -24,7 +24,6 @@ function pureRandom(seed: number): number {
 }
 
 // Generate static properties for a node purely based on its index.
-// Expanded boundaries to spread the nodes along the entire height of the scrolled page.
 function getDeterministicNode(index: number): NodeItem {
   const r1 = pureRandom(index * 123.456 + 1.1);
   const r2 = pureRandom(index * 234.567 + 2.2);
@@ -34,10 +33,10 @@ function getDeterministicNode(index: number): NodeItem {
   const r6 = pureRandom(index * 678.901 + 6.6);
   const r7 = pureRandom(index * 789.012 + 7.7);
 
-  // Distribute nodes across a much larger volume, especially along the Z axis (depth)
-  const x = (r1 - 0.5) * 32;
-  const y = (r2 - 0.5) * 22;
-  const z = r3 * -97 + 12; // Distributed from -85 to +12
+  // Distribute nodes evenly around the camera view box
+  const x = (r1 - 0.5) * 36;
+  const y = (r2 - 0.5) * 26;
+  const z = (r3 - 0.5) * 45;
 
   // Elegant slow drift velocity
   const vx = (r4 - 0.5) * 0.005;
@@ -145,11 +144,9 @@ function NeuralNetwork({
       node.y += (node.vy + driftY) * speedMultiplier;
       node.z += (node.vz + driftZ) * speedMultiplier;
 
-      // Keep them enclosed in the expanded boundary box (bounce velocities)
-      const boundX = 16;
-      const boundY = 11;
-      const boundZMin = -85;
-      const boundZMax = 12;
+      // Keep them enclosed in the view box (bounce velocities on X/Y, relative wrap on Z)
+      const boundX = 20;
+      const boundY = 16;
 
       if (node.x < -boundX || node.x > boundX) {
         node.vx = -node.vx;
@@ -159,9 +156,13 @@ function NeuralNetwork({
         node.vy = -node.vy;
         node.y = Math.max(-boundY, Math.min(boundY, node.y));
       }
-      if (node.z < boundZMin || node.z > boundZMax) {
-        node.vz = -node.vz;
-        node.z = Math.max(boundZMin, Math.min(boundZMax, node.z));
+
+      // Dynamically wrap Z relative to camera position so particles never leave camera view
+      const camZ = state.camera.position.z;
+      if (node.z > camZ + 8) {
+        node.z -= 45;
+      } else if (node.z < camZ - 38) {
+        node.z += 45;
       }
 
       // Position instanced node
@@ -243,12 +244,10 @@ function NeuralNetwork({
     // 3. Smooth Camera movement matching scroll progress & mouse coordinates
     const progress = scrollProgress.current;
 
-    // Progress from Z=8 down to Z=-80 (extended depth coordinates to stretch across the full page)
-    const targetZ = THREE.MathUtils.lerp(8, -80, progress);
-
-    // Lateral S-Curve scroll parallax
-    const scrollParallaxX = Math.sin(progress * Math.PI * 1.5) * 3.2;
-    const scrollParallaxY = Math.cos(progress * Math.PI) * 1.2;
+    // Keep camera floating gracefully in front of the nodes field as you scroll the full page length
+    const targetZ = THREE.MathUtils.lerp(8, 2, progress);
+    const scrollParallaxY = THREE.MathUtils.lerp(0, -6, progress);
+    const scrollParallaxX = Math.sin(progress * Math.PI * 2) * 2.5;
 
     // Mouse movement parallax (tilt)
     const mouseSpeed = reducedMotion ? 0.0 : 1.0;
@@ -258,13 +257,13 @@ function NeuralNetwork({
     const targetX = scrollParallaxX + mouseParallaxX;
     const targetY = scrollParallaxY + mouseParallaxY;
 
-    // Lerp coordinates
+    // Lerp coordinates smoothly
     state.camera.position.z = THREE.MathUtils.lerp(state.camera.position.z, targetZ, 0.05);
     state.camera.position.x = THREE.MathUtils.lerp(state.camera.position.x, targetX, 0.05);
     state.camera.position.y = THREE.MathUtils.lerp(state.camera.position.y, targetY, 0.05);
 
     // Keep camera look target aligned ahead
-    const lookTarget = new THREE.Vector3(0, 0, state.camera.position.z - 8);
+    const lookTarget = new THREE.Vector3(0, targetY * 0.5, state.camera.position.z - 10);
     state.camera.lookAt(lookTarget);
   });
 
