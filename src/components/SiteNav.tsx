@@ -9,7 +9,7 @@ const NAV_LINKS = [
   { href: '/#project-showcase', label: 'Projeler' },
   { href: '/ekibimiz', label: 'Ekibimiz' },
   { href: '/veri-bilimi-nedir', label: 'Veri Bilimi Nedir?' },
-  { href: '/#contact', label: 'İletişim' },
+  { href: '/iletisim', label: 'İletişim' },
 ];
 
 export default function SiteNav() {

@@ -2,9 +2,7 @@ import { getFilesFromDir } from "@/lib/markdown";
 import Hero3D from "@/components/Hero3D";
 import EventTimeline from "@/components/EventTimeline";
 import ProjectPipeline from "@/components/ProjectPipeline";
-import ImpactDashboard from "@/components/ImpactDashboard";
 import JoinOnboarding from "@/components/JoinOnboarding";
-import ContactSection from "@/components/ContactSection";
 import NeuralBackground from "@/components/NeuralBackground";
 
 export default function Home() {
@@ -23,14 +21,11 @@ export default function Home() {
       {/* 2. Etkinliklerimiz (Milestone Events - Limit 3 on Homepage) */}
       <EventTimeline events={events.slice(0, 3)} showMoreButton={events.length > 3} />
 
-      {/* 3. Projelerimiz (Completed Community Projects) */}
+      {/* 3. Projelerimiz (Completed Community Projects - Stacked Reveal) */}
       <ProjectPipeline projects={projects} />
 
       {/* 4. Bize Katıl (Final Application Wizard Flow) */}
       <JoinOnboarding />
-
-      {/* 5. İletişim & İş Birliği (Questions, Inquiries, Collaborations Form) */}
-      <ContactSection />
 
       {/* Scientific Community Footer */}
       <footer className="bg-[#090d16] border-t border-brand-border py-12 px-6 relative z-10 font-mono text-xs text-brand-muted">
@@ -52,7 +47,7 @@ export default function Home() {
             <a href="/#project-showcase" className="hover:text-brand-cyan transition-colors">Projeler</a>
             <a href="/ekibimiz" className="hover:text-brand-cyan transition-colors">Ekibimiz</a>
             <a href="/veri-bilimi-nedir" className="hover:text-brand-cyan transition-colors">Veri Bilimi Nedir?</a>
-            <a href="/#contact" className="hover:text-brand-cyan transition-colors">İletişim</a>
+            <a href="/iletisim" className="hover:text-brand-cyan transition-colors">İletişim</a>
             <a href="/#join-us" className="hover:text-brand-emerald transition-colors font-bold">BİZE KATIL</a>
           </div>
 
