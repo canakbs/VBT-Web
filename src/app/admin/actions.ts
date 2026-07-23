@@ -240,18 +240,31 @@ export async function deleteContent(filePath: string, sha: string) {
   return { success: true };
 }
 
-export async function uploadImageAction(
-  type: 'events' | 'blog' | 'projects' | 'team',
-  filename: string,
-  base64Content: string
-) {
+export async function uploadImageAction(formData: FormData) {
   const cookieStore = await cookies();
   if (cookieStore.get('avbt_cms_session')?.value !== 'true') {
     throw new Error('UNAUTHORIZED');
   }
 
+  const type = formData.get('type') as 'events' | 'blog' | 'projects' | 'team';
+  const filename = formData.get('filename') as string;
+  const file = formData.get('file') as File;
+
+  if (!type || !filename || !file) {
+    throw new Error('MISSING_FIELDS');
+  }
+
   const relativePath = `public/images/${type}/${filename}`;
   const webPath = `/images/${type}/${filename}`;
+
+  let buffer: Buffer;
+  try {
+    const arrayBuffer = await file.arrayBuffer();
+    buffer = Buffer.from(arrayBuffer);
+  } catch (err) {
+    console.error('Error reading uploaded file:', err);
+    throw new Error('FAILED_TO_READ_FILE');
+  }
 
   // Write image file locally
   try {
@@ -259,7 +272,6 @@ export async function uploadImageAction(
     if (!fs.existsSync(dirPath)) {
       fs.mkdirSync(dirPath, { recursive: true });
     }
-    const buffer = Buffer.from(base64Content, 'base64');
     fs.writeFileSync(path.join(dirPath, filename), buffer);
   } catch (err) {
     console.error('Error writing image file locally:', err);
@@ -269,7 +281,7 @@ export async function uploadImageAction(
   if (HAS_GITHUB_PAT) {
     const message = `CMS: Upload image ${filename}`;
     try {
-      await commitBinaryFile(relativePath, base64Content, message);
+      await commitBinaryFile(relativePath, buffer.toString('base64'), message);
     } catch (err: any) {
       console.error(`Error uploading image to GitHub ${relativePath}:`, err);
     }
@@ -330,4 +342,73 @@ export async function deleteApplication(id: string) {
     console.error('Error deleting application:', err);
     throw new Error(err.message || 'FAILED_TO_DELETE');
   }
+}
+
+export async function getHeroFrames() {
+  const cookieStore = await cookies();
+  if (cookieStore.get('avbt_cms_session')?.value !== 'true') {
+    throw new Error('UNAUTHORIZED');
+  }
+
+  if (HAS_GITHUB_PAT) {
+    try {
+      const fileData = await getFile('content/hero-frames.json');
+      const rawContent = Buffer.from(fileData.content, 'base64').toString('utf-8');
+      const data = JSON.parse(rawContent);
+      return {
+        sha: fileData.sha,
+        frames: data,
+      };
+    } catch (err) {
+      console.warn('GitHub API get hero-frames failed, falling back to local fs:', err);
+    }
+  }
+
+  try {
+    const filePath = path.join(process.cwd(), 'content', 'hero-frames.json');
+    if (!fs.existsSync(filePath)) {
+      return {
+        sha: 'local-hero-frames',
+        frames: [],
+      };
+    }
+    const rawContent = fs.readFileSync(filePath, 'utf-8');
+    const data = JSON.parse(rawContent);
+    return {
+      sha: 'local-hero-frames',
+      frames: data,
+    };
+  } catch (err: any) {
+    console.error('Error fetching local hero-frames:', err);
+    throw new Error(err.message || 'FAILED_TO_FETCH_HERO_FRAMES');
+  }
+}
+
+export async function saveHeroFrames(frames: any[], sha?: string) {
+  const cookieStore = await cookies();
+  if (cookieStore.get('avbt_cms_session')?.value !== 'true') {
+    throw new Error('UNAUTHORIZED');
+  }
+
+  const relativePath = 'content/hero-frames.json';
+  const contentString = JSON.stringify(frames, null, 2);
+
+  try {
+    const filePath = path.join(process.cwd(), relativePath);
+    fs.writeFileSync(filePath, contentString, 'utf-8');
+  } catch (err) {
+    console.error('Error writing hero-frames locally:', err);
+  }
+
+  if (HAS_GITHUB_PAT) {
+    const message = 'CMS: Update hero frames configuration';
+    try {
+      const result = await commitFile(relativePath, contentString, message, sha?.startsWith('local-') ? undefined : sha);
+      return { success: true, sha: result.sha };
+    } catch (err: any) {
+      console.error('Error saving hero-frames to GitHub:', err);
+    }
+  }
+
+  return { success: true, sha: 'local-hero-frames' };
 }

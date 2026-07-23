@@ -4,11 +4,24 @@ import EventTimeline from "@/components/EventTimeline";
 import ProjectPipeline from "@/components/ProjectPipeline";
 import JoinOnboarding from "@/components/JoinOnboarding";
 import NeuralBackground from "@/components/NeuralBackground";
+import fs from 'fs';
+import path from 'path';
 
 export default function Home() {
   // Read events and projects from content markdown files
   const events = getFilesFromDir("events");
   const projects = getFilesFromDir("projects");
+
+  // Read hero frames configuration
+  let heroFrames = [];
+  try {
+    const filePath = path.join(process.cwd(), 'content', 'hero-frames.json');
+    if (fs.existsSync(filePath)) {
+      heroFrames = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    }
+  } catch (err) {
+    console.error('Failed to load hero frames:', err);
+  }
 
   return (
     <>
@@ -16,10 +29,10 @@ export default function Home() {
       <NeuralBackground />
 
       {/* 1. Hero Experience (Copy + Slogan & Compact Stat Metrics Cards) */}
-      <Hero3D />
+      <Hero3D frames={heroFrames} />
 
-      {/* 2. Etkinliklerimiz (Milestone Events - Limit 3 on Homepage) */}
-      <EventTimeline events={events.slice(0, 3)} showMoreButton={events.length > 3} />
+      {/* 2. Etkinliklerimiz (Milestone Events - All events in slider) */}
+      <EventTimeline events={events} showMoreButton={events.length > 3} />
 
       {/* 3. Projelerimiz (Completed Community Projects - Stacked Reveal) */}
       <ProjectPipeline projects={projects} />

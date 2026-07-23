@@ -1,0 +1,38 @@
+[
+  {
+    "id": "workshop",
+    "name": "Sol Üst Çerçeve",
+    "src": "/images/hero/hero-1784838097357-Screenshot_20250427_225104_Gallery.jpg",
+    "caption": "Teknik Sunumlar"
+  },
+  {
+    "id": "hackathon",
+    "name": "Sol Orta Çerçeve",
+    "src": "/images/hero/hero-1784838117152-IMG-20250216-WA0012.jpg",
+    "caption": "Sosyal Etkinlikler"
+  },
+  {
+    "id": "community",
+    "name": "Sol Alt Çerçeve",
+    "src": "/images/hero/community.png",
+    "caption": "Topluluk Ekibi"
+  },
+  {
+    "id": "speakers",
+    "name": "Sağ Üst Çerçeve",
+    "src": "/images/hero/speakers.png",
+    "caption": "Yapay Zekâ Semineri"
+  },
+  {
+    "id": "coding",
+    "name": "Sağ Orta Çerçeve",
+    "src": "/images/hero/coding.png",
+    "caption": "Model Eğitimi"
+  },
+  {
+    "id": "team",
+    "name": "Sağ Alt Çerçeve",
+    "src": "/images/hero/team.png",
+    "caption": "Birlikte Öğreniyoruz"
+  }
+]

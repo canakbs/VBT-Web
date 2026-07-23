@@ -11,7 +11,18 @@ interface Point2D {
   initY: number;
 }
 
-export default function Hero3D() {
+interface HeroFrame {
+  id: string;
+  name?: string;
+  src: string;
+  caption: string;
+}
+
+interface Hero3DProps {
+  frames?: HeroFrame[];
+}
+
+export default function Hero3D({ frames = [] }: Hero3DProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const mouseRef = useRef({ x: 0, y: 0, active: false });
@@ -241,12 +252,11 @@ export default function Hero3D() {
     }
   };
 
-  const polaroidPhotos = [
+  const basePhotos = [
     {
       id: 'workshop',
-      src: '/images/hero/workshop.png',
-      alt: 'Akdeniz Veri Bilimi Çalıştayı',
-      caption: 'Çalıştaylar #2025',
+      defaultSrc: '/images/hero/workshop.png',
+      defaultCaption: 'Çalıştaylar #2025',
       position: 'top-[12%] left-[1.5%] xl:left-[3.5%]',
       size: 'w-44 xl:w-52',
       baseRotate: '-rotate-6',
@@ -255,9 +265,8 @@ export default function Hero3D() {
     },
     {
       id: 'hackathon',
-      src: '/images/hero/hackathon.png',
-      alt: 'Med Hackathon Etkinliği',
-      caption: 'Med Hackathon',
+      defaultSrc: '/images/hero/hackathon.png',
+      defaultCaption: 'Med Hackathon',
       position: 'top-[36%] left-[0.5%] xl:left-[2%]',
       size: 'w-52 xl:w-60',
       baseRotate: 'rotate-4',
@@ -266,9 +275,8 @@ export default function Hero3D() {
     },
     {
       id: 'community',
-      src: '/images/hero/community.png',
-      alt: 'Topluluk Ekibi',
-      caption: 'Topluluk Ekibi',
+      defaultSrc: '/images/hero/community.png',
+      defaultCaption: 'Topluluk Ekibi',
       position: 'bottom-[8%] left-[2%] xl:left-[4%]',
       size: 'w-40 xl:w-48',
       baseRotate: '-rotate-4',
@@ -277,9 +285,8 @@ export default function Hero3D() {
     },
     {
       id: 'speakers',
-      src: '/images/hero/speakers.png',
-      alt: 'Yapay Zekâ Semineri',
-      caption: 'Yapay Zekâ Semineri',
+      defaultSrc: '/images/hero/speakers.png',
+      defaultCaption: 'Yapay Zekâ Semineri',
       position: 'top-[13%] right-[1.5%] xl:right-[3.5%]',
       size: 'w-44 xl:w-52',
       baseRotate: 'rotate-5',
@@ -288,9 +295,8 @@ export default function Hero3D() {
     },
     {
       id: 'coding',
-      src: '/images/hero/coding.png',
-      alt: 'Model Eğitimi & Kodlama',
-      caption: 'Model Eğitimi',
+      defaultSrc: '/images/hero/coding.png',
+      defaultCaption: 'Model Eğitimi',
       position: 'top-[37%] right-[0.5%] xl:right-[2%]',
       size: 'w-52 xl:w-60',
       baseRotate: '-rotate-5',
@@ -299,9 +305,8 @@ export default function Hero3D() {
     },
     {
       id: 'team',
-      src: '/images/hero/team.png',
-      alt: 'Birlikte Öğreniyoruz',
-      caption: 'Birlikte Öğreniyoruz',
+      defaultSrc: '/images/hero/team.png',
+      defaultCaption: 'Birlikte Öğreniyoruz',
       position: 'bottom-[9%] right-[2%] xl:right-[4%]',
       size: 'w-40 xl:w-48',
       baseRotate: 'rotate-3',
@@ -309,6 +314,21 @@ export default function Hero3D() {
       zIndex: 'z-10',
     },
   ];
+
+  const polaroidPhotos = basePhotos.map((p) => {
+    const matchedFrame = (frames || []).find((f) => f.id === p.id);
+    return {
+      id: p.id,
+      src: matchedFrame?.src || p.defaultSrc,
+      alt: matchedFrame?.caption || p.defaultCaption,
+      caption: matchedFrame?.caption || p.defaultCaption,
+      position: p.position,
+      size: p.size,
+      baseRotate: p.baseRotate,
+      hoverRotate: p.hoverRotate,
+      zIndex: p.zIndex,
+    };
+  });
 
   return (
     <section 

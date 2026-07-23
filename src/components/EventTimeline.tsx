@@ -29,6 +29,18 @@ const POLAROID_PRESETS = [
 ];
 
 export default function EventTimeline({ events, showMoreButton = false }: EventTimelineProps) {
+  // Sort events chronologically (oldest to newest) for a natural timeline flow
+  const sortedEvents = React.useMemo(() => {
+    return [...events].sort((a, b) => {
+      const dateA = a.metadata.date ? new Date(a.metadata.date).getTime() : 0;
+      const dateB = b.metadata.date ? new Date(b.metadata.date).getTime() : 0;
+      if (dateA === 0 && dateB === 0) {
+        return a.slug.localeCompare(b.slug);
+      }
+      return dateA - dateB;
+    });
+  }, [events]);
+
   const [activeCategory, setActiveCategory] = useState<string>('Tümü');
   const [selectedEvent, setSelectedEvent] = useState<MarkdownFile | null>(null);
   const [isHovered, setIsHovered] = useState(false);
@@ -50,11 +62,11 @@ export default function EventTimeline({ events, showMoreButton = false }: EventT
   };
 
   // Categories
-  const categories = ['Tümü', ...Array.from(new Set(events.map(e => e.metadata.category || ''))).filter(Boolean)];
+  const categories = ['Tümü', ...Array.from(new Set(sortedEvents.map(e => e.metadata.category || ''))).filter(Boolean)];
 
   const filteredEvents = activeCategory === 'Tümü'
-    ? events
-    : events.filter(e => e.metadata.category === activeCategory);
+    ? sortedEvents
+    : sortedEvents.filter(e => e.metadata.category === activeCategory);
 
   // Duplicate list to create a seamless infinite strip
   const repeatCount = filteredEvents.length > 0 ? Math.max(4, Math.ceil(12 / filteredEvents.length)) : 0;

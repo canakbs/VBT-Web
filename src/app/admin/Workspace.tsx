@@ -29,15 +29,20 @@ import {
   deleteContent,
   uploadImageAction,
   getApplicationsList,
-  deleteApplication
+  deleteApplication,
+  getHeroFrames,
+  saveHeroFrames
 } from './actions';
 
 export default function Workspace() {
   // Navigation & Tabs
   const [activeView, setActiveView] = useState<'list' | 'composer'>('list');
-  const [activeTab, setActiveTab] = useState<'events' | 'blog' | 'projects' | 'team' | 'applications'>('events');
+  const [activeTab, setActiveTab] = useState<'events' | 'blog' | 'projects' | 'team' | 'applications' | 'hero'>('events');
   const [contentList, setContentList] = useState<any[]>([]);
   const [applicationsList, setApplicationsList] = useState<any[]>([]);
+  const [heroFrames, setHeroFrames] = useState<any[]>([]);
+  const [heroFramesSha, setHeroFramesSha] = useState<string>('');
+  const [isSavingHero, setIsSavingHero] = useState<boolean>(false);
   const [isLoadingList, setIsLoadingList] = useState(false);
   const [isSandboxMode, setIsSandboxMode] = useState(false);
 
@@ -88,9 +93,23 @@ export default function Workspace() {
   ]);
 
   // Load Content List
-  const fetchList = async (type: 'events' | 'blog' | 'projects' | 'team' | 'applications') => {
+  const fetchList = async (type: 'events' | 'blog' | 'projects' | 'team' | 'applications' | 'hero') => {
     setIsLoadingList(true);
     setIsSandboxMode(false);
+
+    if (type === 'hero') {
+      try {
+        const res = await getHeroFrames();
+        setHeroFrames(res.frames);
+        setHeroFramesSha(res.sha);
+      } catch (err) {
+        console.error(err);
+        setHeroFrames([]);
+      } finally {
+        setIsLoadingList(false);
+      }
+      return;
+    }
 
     if (type === 'applications') {
       try {
@@ -278,32 +297,81 @@ export default function Workspace() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = async (event) => {
-      try {
-        addConsoleLine(`STARTING IMAGE UPLOAD: ${file.name}...`);
-        const base64String = (event.target?.result as string).split(',')[1];
-        const destFolder = activeTab === 'applications' ? 'events' : activeTab;
-        const cleanName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
-        const finalName = `${Date.now()}-${cleanName}`;
-        
-        const result = await uploadImageAction(
-          destFolder as 'events' | 'blog' | 'projects' | 'team', 
-          finalName, 
-          base64String
-        );
-        if (result.success && result.path) {
-          setImagePath(result.path);
-          addConsoleLine(`IMAGE UPLOAD SUCCESSFUL: ${result.path}`);
-        }
-      } catch (err: any) {
-        console.error(err);
-        addConsoleLine(`IMAGE UPLOAD FAILED: ${err.message}`);
-        alert('Resim yüklenirken hata oluştu: ' + err.message);
+    try {
+      addConsoleLine(`STARTING IMAGE UPLOAD: ${file.name}...`);
+      const destFolder = activeTab === 'applications' ? 'events' : activeTab;
+      const cleanName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
+      const finalName = `${Date.now()}-${cleanName}`;
+
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('type', destFolder);
+      formData.append('filename', finalName);
+      
+      const result = await uploadImageAction(formData);
+      if (result.success && result.path) {
+        setImagePath(result.path);
+        addConsoleLine(`IMAGE UPLOAD SUCCESSFUL: ${result.path}`);
       }
-    };
-    reader.readAsDataURL(file);
+    } catch (err: any) {
+      console.error(err);
+      addConsoleLine(`IMAGE UPLOAD FAILED: ${err.message}`);
+      alert('Resim yüklenirken hata oluştu: ' + err.message);
+    }
   };
+
+  // Hero Image Uploader
+  const handleHeroImageUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      addConsoleLine(`HERO GÖRSEL YÜKLENİYOR: ${file.name}...`);
+      const cleanName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
+      const finalName = `hero-${Date.now()}-${cleanName}`;
+
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('type', 'hero');
+      formData.append('filename', finalName);
+
+      const result = await uploadImageAction(formData);
+      if (result.success && result.path) {
+        setHeroFrames(prev => {
+          const updated = [...prev];
+          updated[index] = { ...updated[index], src: result.path };
+          return updated;
+        });
+        addConsoleLine(`GÖRSEL BAŞARIYLA YÜKLENDİ: ${result.path}`);
+      }
+    } catch (err: any) {
+      console.error(err);
+      addConsoleLine(`HERO GÖRSEL YÜKLEME HATASI: ${err.message}`);
+      alert('Görsel yüklenirken hata oluştu: ' + err.message);
+    }
+  };
+
+  const handleSaveHeroFrames = async () => {
+    if (isSavingHero) return;
+    setIsSavingHero(true);
+    addConsoleLine('HERO ÇERÇEVELERİ YAPILANDIRMASI GÜNCELLENİYOR...');
+
+    try {
+      const res = await saveHeroFrames(heroFrames, heroFramesSha);
+      if (res.success) {
+        setHeroFramesSha(res.sha);
+        addConsoleLine(`HERO YAPILANDIRMASI KAYDEDİLDİ. SHA: ${res.sha.substring(0, 8)}`);
+        alert('Hero çerçeveleri başarıyla güncellendi!');
+      }
+    } catch (err: any) {
+      console.error(err);
+      addConsoleLine(`HERO YAPILANDIRMA HATASI: ${err.message}`);
+      alert('Kaydedilirken hata oluştu: ' + err.message);
+    } finally {
+      setIsSavingHero(false);
+    }
+  };
+
 
   // Compile final markdown content string
   const generateMarkdownString = () => {
@@ -512,7 +580,7 @@ ${content || teamBio}
                 </p>
               </div>
               
-              {activeTab !== 'applications' && (
+              {activeTab !== 'applications' && activeTab !== 'hero' && (
                 <button
                   onClick={handleCreateNew}
                   className="flex items-center gap-2 px-5 py-2.5 bg-brand-emerald hover:bg-brand-emerald/80 text-black font-mono font-bold text-xs rounded transition-all duration-300 shadow-[0_0_15px_rgba(0,245,160,0.1)] hover:shadow-[0_0_25px_rgba(0,245,160,0.2)] cursor-pointer"
@@ -526,7 +594,7 @@ ${content || teamBio}
             {/* Tab Navigation & List Grid */}
             <div className="bg-brand-card border border-brand-border rounded overflow-hidden">
               <div className="flex border-b border-brand-border bg-slate-950/40 flex-wrap">
-                {(['events', 'blog', 'projects', 'team', 'applications'] as const).map((tab) => (
+                {(['events', 'blog', 'projects', 'team', 'applications', 'hero'] as const).map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
@@ -542,6 +610,7 @@ ${content || teamBio}
                     {tab === 'projects' && 'Projeler'}
                     {tab === 'team' && 'Ekip Üyeleri'}
                     {tab === 'applications' && 'Gelen Başvurular'}
+                    {tab === 'hero' && 'Hero Çerçeveleri'}
                   </button>
                 ))}
               </div>
@@ -607,6 +676,103 @@ ${content || teamBio}
                                 {app.goals}
                               </div>
                             )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ) : activeTab === 'hero' ? (
+                /* Hero Frames Config Editor */
+                <div className="p-6">
+                  {isLoadingList ? (
+                    <div className="py-24 flex flex-col justify-center items-center text-center font-mono text-xs text-brand-cyan">
+                      <Loader2 className="w-8 h-8 animate-spin mb-4 text-brand-cyan" />
+                      <span>HERO BİLGİLERİ YÜKLENİYOR...</span>
+                    </div>
+                  ) : (
+                    <div className="space-y-6">
+                      <div className="flex justify-between items-center border-b border-brand-border/40 pb-4">
+                        <div className="font-mono text-xs text-brand-cyan">
+                          TOPLAM 6 ÇERÇEVE YAPILANDIRILIYOR
+                        </div>
+                        <button
+                          onClick={handleSaveHeroFrames}
+                          disabled={isSavingHero}
+                          className="flex items-center gap-2 px-5 py-2.5 bg-brand-emerald hover:bg-brand-emerald/80 disabled:opacity-50 text-black font-mono font-bold text-xs rounded transition-all duration-300 shadow-[0_0_15px_rgba(0,245,160,0.1)] hover:shadow-[0_0_25px_rgba(0,245,160,0.2)] cursor-pointer animate-pulse-slow"
+                        >
+                          {isSavingHero ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          ) : (
+                            <Sparkles size={14} />
+                          )}
+                          <span>HERO AYARLARINI KAYDET</span>
+                        </button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {heroFrames.map((frame, idx) => (
+                          <div
+                            key={frame.id || idx}
+                            className="p-5 bg-slate-950 border border-brand-border rounded-xl font-mono text-xs text-slate-300 space-y-4 relative"
+                          >
+                            <div className="flex justify-between items-center border-b border-brand-border/40 pb-2">
+                              <span className="text-white font-bold text-sm">
+                                {frame.name || `Çerçeve ${idx + 1}`}
+                              </span>
+                              <span className="text-[10px] text-slate-500 uppercase">
+                                ID: {frame.id}
+                              </span>
+                            </div>
+
+                            {/* Image Preview and File Input */}
+                            <div className="space-y-2">
+                              <label className="text-slate-400 block text-[10px] uppercase">Görsel Seçimi</label>
+                              <div className="flex items-center gap-3">
+                                <div className="w-16 h-12 overflow-hidden rounded border border-brand-border bg-slate-900 shrink-0">
+                                  <img
+                                    src={frame.src}
+                                    alt={frame.name}
+                                    className="object-cover w-full h-full"
+                                    onError={(e) => {
+                                      const target = e.target as HTMLImageElement;
+                                      target.src = '/images/placeholder.jpg';
+                                    }}
+                                  />
+                                </div>
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  onChange={(e) => handleHeroImageUpload(idx, e)}
+                                  className="p-1.5 bg-slate-900 border border-brand-border rounded text-white text-[10px] w-full cursor-pointer"
+                                />
+                              </div>
+                            </div>
+
+                            {/* Caption Text Input */}
+                            <div className="space-y-1.5">
+                              <div className="flex justify-between text-[10px]">
+                                <label className="text-slate-400 uppercase">Yazı / Caption</label>
+                                <span className={(frame.caption || '').length >= 25 ? 'text-red-500' : 'text-slate-500'}>
+                                  {(frame.caption || '').length}/25
+                                </span>
+                              </div>
+                              <input
+                                type="text"
+                                maxLength={25}
+                                value={frame.caption || ''}
+                                onChange={(e) => {
+                                  const val = e.target.value;
+                                  setHeroFrames((prev) => {
+                                    const updated = [...prev];
+                                    updated[idx] = { ...updated[idx], caption: val };
+                                    return updated;
+                                  });
+                                }}
+                                placeholder="Çerçeve altındaki yazıyı yazın..."
+                                className="w-full p-2 bg-slate-900 border border-brand-border rounded text-white text-xs focus:border-brand-cyan focus:outline-none"
+                              />
+                            </div>
                           </div>
                         ))}
                       </div>
