@@ -216,10 +216,6 @@ export default function EventTimeline({ events, showMoreButton = false }: EventT
         {/* Header Title & Filtering Bar */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="flex flex-col items-start">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-cyan/10 border border-brand-cyan/30 rounded-full mb-3">
-              <Sparkles size={13} className="text-brand-cyan" />
-              <span className="text-xs font-mono text-brand-cyan font-medium">Etkinlikler &amp; Atölyeler</span>
-            </div>
             <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white">
               Etkinliklerimiz &amp; <br />
               <span className="bg-gradient-to-r from-brand-cyan to-brand-emerald bg-clip-text text-transparent">
@@ -246,33 +242,7 @@ export default function EventTimeline({ events, showMoreButton = false }: EventT
                 </button>
               ))}
             </div>
-
-            <div className="hidden sm:flex items-center gap-1 bg-brand-card/80 border border-brand-border rounded-lg p-1">
-              <button
-                onClick={() => handleArrowScroll('left')}
-                className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded transition-colors"
-                title="Sola Kaydır"
-              >
-                <ChevronLeft size={16} />
-              </button>
-              <button
-                onClick={() => handleArrowScroll('right')}
-                className="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded transition-colors"
-                title="Sağa Kaydır"
-              >
-                <ChevronRight size={16} />
-              </button>
-            </div>
           </div>
-        </div>
-
-        {/* Interaction Hint */}
-        <div className="flex items-center justify-between mt-4 font-mono text-[11px] text-brand-muted/70">
-          <div className="flex items-center gap-2">
-            <MoveHorizontal size={14} className="text-brand-cyan animate-pulse shrink-0" />
-            <span>Sürükleyerek veya fare ile gezerek kartları inceleyebilirsiniz</span>
-          </div>
-          <span className="hidden md:block">Tıklayarak etkinlik detaylarını görüntüleyin</span>
         </div>
       </div>
 

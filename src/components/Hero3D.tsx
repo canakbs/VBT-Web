@@ -358,13 +358,7 @@ export default function Hero3D() {
       <div className="relative z-20 w-full flex-1 flex flex-col items-center justify-center text-center px-4 sm:px-6 pt-24 pb-12 pointer-events-none">
         <div className="w-full max-w-xl lg:max-w-[48%] min-w-[320px] mx-auto flex flex-col items-center pointer-events-auto space-y-4">
           
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 bg-brand-cyan/10 border border-brand-cyan/30 rounded-full">
-            <div className="w-2 h-2 rounded-full bg-brand-emerald animate-pulse" />
-            <span className="text-xs font-mono text-brand-cyan font-medium">
-              Akdeniz Veri Bilimi Topluluğu
-            </span>
-          </div>
+
 
           {/* Headline */}
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-[1.15]">

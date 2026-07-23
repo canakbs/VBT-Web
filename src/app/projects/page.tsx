@@ -52,7 +52,7 @@ export default function ProjectsPage() {
                 >
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-3">
-                      <span className="font-mono text-[10px] text-brand-cyan uppercase tracking-wider px-2 py-0.5 bg-brand-cyan/10 border border-brand-cyan/20 rounded">
+                      <span className="font-mono text-[10px] text-brand-cyan tracking-wider px-2 py-0.5 bg-brand-cyan/10 border border-brand-cyan/20 rounded">
                         {project.metadata.category}
                       </span>
                       <span className="flex items-center gap-1 text-[10px] font-mono text-brand-emerald">
@@ -68,13 +68,6 @@ export default function ProjectsPage() {
                     <p className="text-slate-300 text-xs md:text-sm leading-relaxed mb-4">
                       {project.metadata.summary}
                     </p>
-
-                    {project.metadata.stats && (
-                      <div className="p-3 bg-slate-900/80 border border-brand-border/60 rounded font-mono text-xs text-brand-muted mb-4">
-                        <span className="text-slate-400 uppercase text-[10px] block mb-0.5">Performans:</span>
-                        <span className="text-brand-cyan">{project.metadata.stats}</span>
-                      </div>
-                    )}
 
                     {project.metadata.tags && (
                       <div className="flex flex-wrap gap-1.5 mb-4">
@@ -110,7 +103,7 @@ export default function ProjectsPage() {
 
         <footer className="bg-[#090d16] border-t border-brand-border py-8 px-6 text-center font-mono text-xs text-brand-muted">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
-            <span>© 2025 Akdeniz Veri Bilimi Topluluğu</span>
+            <span>© 2026 Akdeniz Veri Bilimi Topluluğu</span>
             <Link href="/" className="hover:text-white transition-colors">Ana Sayfa</Link>
           </div>
         </footer>

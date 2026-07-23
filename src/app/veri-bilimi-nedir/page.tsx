@@ -59,7 +59,7 @@ export default function VeriBilimiNedirPage() {
 
       <footer className="bg-[#090d16] border-t border-brand-border py-10 px-4 sm:px-6 relative z-10 font-mono text-xs text-brand-muted">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-          <span>© 2025 Akdeniz Veri Bilimi Topluluğu</span>
+          <span>© 2026 Akdeniz Veri Bilimi Topluluğu</span>
           <div className="flex gap-6">
             <Link href="/" className="hover:text-white transition-colors">Ana Sayfa</Link>
             <a href="/#join-us" className="hover:text-brand-cyan transition-colors font-bold">Bize Katıl</a>

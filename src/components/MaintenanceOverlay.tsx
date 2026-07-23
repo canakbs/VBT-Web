@@ -142,7 +142,7 @@ export default function MaintenanceOverlay({ children }: { children: React.React
 
       {/* Clean Footer */}
       <footer className="w-full max-w-7xl mx-auto px-6 py-6 border-t border-white/5 flex justify-center items-center text-[11px] font-mono text-slate-500 relative z-20">
-        <span>© 2025 Akdeniz Veri Bilimi Topluluğu</span>
+        <span>© 2026 Akdeniz Veri Bilimi Topluluğu</span>
       </footer>
     </div>
   );

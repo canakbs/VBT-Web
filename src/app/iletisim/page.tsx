@@ -37,7 +37,7 @@ export default function ContactPage() {
 
         <footer className="bg-[#090d16] border-t border-brand-border py-8 px-6 text-center font-mono text-xs text-brand-muted">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
-            <span>© 2025 Akdeniz Veri Bilimi Topluluğu</span>
+            <span>© 2026 Akdeniz Veri Bilimi Topluluğu</span>
             <Link href="/" className="hover:text-white transition-colors">Ana Sayfa</Link>
           </div>
         </footer>

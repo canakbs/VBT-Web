@@ -38,7 +38,7 @@ export default function Home() {
             />
             <div className="flex flex-col items-center md:items-start gap-0.5">
               <span className="text-white font-bold tracking-wider">AKDENİZ VERİ BİLİMİ</span>
-              <span>Akdeniz Veri Bilimi Topluluğu // 2025</span>
+              <span>Akdeniz Veri Bilimi Topluluğu // 2026</span>
             </div>
           </div>
 
@@ -52,7 +52,7 @@ export default function Home() {
           </div>
 
           <div className="text-[10px] text-slate-600">
-            © 2025 Akdeniz Veri Bilimi Topluluğu
+            © 2026 Akdeniz Veri Bilimi Topluluğu
           </div>
         </div>
       </footer>

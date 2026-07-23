@@ -34,9 +34,7 @@ export default function ProjectPipeline({ projects }: ProjectPipelineProps) {
       return project.metadata.image;
     }
     return FALLBACK_PROJECT_IMAGES[index % FALLBACK_PROJECT_IMAGES.length];
-  };
-
-  return (
+  };  return (
     <section id="project-showcase" className="relative pt-20 md:pt-24 pb-20 bg-transparent border-b border-brand-border">
       {/* Background patterns */}
       <div className="absolute inset-0 scientific-grid opacity-10 pointer-events-none" />
@@ -45,10 +43,6 @@ export default function ProjectPipeline({ projects }: ProjectPipelineProps) {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
           <div className="flex flex-col items-start">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-cyan/10 border border-brand-cyan/30 rounded-full mb-3">
-              <Layers size={13} className="text-brand-cyan" />
-              <span className="text-xs font-mono text-brand-cyan font-medium">Açık Kaynak Üretim</span>
-            </div>
             <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white leading-tight">
               Tamamlanan <br />
               <span className="bg-gradient-to-r from-brand-cyan via-blue-400 to-brand-emerald bg-clip-text text-transparent">
@@ -102,11 +96,11 @@ export default function ProjectPipeline({ projects }: ProjectPipelineProps) {
                   </div>
 
                   {/* Right Side: Details & Typography */}
-                  <div className="flex-1 flex flex-col justify-between">
+                  <div className="flex-1 flex flex-col justify-between pt-2 md:pt-4">
                     <div>
                       {/* Card Header Info */}
                       <div className="flex items-center justify-between gap-2 mb-3">
-                        <span className="font-mono text-xs text-brand-cyan uppercase tracking-wider px-2 py-0.5 bg-brand-cyan/10 border border-brand-cyan/20 rounded">
+                        <span className="font-mono text-xs text-brand-cyan tracking-wider px-2 py-0.5 bg-brand-cyan/10 border border-brand-cyan/20 rounded">
                           {project.metadata.category || 'Veri Bilimi'}
                         </span>
                         <span className="flex items-center gap-1 text-[11px] font-mono text-brand-emerald">
@@ -124,15 +118,6 @@ export default function ProjectPipeline({ projects }: ProjectPipelineProps) {
                       <p className="text-slate-300 text-xs sm:text-sm leading-relaxed mb-4 line-clamp-3">
                         {project.metadata.summary}
                       </p>
-
-                      {/* Performance Stats If Exists */}
-                      {project.metadata.stats && (
-                        <div className="p-3 bg-slate-900 border border-brand-border/40 rounded-lg font-mono text-xs text-brand-muted mb-4 flex items-center gap-2">
-                          <Sparkles size={13} className="text-brand-cyan shrink-0 animate-pulse" />
-                          <span className="text-slate-400 font-semibold">Performans:</span>
-                          <span className="text-brand-cyan">{project.metadata.stats}</span>
-                        </div>
-                      )}
                     </div>
 
                     {/* Footer Tech Tags & Details Trigger */}
@@ -183,7 +168,6 @@ export default function ProjectPipeline({ projects }: ProjectPipelineProps) {
           >
             <div className="p-5 sm:p-6 bg-gradient-to-r from-brand-card via-slate-900 to-brand-card border border-brand-cyan/30 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
               <div className="flex items-center gap-3">
-                <span className="text-xl">🚀</span>
                 <div>
                   <h4 className="text-white font-bold text-sm sm:text-base">Tüm Proje Arşivini Keşfet</h4>
                   <p className="text-slate-400 text-xs font-mono">Geliştirilen diğer model ve uygulamaları inceleyin</p>
