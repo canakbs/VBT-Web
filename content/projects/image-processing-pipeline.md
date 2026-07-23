@@ -5,6 +5,7 @@ category: "Computer Vision"
 github: "https://github.com/akdeniz-veri/drone-vision"
 stats: "FPS: 60 (Jetson Nano), Precision: 94%"
 summary: "An edge-computed computer vision pipeline enabling autonomous micro-drones to survey agricultural fields and identify crop anomalies without internet connectivity."
+image: "/images/hero/coding.png"
 tags: ["YOLOv8", "TensorRT", "C++", "ROS2"]
 ---
 

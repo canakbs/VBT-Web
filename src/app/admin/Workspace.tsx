@@ -347,6 +347,7 @@ stage: "${projectStage}"
 category: "${projectCategory}"
 github: "${projectGithub}"
 stats: "${projectStats}"
+image: "${imagePath}"
 summary: "${summary}"${formattedTags}
 ---
 
@@ -932,6 +933,71 @@ ${content || teamBio}
                         <option value="Technical Talks">Technical Talks</option>
                         <option value="Competitions">Competitions</option>
                       </select>
+                    </div>
+                  </div>
+                )}
+
+                {/* Conditional fields for Projects */}
+                {activeTab === 'projects' && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-y border-brand-border/30 py-4">
+                    <div className="flex flex-col sm:col-span-2">
+                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Proje Fotoğrafı (Sol Bölüm İçin)</label>
+                      <div className="flex items-center gap-4">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageUpload}
+                          className="p-2 bg-slate-900 border border-brand-border rounded text-white text-xs w-full"
+                        />
+                        {imagePath && (
+                          <div className="w-10 h-10 overflow-hidden rounded border border-brand-cyan shrink-0">
+                            <img src={imagePath} alt="preview" className="object-cover w-full h-full" />
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className="flex flex-col">
+                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Proje Aşaması</label>
+                      <select
+                        value={projectStage}
+                        onChange={(e) => setProjectStage(e.target.value)}
+                        className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
+                      >
+                        <option value="Idea">Fikir Aşaması (Idea)</option>
+                        <option value="Research">Araştırma Aşaması (Research)</option>
+                        <option value="Development">Geliştirme Aşaması (Development)</option>
+                        <option value="Deployment">Yayınlandı / Canlıda (Deployment)</option>
+                      </select>
+                    </div>
+                    <div className="flex flex-col">
+                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Kategori</label>
+                      <input
+                        type="text"
+                        placeholder="Örn: NLP, Computer Vision, Reinforcement Learning"
+                        value={projectCategory}
+                        onChange={(e) => setProjectCategory(e.target.value)}
+                        className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">GitHub Linki</label>
+                      <input
+                        type="url"
+                        placeholder="Örn: https://github.com/akdeniz-veri/proje"
+                        value={projectGithub}
+                        onChange={(e) => setProjectGithub(e.target.value)}
+                        className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
+                      />
+                    </div>
+                    <div className="flex flex-col">
+                      <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Performans Metrikleri / İstatistikler</label>
+                      <input
+                        type="text"
+                        placeholder="Örn: Accuracy: %95, Latency: 12ms"
+                        value={projectStats}
+                        onChange={(e) => setProjectStats(e.target.value)}
+                        className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
+                      />
                     </div>
                   </div>
                 )}

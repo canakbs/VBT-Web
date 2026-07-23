@@ -5,6 +5,7 @@ category: "Natural Language Processing"
 github: "https://github.com/akdeniz-veri/medical-nlp"
 stats: "Accuracy: 95.2%, F1-Score: 0.94"
 summary: "A domain-adapted BERT model trained on Turkish clinical notes to assist triage personnel in prioritizing emergency department patient admissions."
+image: "/images/hero/hackathon.png"
 tags: ["BERT", "NLP", "PyTorch", "FastAPI"]
 ---
 

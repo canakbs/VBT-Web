@@ -5,6 +5,7 @@ category: "Machine Learning & Reinforcement Learning"
 github: "https://github.com/akdeniz-veri/traffic-flow"
 stats: "Congestion Reduction: 22%, Latency: <50ms"
 summary: "A reinforcement learning agent that optimizes traffic light timing configurations dynamically based on real-time vehicle flow metrics."
+image: "/images/hero/workshop.png"
 tags: ["Deep Q-Networks","SUMO Simulation","Python"]
 ---
 
