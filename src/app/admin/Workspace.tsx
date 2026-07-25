@@ -16,9 +16,7 @@ import {
   Inbox,
   User,
   Mail,
-  Calendar,
-  Network,
-  Crosshair
+  Calendar
 } from 'lucide-react';
 import Link from 'next/link';
 import { 
@@ -37,7 +35,7 @@ import {
 export default function Workspace() {
   // Navigation & Tabs
   const [activeView, setActiveView] = useState<'list' | 'composer'>('list');
-  const [activeTab, setActiveTab] = useState<'events' | 'blog' | 'projects' | 'team' | 'applications' | 'hero'>('events');
+  const [activeTab, setActiveTab] = useState<'events' | 'projects' | 'team' | 'applications' | 'hero'>('events');
   const [contentList, setContentList] = useState<any[]>([]);
   const [applicationsList, setApplicationsList] = useState<any[]>([]);
   const [heroFrames, setHeroFrames] = useState<any[]>([]);
@@ -58,11 +56,6 @@ export default function Workspace() {
   const [eventStats, setEventStats] = useState('120+ Participants, 5 Hours');
   const [eventOutcome, setEventOutcome] = useState('Built a custom neural network from scratch.');
 
-  // Blog specific fields
-  const [blogDate, setBlogDate] = useState(new Date().toISOString().split('T')[0]);
-  const [blogAuthor, setBlogAuthor] = useState('');
-  const [blogStats, setBlogStats] = useState('Read Time: 5 min');
-
   // Project specific fields
   const [projectStage, setProjectStage] = useState('Development');
   const [projectCategory, setProjectCategory] = useState('Machine Learning');
@@ -73,12 +66,8 @@ export default function Workspace() {
   const [teamRole, setTeamRole] = useState('');
   const [teamDepartment, setTeamDepartment] = useState('Üst Yönetim');
   const [teamSkills, setTeamSkills] = useState('');
-  const [teamBio, setTeamBio] = useState('');
   const [teamGithub, setTeamGithub] = useState('');
   const [teamLinkedin, setTeamLinkedin] = useState('');
-  const [teamConnections, setTeamConnections] = useState('');
-  const [teamX, setTeamX] = useState(50);
-  const [teamY, setTeamY] = useState(50);
   
   // Image handling
   const [imagePath, setImagePath] = useState('/images/placeholder.jpg');
@@ -93,7 +82,7 @@ export default function Workspace() {
   ]);
 
   // Load Content List
-  const fetchList = async (type: 'events' | 'blog' | 'projects' | 'team' | 'applications' | 'hero') => {
+  const fetchList = async (type: 'events' | 'projects' | 'team' | 'applications' | 'hero') => {
     setIsLoadingList(true);
     setIsSandboxMode(false);
 
@@ -113,8 +102,8 @@ export default function Workspace() {
 
     if (type === 'applications') {
       try {
-        const apps = await getApplicationsList();
-        setApplicationsList(apps);
+        const data = await getApplicationsList();
+        setApplicationsList(data);
       } catch (err) {
         console.error(err);
         setApplicationsList([]);
@@ -125,13 +114,12 @@ export default function Workspace() {
     }
 
     try {
-      const items = await getContentList(type);
-      setContentList(items);
+      const data = await getContentList(type);
+      setContentList(data);
+      addConsoleLine(`LIST LOADED: ${data.length} ITEMS FETCHED FOR [${type.toUpperCase()}]`);
     } catch (err: any) {
       console.error(err);
-      if (err.message && err.message.includes('GITHUB_PAT_NOT_CONFIGURED')) {
-        setIsSandboxMode(true);
-      }
+      addConsoleLine(`FETCH ERROR FOR ${type}: ${err.message || 'Unknown Error'}`);
       setContentList([]);
     } finally {
       setIsLoadingList(false);
@@ -139,24 +127,11 @@ export default function Workspace() {
   };
 
   useEffect(() => {
-    if (activeView === 'list') {
-      fetchList(activeTab);
-    }
-  }, [activeTab, activeView]);
+    fetchList(activeTab);
+  }, [activeTab]);
 
-  const addConsoleLine = (text: string) => {
-    const timestamp = new Date().toLocaleTimeString();
-    setConsoleLines(prev => [...prev, `[${timestamp}] ${text}`]);
-  };
-
-  // Handle interactive SVG map position selection
-  const handleMapClick = (e: React.MouseEvent<SVGSVGElement>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const xPct = Math.round(((e.clientX - rect.left) / rect.width) * 100);
-    const yPct = Math.round(((e.clientY - rect.top) / rect.height) * 100);
-    setTeamX(Math.max(5, Math.min(95, xPct)));
-    setTeamY(Math.max(5, Math.min(95, yPct)));
-    addConsoleLine(`AĞ HARİTASI KONUMU GÜNCELLENDİ: X=${xPct}%, Y=${yPct}%`);
+  const addConsoleLine = (line: string) => {
+    setConsoleLines((prev) => [...prev.slice(-15), `[${new Date().toLocaleTimeString()}] ${line}`]);
   };
 
   // Switch to create mode
@@ -174,10 +149,6 @@ export default function Workspace() {
     setEventStats('');
     setEventOutcome('');
     
-    setBlogDate('');
-    setBlogAuthor('');
-    setBlogStats('');
-    
     setProjectStage('Idea');
     setProjectCategory('');
     setProjectGithub('');
@@ -186,12 +157,8 @@ export default function Workspace() {
     setTeamRole('');
     setTeamDepartment('Üst Yönetim');
     setTeamSkills('');
-    setTeamBio('');
     setTeamGithub('');
     setTeamLinkedin('');
-    setTeamConnections('');
-    setTeamX(50);
-    setTeamY(50);
     setImagePath('');
     
     setConsoleLines([
@@ -225,20 +192,12 @@ export default function Workspace() {
         setEventCategory(fileData.metadata.category || 'AI Workshops');
         setEventStats(fileData.metadata.stats || '');
         setEventOutcome(fileData.metadata.outcome || '');
-      } else if (activeTab === 'blog') {
-        setBlogDate(fileData.metadata.date || '');
-        setBlogAuthor(fileData.metadata.author || '');
-        setBlogStats(fileData.metadata.stats || '');
       } else if (activeTab === 'team') {
         setTeamRole(fileData.metadata.role || '');
         setTeamDepartment(fileData.metadata.department || 'Üst Yönetim');
         setTeamSkills(fileData.metadata.skills ? (Array.isArray(fileData.metadata.skills) ? fileData.metadata.skills.join(', ') : fileData.metadata.skills) : '');
-        setTeamBio(fileData.metadata.bio || fileData.content || '');
         setTeamGithub(fileData.metadata.github || '');
         setTeamLinkedin(fileData.metadata.linkedin || '');
-        setTeamConnections(fileData.metadata.connections ? (Array.isArray(fileData.metadata.connections) ? fileData.metadata.connections.join(', ') : fileData.metadata.connections) : '');
-        setTeamX(fileData.metadata.x ? Number(fileData.metadata.x) : 50);
-        setTeamY(fileData.metadata.y ? Number(fileData.metadata.y) : 50);
       } else {
         setProjectStage(fileData.metadata.stage || 'Idea');
         setProjectCategory(fileData.metadata.category || '');
@@ -372,7 +331,6 @@ export default function Workspace() {
     }
   };
 
-
   // Compile final markdown content string
   const generateMarkdownString = () => {
     const tagsArr = getTagsArray();
@@ -386,20 +344,6 @@ category: "${eventCategory}"
 stats: "${eventStats}"
 outcome: "${eventOutcome}"
 image: "${imagePath}"
-summary: "${summary}"${formattedTags}
----
-
-${content}
-`;
-    }
-
-    if (activeTab === 'blog') {
-      return `---
-title: "${title}"
-date: "${blogDate}"
-author: "${blogAuthor}"
-stats: "${blogStats}"
-image: "/images/blog/placeholder.jpg"
 summary: "${summary}"${formattedTags}
 ---
 
@@ -425,23 +369,16 @@ ${content}
 
     // Team Member
     const skillsArray = teamSkills.split(',').map((s) => s.trim()).filter(Boolean);
-    const connArray = teamConnections.split(',').map((s) => s.trim()).filter(Boolean);
 
     return `---
 title: "${title}"
 role: "${teamRole}"
 department: "${teamDepartment}"
 skills: ${JSON.stringify(skillsArray)}
-bio: "${teamBio}"
 github: "${teamGithub}"
 linkedin: "${teamLinkedin}"
-connections: ${JSON.stringify(connArray)}
-x: ${teamX}
-y: ${teamY}
-summary: "${summary || teamRole}"${formattedTags}
+summary: "${summary || teamRole}"
 ---
-
-${content || teamBio}
 `;
   };
 
@@ -461,8 +398,6 @@ ${content || teamBio}
     if (!filename) {
       if (activeTab === 'events') {
         filename = `${eventDate}-${cleanTitle || 'new-event'}.md`;
-      } else if (activeTab === 'blog') {
-        filename = `${blogDate}-${cleanTitle || 'new-blog'}.md`;
       } else if (activeTab === 'team') {
         filename = `${cleanTitle || 'new-member'}.md`;
       } else {
@@ -490,8 +425,6 @@ ${content || teamBio}
     if (!filename) {
       if (activeTab === 'events') {
         filename = `${eventDate}-${cleanTitle || 'new-event'}.md`;
-      } else if (activeTab === 'blog') {
-        filename = `${blogDate}-${cleanTitle || 'new-blog'}.md`;
       } else if (activeTab === 'team') {
         filename = `${cleanTitle || 'new-member'}.md`;
       } else {
@@ -594,7 +527,7 @@ ${content || teamBio}
             {/* Tab Navigation & List Grid */}
             <div className="bg-brand-card border border-brand-border rounded overflow-hidden">
               <div className="flex border-b border-brand-border bg-slate-950/40 flex-wrap">
-                {(['events', 'blog', 'projects', 'team', 'applications', 'hero'] as const).map((tab) => (
+                {(['events', 'projects', 'team', 'applications', 'hero'] as const).map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
@@ -606,7 +539,6 @@ ${content || teamBio}
                   >
                     {tab === 'applications' && <Inbox size={14} className="text-amber-400" />}
                     {tab === 'events' && 'Etkinlikler'}
-                    {tab === 'blog' && 'Blog / Yayınlar'}
                     {tab === 'projects' && 'Projeler'}
                     {tab === 'team' && 'Ekip Üyeleri'}
                     {tab === 'applications' && 'Gelen Başvurular'}
@@ -780,7 +712,7 @@ ${content || teamBio}
                   )}
                 </div>
               ) : (
-                /* Grid Content List (Events/Blog/Projects/Team) */
+                /* Grid Content List (Events/Projects/Team) */
                 <div className="p-6">
                   {isLoadingList ? (
                     <div className="py-24 flex flex-col justify-center items-center text-center font-mono text-xs text-brand-cyan">
@@ -822,11 +754,11 @@ ${content || teamBio}
                               <td className="py-4 text-center text-brand-muted hidden sm:table-cell">
                                 {activeTab === 'team' ? (
                                   <span className="px-2.5 py-0.5 bg-slate-900 border border-brand-border rounded-full text-[10px] text-brand-cyan font-bold">
-                                    {item.department || 'Takım'}
+                                    {item.department || item.role || 'Ekip Üyesi'}
                                   </span>
                                 ) : activeTab === 'projects' ? (
                                   <span className="px-2.5 py-0.5 bg-slate-900 border border-brand-border rounded-full text-[10px]">
-                                    {item.date || 'Araştırma'}
+                                    {item.stage || item.date || 'Geliştirme'}
                                   </span>
                                 ) : (
                                   item.date || 'N/A'
@@ -910,8 +842,8 @@ ${content || teamBio}
                 {activeTab === 'team' && (
                   <div className="space-y-4 p-4 bg-slate-950 border border-brand-border/60 rounded-xl">
                     <div className="font-mono text-xs text-brand-cyan font-bold flex items-center gap-2 mb-2">
-                      <Network size={14} />
-                      <span>EKİP ÜYESİ VE AĞ AYARLARI</span>
+                      <User size={14} />
+                      <span>EKİP ÜYESİ BİLGİLERİ</span>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -919,7 +851,7 @@ ${content || teamBio}
                         <label className="text-slate-400 mb-1 uppercase text-[10px]">Görev / Unvan</label>
                         <input
                           type="text"
-                          placeholder="Örn: NLP Lideri / Araştırmacı"
+                          placeholder="Örn: Başkan / NLP Araştırmacısı"
                           value={teamRole}
                           onChange={(e) => setTeamRole(e.target.value)}
                           className="p-2.5 bg-slate-900 border border-brand-border rounded text-white text-xs focus:border-brand-cyan focus:outline-none"
@@ -927,16 +859,17 @@ ${content || teamBio}
                       </div>
 
                       <div className="flex flex-col">
-                        <label className="text-slate-400 mb-1 uppercase text-[10px]">Departman</label>
+                        <label className="text-slate-400 mb-1 uppercase text-[10px]">Departman / Takım</label>
                         <select
                           value={teamDepartment}
                           onChange={(e) => setTeamDepartment(e.target.value)}
                           className="p-2.5 bg-slate-900 border border-brand-border rounded text-white text-xs focus:border-brand-cyan focus:outline-none"
                         >
                           <option value="Üst Yönetim">Üst Yönetim</option>
-                          <option value="Etkinlik &amp; Organizasyon">Etkinlik &amp; Organizasyon</option>
-                          <option value="Sosyal Medya">Sosyal Medya</option>
-                          <option value="ARGE">ARGE</option>
+                          <option value="AR-GE & Yapay Zekâ">AR-GE & Yapay Zekâ</option>
+                          <option value="Organizasyon & Etkinlik">Organizasyon & Etkinlik</option>
+                          <option value="Sosyal Medya & Tasarım">Sosyal Medya & Tasarım</option>
+                          <option value="Mentör / Danışman">Mentör / Danışman</option>
                         </select>
                       </div>
                     </div>
@@ -973,74 +906,6 @@ ${content || teamBio}
                           onChange={(e) => setTeamLinkedin(e.target.value)}
                           className="p-2.5 bg-slate-900 border border-brand-border rounded text-white text-xs focus:border-brand-cyan focus:outline-none"
                         />
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col">
-                      <label className="text-slate-400 mb-1 uppercase text-[10px]">Bağlantılı Kişiler (Virgülle Ad Soyad)</label>
-                      <input
-                        type="text"
-                        placeholder="Örn: Alperen Demir, Begüm Kaya"
-                        value={teamConnections}
-                        onChange={(e) => setTeamConnections(e.target.value)}
-                        className="p-2.5 bg-slate-900 border border-brand-border rounded text-white text-xs focus:border-brand-cyan focus:outline-none"
-                      />
-                      <span className="text-[10px] text-slate-500 mt-1">İnteraktif ağ grafiğinde bu üyenin kimlerle çizgi bağlantısı olacağını belirler.</span>
-                    </div>
-
-                    {/* Interactive Graphical Node Position Picker */}
-                    <div className="space-y-2 pt-3 border-t border-brand-border/40">
-                      <div className="flex justify-between items-center">
-                        <label className="text-brand-cyan font-bold uppercase text-[11px] flex items-center gap-1.5">
-                          <Crosshair size={13} />
-                          <span>GÖRSEL AĞ KONUMU SEÇİCİ</span>
-                        </label>
-                        <span className="font-mono text-xs text-brand-emerald font-bold">
-                          X: %{teamX} | Y: %{teamY}
-                        </span>
-                      </div>
-
-                      <div className="relative aspect-[4/3] bg-slate-900 border border-brand-cyan/40 rounded-xl overflow-hidden cursor-crosshair group shadow-inner">
-                        <div className="absolute inset-0 scientific-grid opacity-20 pointer-events-none" />
-                        
-                        <svg
-                          viewBox="0 0 100 100"
-                          className="w-full h-full select-none"
-                          onClick={handleMapClick}
-                        >
-                          {/* Grid crosshair guides */}
-                          <line x1={teamX} y1={0} x2={teamX} y2={100} stroke="rgba(0, 242, 254, 0.2)" strokeWidth={0.3} strokeDasharray="1 1" />
-                          <line x1={0} y1={teamY} x2={100} y2={teamY} stroke="rgba(0, 242, 254, 0.2)" strokeWidth={0.3} strokeDasharray="1 1" />
-
-                          {/* Existing team nodes */}
-                          {contentList.map((item, idx) => {
-                            const isCurrent = item.title === title || item.path.includes(editingFilename);
-                            if (isCurrent) return null;
-                            const px = item.x ? Number(item.x) : (20 + (idx * 15) % 65);
-                            const py = item.y ? Number(item.y) : (30 + (idx * 18) % 55);
-                            return (
-                              <g key={item.name || idx}>
-                                <circle cx={px} cy={py} r={3} fill="#1e293b" stroke="#475569" strokeWidth={0.5} />
-                                <text x={px} y={py + 5} fill="#64748b" fontSize="2.5" textAnchor="middle" className="font-mono">
-                                  {item.title ? item.title.split(' ')[0] : 'Üye'}
-                                </text>
-                              </g>
-                            );
-                          })}
-
-                          {/* Target active member node */}
-                          <g>
-                            <circle cx={teamX} cy={teamY} r={7} fill="rgba(0, 242, 254, 0.15)" stroke="#00f2fe" strokeWidth={0.5} />
-                            <circle cx={teamX} cy={teamY} r={4} fill="#00f2fe" />
-                            <text x={teamX} y={teamY - 6} fill="#ffffff" fontSize="3.2" fontWeight="bold" textAnchor="middle">
-                              {title || 'Yeni Üye'}
-                            </text>
-                          </g>
-                        </svg>
-
-                        <div className="absolute bottom-2 left-2 text-[9px] font-mono text-slate-400 bg-slate-950/80 px-2 py-0.5 rounded border border-brand-border">
-                          👉 Haritada istediğiniz noktaya tıklayarak konumu belirleyin
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -1168,94 +1033,91 @@ ${content || teamBio}
                   </div>
                 )}
 
-                {/* Tags */}
-                <div className="flex flex-col">
-                  <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Etiketler (Virgülle)</label>
-                  <input
-                    type="text"
-                    placeholder="Örn: PyTorch, YOLOv8, CNN"
-                    value={tagsInput}
-                    onChange={(e) => setTagsInput(e.target.value)}
-                    className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
-                  />
-                </div>
+                {/* Tags (Only for Events and Projects) */}
+                {activeTab !== 'team' && (
+                  <div className="flex flex-col">
+                    <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Etiketler (Virgülle)</label>
+                    <input
+                      type="text"
+                      placeholder="Örn: PyTorch, YOLOv8, CNN"
+                      value={tagsInput}
+                      onChange={(e) => setTagsInput(e.target.value)}
+                      className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
+                    />
+                  </div>
+                )}
 
-                {/* Markdown body text */}
-                <div className="flex flex-col">
-                  <label className="text-slate-400 mb-1.5 uppercase tracking-wider">
-                    {activeTab === 'team' ? 'Biyografi Metni' : 'Markdown İçeriği'}
-                  </label>
-                  <textarea
-                    rows={8}
-                    placeholder={activeTab === 'team' ? 'Ekip üyesinin detaylı biyografisi...' : 'Markdown içerik metni...'}
-                    value={content}
-                    onChange={(e) => setContent(e.target.value)}
-                    className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors font-mono"
-                  />
-                </div>
+                {/* Markdown body text (Only for Events and Projects) */}
+                {activeTab !== 'team' && (
+                  <div className="flex flex-col">
+                    <label className="text-slate-400 mb-1.5 uppercase tracking-wider">
+                      Markdown İçeriği
+                    </label>
+                    <textarea
+                      rows={8}
+                      placeholder="Markdown içerik metni..."
+                      value={content}
+                      onChange={(e) => setContent(e.target.value)}
+                      className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors font-mono"
+                    />
+                  </div>
+                )}
 
                 {/* Action button triggers */}
                 <div className="flex flex-col sm:flex-row gap-3 pt-2">
                   <button
                     onClick={() => setActiveView('list')}
-                    className="flex-grow flex items-center justify-center gap-2 p-3 bg-slate-900 hover:bg-slate-800 border border-brand-border text-slate-300 hover:text-white rounded font-mono font-bold transition-all duration-300 cursor-pointer"
+                    className="w-full sm:w-1/3 py-3 bg-slate-900 border border-brand-border hover:border-slate-600 rounded text-slate-300 hover:text-white transition-colors cursor-pointer font-bold"
                   >
-                    <span>İPTAL</span>
+                    İPTAL
                   </button>
 
                   <button
                     onClick={handleDownload}
-                    disabled={!title}
-                    className="flex-grow flex items-center justify-center gap-2 p-3 bg-slate-900 border border-brand-border rounded font-mono font-bold text-white hover:bg-slate-800 transition-colors cursor-pointer"
+                    className="w-full sm:w-1/3 py-3 bg-slate-900 border border-brand-border hover:border-brand-cyan rounded text-brand-cyan hover:bg-brand-cyan/10 transition-colors flex items-center justify-center gap-2 cursor-pointer font-bold"
                   >
                     <FileDown size={14} />
-                    <span>MARKDOWN (.MD) İNDİR</span>
+                    <span>İNDİR (.MD)</span>
                   </button>
 
                   <button
                     onClick={handleSaveToGithub}
-                    disabled={!title || isSaving}
-                    className="flex-grow flex items-center justify-center gap-2 p-3.5 bg-brand-emerald hover:bg-brand-emerald/80 text-black rounded font-mono font-bold transition-all shadow-md cursor-pointer"
+                    disabled={isSaving}
+                    className="w-full sm:w-1/3 py-3 bg-brand-cyan hover:bg-brand-cyan/80 text-black rounded transition-all duration-300 font-bold flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(0,242,254,0.15)] cursor-pointer disabled:opacity-50"
                   >
-                    {isSaving ? (
-                      <>
-                        <Loader2 size={14} className="animate-spin" />
-                        <span>KAYDEDİLİYOR...</span>
-                      </>
-                    ) : (
-                      <>
-                        <Sparkles size={14} />
-                        <span>KAYDET</span>
-                      </>
-                    )}
+                    {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles size={14} />}
+                    <span>KAYDET (GITHUB)</span>
                   </button>
                 </div>
               </div>
             </div>
 
-            {/* Right Preview Pane */}
-            <div className="col-span-1 lg:col-span-6 flex flex-col gap-6">
-              <div className="bg-slate-950 border border-brand-border rounded overflow-hidden">
-                <div className="px-4 py-2.5 bg-slate-900 border-b border-brand-border flex justify-between items-center font-mono text-[10px] text-brand-muted uppercase">
-                  <div className="flex items-center gap-2">
-                    <Terminal size={12} className="text-brand-cyan" />
-                    <span>Önizleme.md</span>
+            {/* Right Side: Generated Markdown Code Output */}
+            <div className="col-span-1 lg:col-span-6 bg-slate-950 border border-brand-border rounded overflow-hidden flex flex-col justify-between min-h-[500px]">
+              <div className="p-4 bg-slate-900/80 border-b border-brand-border flex justify-between items-center font-mono text-xs">
+                <span className="text-slate-400 uppercase flex items-center gap-2">
+                  <Terminal size={14} className="text-brand-cyan" />
+                  <span>ÜRETİLEN DOSYA ÖNİZLEMESİ</span>
+                </span>
+                <span className="text-brand-cyan">YAML + MARKDOWN</span>
+              </div>
+
+              <div className="p-6 font-mono text-xs text-slate-300 whitespace-pre-wrap overflow-y-auto max-h-[500px]">
+                {generateMarkdownString()}
+              </div>
+
+              {/* Console Output Monitor */}
+              <div className="p-4 bg-black border-t border-brand-border/60 font-mono text-[10px] text-brand-muted space-y-1 max-h-36 overflow-y-auto">
+                <div className="text-brand-cyan uppercase tracking-wider mb-1">// SİSTEM GÜNLÜĞÜ:</div>
+                {consoleLines.map((line, idx) => (
+                  <div key={idx} className="opacity-80 leading-relaxed">
+                    {line}
                   </div>
-                  <span className="text-brand-emerald font-bold">PREVIEW</span>
-                </div>
-                
-                <pre className="p-4 overflow-x-auto text-[11px] md:text-xs font-mono text-slate-300 leading-relaxed max-h-[380px] min-h-[320px]">
-                  <code>{generateMarkdownString()}</code>
-                </pre>
+                ))}
               </div>
             </div>
           </div>
         )}
-      </div>
-
-      {/* Footer */}
-      <div className="w-full border-t border-brand-border py-4 px-6 text-center font-mono text-[10px] text-brand-muted">
-        AVBT CMS YÖNETİM PANELİ
       </div>
     </main>
   );

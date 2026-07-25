@@ -65,6 +65,10 @@ export async function getContentList(type: 'events' | 'blog' | 'projects' | 'tea
               title: data.title || f.name.replace(/\.md$/, ''),
               date: data.date || '',
               summary: data.summary || '',
+              department: data.department || '',
+              role: data.role || '',
+              stage: data.stage || '',
+              category: data.category || '',
             };
           } catch (e) {
             console.error(`Error loading details for ${f.path}:`, e);
@@ -75,6 +79,10 @@ export async function getContentList(type: 'events' | 'blog' | 'projects' | 'tea
               title: f.name.replace(/\.md$/, ''),
               date: '',
               summary: '',
+              department: '',
+              role: '',
+              stage: '',
+              category: '',
             };
           }
         })
@@ -113,6 +121,10 @@ export async function getContentList(type: 'events' | 'blog' | 'projects' | 'tea
         title: data.title || filename.replace(/\.md$/, ''),
         date: data.date || '',
         summary: data.summary || '',
+        department: data.department || '',
+        role: data.role || '',
+        stage: data.stage || '',
+        category: data.category || '',
       };
     });
 
