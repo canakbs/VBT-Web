@@ -9,7 +9,7 @@ function pureRandom(seed: number): number {
   const x = Math.sin(seed) * 10000;
   return x - Math.floor(x);
 }
-import { ChevronRight, Database, Code, Cpu, Eye, MessageSquare, Server, Terminal, ExternalLink } from 'lucide-react';
+import { ChevronRight, Database, Code, Cpu, Eye, MessageSquare, Server, Terminal } from 'lucide-react';
 
 interface RoadmapNode {
   id: string;
@@ -55,7 +55,7 @@ const ROADMAP_STEPS: RoadmapNode[] = [
   },
   {
     id: 'deep_learning',
-    title: 'Derin Öğrenme Laboratuvarı',
+    title: 'Derin Öğrenme',
     subtitle: 'Yapay Sinir Ağları',
     icon: <Terminal className="w-5 h-5 text-brand-emerald" />,
     difficulty: 'Intermediate',
@@ -633,20 +633,16 @@ export default function LearningRoadmap() {
                 </div>
               </div>
 
-              {/* Lab Practice challenge panel */}
-              <div className="mt-4 p-4 bg-slate-950 border border-brand-border/60 rounded flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              {/* Practice challenge panel */}
+              <div className="mt-4 p-4 bg-slate-950 border border-brand-border/60 rounded flex flex-col justify-between items-start gap-1">
                 <div>
                   <div className="font-mono text-[10px] text-brand-emerald uppercase tracking-wider">
-                    ▼ LAB DÖNÜM NOKTASI GÖREVİ
+                    ▼ DÖNÜM NOKTASI GÖREVİ
                   </div>
                   <p className="text-slate-400 text-xs mt-1 leading-relaxed">
                     {activeStep.challenge}
                   </p>
                 </div>
-                <button className="flex items-center gap-1.5 px-4 py-2 bg-brand-cyan/10 hover:bg-brand-cyan/20 border border-brand-cyan/40 hover:border-brand-cyan/80 text-brand-cyan font-mono text-xs rounded transition-all duration-300 shrink-0">
-                  <span>{"Lab'a Başla"}</span>
-                  <ExternalLink size={12} />
-                </button>
               </div>
             </div>
           </div>
