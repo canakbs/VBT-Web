@@ -113,12 +113,6 @@ function LinkedinIcon({ className = "w-3.5 h-3.5" }: { className?: string }) {
   );
 }
 
-function getInitials(name: string) {
-  const parts = name.replace(/Prof\.|Dr\.|Doç\./gi, '').trim().split(' ').filter(Boolean);
-  if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
-  return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
-}
-
 export default function TeamNetwork({ teamFiles }: TeamNetworkProps) {
   // Parse team dynamic files if available
   const allMembers: TeamMember[] = teamFiles && teamFiles.length > 0
@@ -220,15 +214,9 @@ export default function TeamNetwork({ teamFiles }: TeamNetworkProps) {
                 <div className="absolute top-0 right-0 w-24 h-24 bg-brand-cyan/5 rounded-full blur-xl group-hover:bg-brand-cyan/10 transition-all pointer-events-none" />
 
                 <div>
-                  {/* Header Row: Initials Badge & Department Tag */}
-                  <div className="flex items-center justify-between gap-2 mb-3">
-                    {/* Initials Avatar Badge */}
-                    <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-brand-cyan/20 via-brand-cyan/10 to-brand-emerald/20 border border-brand-cyan/30 text-white font-bold font-mono text-sm flex items-center justify-center shadow-md shadow-brand-cyan/10 shrink-0 group-hover:border-brand-cyan/60 transition-colors">
-                      {getInitials(member.name)}
-                    </div>
-
-                    {/* Department Tag */}
-                    <span className={`text-[10px] font-mono font-medium px-2.5 py-1 rounded-lg border ${getDepartmentBadgeStyle(member.department)}`}>
+                  {/* Department Tag */}
+                  <div className="mb-3">
+                    <span className={`text-[10px] font-mono font-medium px-2.5 py-1 rounded-lg border inline-block ${getDepartmentBadgeStyle(member.department)}`}>
                       {member.department}
                     </span>
                   </div>
