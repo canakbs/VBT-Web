@@ -27,31 +27,6 @@ function GithubIcon({ className = "w-4 h-4" }: { className?: string }) {
   );
 }
 
-function XIcon({ className = "w-4 h-4" }: { className?: string }) {
-  return (
-    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
-      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-    </svg>
-  );
-}
-
-function MediumIcon({ className = "w-4 h-4" }: { className?: string }) {
-  return (
-    <svg className={className} fill="currentColor" viewBox="0 0 24 24">
-      <path d="M13.54 12a6.8 6.8 0 01-6.77 6.82A6.8 6.8 0 010 12a6.8 6.8 0 016.77-6.82A6.8 6.8 0 0113.54 12zM20.96 12c0 3.54-1.51 6.42-3.38 6.42-1.87 0-3.39-2.88-3.39-6.42s1.52-6.42 3.39-6.42c1.87 0 3.38 2.88 3.38 6.42M24 12c0 3.17-.53 5.75-1.19 5.75-.66 0-1.19-2.58-1.19-5.75s.53-5.75 1.19-5.75C23.47 6.25 24 8.83 24 12z" />
-    </svg>
-  );
-}
-
-function MailIcon({ className = "w-4 h-4" }: { className?: string }) {
-  return (
-    <svg className={className} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24">
-      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-      <polyline points="22,6 12,13 2,6"></polyline>
-    </svg>
-  );
-}
-
 const SOCIAL_LINKS = [
   {
     name: 'Instagram',
@@ -61,7 +36,7 @@ const SOCIAL_LINKS = [
   },
   {
     name: 'LinkedIn',
-    url: 'https://linkedin.com/company/akdenizveribilimi',
+    url: 'https://www.linkedin.com/company/akdeniz-veri-bilimi-toplulugu',
     icon: LinkedinIcon,
     hoverColor: 'hover:text-[#0A66C2] hover:border-[#0A66C2]/40 hover:bg-[#0A66C2]/10',
   },
@@ -70,24 +45,6 @@ const SOCIAL_LINKS = [
     url: 'https://github.com/akdenizveribilimi',
     icon: GithubIcon,
     hoverColor: 'hover:text-white hover:border-white/40 hover:bg-white/10',
-  },
-  {
-    name: 'X (Twitter)',
-    url: 'https://x.com/akdenizverib',
-    icon: XIcon,
-    hoverColor: 'hover:text-[#1DA1F2] hover:border-[#1DA1F2]/40 hover:bg-[#1DA1F2]/10',
-  },
-  {
-    name: 'Medium',
-    url: 'https://medium.com/@akdenizveribilimi',
-    icon: MediumIcon,
-    hoverColor: 'hover:text-[#00AB6C] hover:border-[#00AB6C]/40 hover:bg-[#00AB6C]/10',
-  },
-  {
-    name: 'E-posta',
-    url: 'mailto:akdenizveribilim@gmail.com',
-    icon: MailIcon,
-    hoverColor: 'hover:text-brand-emerald hover:border-brand-emerald/40 hover:bg-brand-emerald/10',
   },
 ];
 
