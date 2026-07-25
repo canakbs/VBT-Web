@@ -866,10 +866,9 @@ summary: "${summary || teamRole}"
                           className="p-2.5 bg-slate-900 border border-brand-border rounded text-white text-xs focus:border-brand-cyan focus:outline-none"
                         >
                           <option value="Üst Yönetim">Üst Yönetim</option>
-                          <option value="AR-GE & Yapay Zekâ">AR-GE & Yapay Zekâ</option>
-                          <option value="Organizasyon & Etkinlik">Organizasyon & Etkinlik</option>
-                          <option value="Sosyal Medya & Tasarım">Sosyal Medya & Tasarım</option>
-                          <option value="Mentör / Danışman">Mentör / Danışman</option>
+                          <option value="AR-GE">AR-GE</option>
+                          <option value="Etkinlik & Organizasyon">Etkinlik & Organizasyon</option>
+                          <option value="Sosyal Medya">Sosyal Medya</option>
                         </select>
                       </div>
                     </div>
