@@ -1,5 +1,5 @@
 import { getFilesFromDir } from "@/lib/markdown";
-import EventTimeline from "@/components/EventTimeline";
+import EventList from "@/components/EventList";
 import NeuralBackground from "@/components/NeuralBackground";
 import SiteNav from "@/components/SiteNav";
 import Link from "next/link";
@@ -21,8 +21,8 @@ export default function EventsArchivePage() {
       <div className="relative z-10 min-h-screen flex flex-col justify-between">
         <SiteNav />
 
-        <div className="pt-24 pb-12 flex-grow">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4 pb-2 flex items-center justify-between">
+        <div className="pt-24 pb-16 flex-grow">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4 pb-6 flex items-center justify-between">
             <Link
               href="/"
               className="inline-flex items-center gap-2 text-xs font-mono text-brand-muted hover:text-white transition-colors px-3 py-1.5 bg-brand-card/50 border border-brand-border rounded-lg"
@@ -35,7 +35,7 @@ export default function EventsArchivePage() {
             </span>
           </div>
 
-          <EventTimeline events={allEvents} showMoreButton={false} />
+          <EventList events={allEvents} />
         </div>
 
         <footer className="bg-[#090d16] border-t border-brand-border py-8 px-6 text-center font-mono text-xs text-brand-muted">
@@ -48,3 +48,4 @@ export default function EventsArchivePage() {
     </>
   );
 }
+

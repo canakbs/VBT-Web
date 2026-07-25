@@ -40,7 +40,7 @@ export async function logout() {
 }
 
 // 2. CMS CRUD Actions (Protected by Session Checks)
-export async function getContentList(type: 'events' | 'blog' | 'projects' | 'team') {
+export async function getContentList(type: 'events' | 'blog' | 'projects' | 'team' | 'hero') {
   const cookieStore = await cookies();
   if (cookieStore.get('avbt_cms_session')?.value !== 'true') {
     throw new Error('UNAUTHORIZED');
@@ -173,7 +173,7 @@ export async function getFileContent(filePath: string) {
 }
 
 export async function saveContent(
-  type: 'events' | 'blog' | 'projects' | 'team',
+  type: 'events' | 'blog' | 'projects' | 'team' | 'hero',
   filename: string,
   markdown: string,
   sha?: string
@@ -246,7 +246,7 @@ export async function uploadImageAction(formData: FormData) {
     throw new Error('UNAUTHORIZED');
   }
 
-  const type = formData.get('type') as 'events' | 'blog' | 'projects' | 'team';
+  const type = formData.get('type') as 'events' | 'blog' | 'projects' | 'team' | 'hero';
   const filename = formData.get('filename') as string;
   const file = formData.get('file') as File;
 

@@ -1,7 +1,7 @@
 ---
 title: "Fon Tahmin Modeli"
 stage: "Deployment"
-category: "NLP, Regression"
+category: "NLP"
 github: "https://github.com/akdenizveribilimi/funding-prediction"
 stats: ""
 image: "/images/projects/1784989740242-Gemini_Generated_Image_hzjcashzjcashzjc.png"
