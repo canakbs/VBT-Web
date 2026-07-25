@@ -913,12 +913,27 @@ summary: "${summary || teamRole}"
 
                 {/* Summary */}
                 <div className="flex flex-col">
-                  <label className="text-slate-400 mb-1.5 uppercase tracking-wider">Kısa Özet</label>
+                  <div className="flex justify-between items-center mb-1.5 font-mono">
+                    <label className="text-slate-400 uppercase tracking-wider font-bold">Kısa Özet</label>
+                    {activeTab === 'team' && (
+                      <span className={`text-[10px] ${summary.length >= 200 ? 'text-red-400 font-bold' : 'text-slate-400'}`}>
+                        {summary.length}/200 karakter
+                      </span>
+                    )}
+                  </div>
                   <textarea
                     rows={2}
-                    placeholder="Kısa bir özet yazın (1-2 cümle)..."
+                    maxLength={activeTab === 'team' ? 200 : undefined}
+                    placeholder={activeTab === 'team' ? 'Ekip üyesi hakkında kısa bir özet yazın (maksimum 200 karakter)...' : 'Kısa bir özet yazın (1-2 cümle)...'}
                     value={summary}
-                    onChange={(e) => setSummary(e.target.value)}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (activeTab === 'team' && val.length > 200) {
+                        setSummary(val.substring(0, 200));
+                      } else {
+                        setSummary(val);
+                      }
+                    }}
                     className="p-3 bg-slate-900 border border-brand-border rounded text-white focus:border-brand-cyan focus:outline-none transition-colors"
                   />
                 </div>

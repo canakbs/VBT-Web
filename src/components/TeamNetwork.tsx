@@ -126,37 +126,37 @@ export default function TeamNetwork({ teamFiles }: TeamNetworkProps) {
         id: file.slug,
         name: file.metadata.title || file.slug,
         role: file.metadata.role || 'Ekip Üyesi',
-        department: file.metadata.department || 'ARGE',
+        department: file.metadata.department || 'AR-GE & Yapay Zekâ',
         skills: Array.isArray(file.metadata.skills)
           ? file.metadata.skills
           : (file.metadata.skills ? String(file.metadata.skills).split(',').map((s) => s.trim()) : []),
-        bio: file.metadata.bio || file.content || '',
-        linkedin: file.metadata.linkedin || 'https://linkedin.com',
-        github: file.metadata.github || 'https://github.com',
+        bio: file.metadata.summary || file.metadata.bio || file.content || '',
+        linkedin: file.metadata.linkedin || '',
+        github: file.metadata.github || '',
       }))
     : DEFAULT_MEMBERS;
 
   const [activeDepartment, setActiveDepartment] = useState<string>('Tümü');
 
-  const DEPARTMENTS = ['Tümü', 'Üst Yönetim', 'Etkinlik & Organizasyon', 'Sosyal Medya', 'ARGE'];
+  const DEPARTMENTS = ['Tümü', 'Üst Yönetim', 'AR-GE & Yapay Zekâ', 'Etkinlik & Organizasyon', 'Sosyal Medya & Tasarım', 'Mentör / Danışman'];
 
   const filteredMembers = activeDepartment === 'Tümü'
     ? allMembers
-    : allMembers.filter((m) => m.department === activeDepartment);
+    : allMembers.filter((m) => {
+        if (m.department === activeDepartment) return true;
+        if (activeDepartment === 'AR-GE & Yapay Zekâ' && (m.department === 'ARGE' || m.department.includes('ARGE'))) return true;
+        if (activeDepartment === 'Sosyal Medya & Tasarım' && (m.department === 'Sosyal Medya' || m.department.includes('Sosyal'))) return true;
+        if (activeDepartment === 'Etkinlik & Organizasyon' && (m.department === 'Etkinlik' || m.department.includes('Etkinlik'))) return true;
+        return false;
+      });
 
   const getDepartmentBadgeStyle = (dept: string) => {
-    switch (dept) {
-      case 'Üst Yönetim':
-        return 'bg-amber-500/10 text-amber-400 border-amber-500/30';
-      case 'Etkinlik & Organizasyon':
-        return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
-      case 'Sosyal Medya':
-        return 'bg-purple-500/10 text-purple-400 border-purple-500/30';
-      case 'ARGE':
-        return 'bg-brand-cyan/10 text-brand-cyan border-brand-cyan/30';
-      default:
-        return 'bg-slate-800 text-slate-300 border-slate-700';
-    }
+    if (dept.includes('Yönetim')) return 'bg-amber-500/10 text-amber-400 border-amber-500/30';
+    if (dept.includes('Etkinlik') || dept.includes('Organizasyon')) return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
+    if (dept.includes('Sosyal') || dept.includes('Tasarım')) return 'bg-purple-500/10 text-purple-400 border-purple-500/30';
+    if (dept.includes('AR-GE') || dept.includes('ARGE')) return 'bg-brand-cyan/10 text-brand-cyan border-brand-cyan/30';
+    if (dept.includes('Mentör') || dept.includes('Danışman')) return 'bg-blue-500/10 text-blue-400 border-blue-500/30';
+    return 'bg-slate-800 text-slate-300 border-slate-700';
   };
 
   return (
