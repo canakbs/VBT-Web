@@ -1,6 +1,7 @@
 import { getFilesFromDir } from "@/lib/markdown";
 import NeuralBackground from "@/components/NeuralBackground";
 import SiteNav from "@/components/SiteNav";
+import Footer from "@/components/Footer";
 import Link from "next/link";
 import { ArrowLeft, ExternalLink, CheckCircle2 } from "lucide-react";
 import type { Metadata } from "next";
@@ -101,12 +102,7 @@ export default function ProjectsPage() {
           </div>
         </div>
 
-        <footer className="bg-[#090d16] border-t border-brand-border py-8 px-6 text-center font-mono text-xs text-brand-muted">
-          <div className="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
-            <span>© 2026 Akdeniz Veri Bilimi Topluluğu</span>
-            <Link href="/" className="hover:text-white transition-colors">Ana Sayfa</Link>
-          </div>
-        </footer>
+        <Footer />
       </div>
     </>
   );

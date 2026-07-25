@@ -1,6 +1,7 @@
 import TeamNetwork from "@/components/TeamNetwork";
 import NeuralBackground from "@/components/NeuralBackground";
 import SiteNav from "@/components/SiteNav";
+import Footer from "@/components/Footer";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { getFilesFromDir } from "@/lib/markdown";
@@ -18,10 +19,10 @@ export default function EkibimizPage() {
     <>
       <NeuralBackground />
 
-      <div className="relative z-10">
+      <div className="relative z-10 min-h-screen flex flex-col justify-between">
         <SiteNav />
 
-        <div className="pt-24 pb-12">
+        <div className="pt-24 pb-12 flex-grow">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-4">
             <Link
               href="/"
@@ -34,17 +35,9 @@ export default function EkibimizPage() {
 
           <TeamNetwork variant="full" teamFiles={teamFiles} />
         </div>
-      </div>
 
-      <footer className="bg-[#090d16] border-t border-brand-border py-10 px-4 sm:px-6 relative z-10 font-mono text-xs text-brand-muted">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-          <span>© 2026 Akdeniz Veri Bilimi Topluluğu</span>
-          <div className="flex gap-6">
-            <Link href="/" className="hover:text-white transition-colors">Ana Sayfa</Link>
-            <a href="/#join-us" className="hover:text-brand-cyan transition-colors font-bold">Bize Katıl</a>
-          </div>
-        </div>
-      </footer>
+        <Footer />
+      </div>
     </>
   );
 }

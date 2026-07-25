@@ -4,6 +4,7 @@ import EventTimeline from "@/components/EventTimeline";
 import ProjectPipeline from "@/components/ProjectPipeline";
 import JoinOnboarding from "@/components/JoinOnboarding";
 import NeuralBackground from "@/components/NeuralBackground";
+import Footer from "@/components/Footer";
 import fs from 'fs';
 import path from 'path';
 
@@ -41,34 +42,7 @@ export default function Home() {
       <JoinOnboarding />
 
       {/* Scientific Community Footer */}
-      <footer className="bg-[#090d16] border-t border-brand-border py-12 px-6 relative z-10 font-mono text-xs text-brand-muted">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
-          <div className="flex items-center gap-3">
-            <img 
-              src="/logo.svg" 
-              alt="Akdeniz Veri Bilimi Logo" 
-              className="w-10 h-10 rounded-full object-contain border border-brand-border bg-slate-950 p-1"
-            />
-            <div className="flex flex-col items-center md:items-start gap-0.5">
-              <span className="text-white font-bold tracking-wider">AKDENİZ VERİ BİLİMİ</span>
-              <span>Akdeniz Veri Bilimi Topluluğu // 2026</span>
-            </div>
-          </div>
-
-          <div className="flex flex-wrap justify-center gap-6 text-[11px]">
-            <a href="/#event-archive" className="hover:text-brand-cyan transition-colors">Etkinlikler</a>
-            <a href="/#project-showcase" className="hover:text-brand-cyan transition-colors">Projeler</a>
-            <a href="/ekibimiz" className="hover:text-brand-cyan transition-colors">Ekibimiz</a>
-            <a href="/veri-bilimi-nedir" className="hover:text-brand-cyan transition-colors">Veri Bilimi Nedir?</a>
-            <a href="/iletisim" className="hover:text-brand-cyan transition-colors">İletişim</a>
-            <a href="/#join-us" className="hover:text-brand-emerald transition-colors font-bold">BİZE KATIL</a>
-          </div>
-
-          <div className="text-[10px] text-slate-600">
-            © 2026 Akdeniz Veri Bilimi Topluluğu
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </>
   );
 }
