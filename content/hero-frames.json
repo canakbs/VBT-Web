@@ -2,7 +2,7 @@
   {
     "id": "workshop",
     "name": "Sol Üst Çerçeve",
-    "src": "/images/hero/hero-1784838097357-Screenshot_20250427_225104_Gallery.jpg",
+    "src": "/images/hero/hero-1784983522456-Screenshot_20250427_225104_Gallery1.jpg",
     "caption": "Teknik Sunumlar"
   },
   {
@@ -14,25 +14,25 @@
   {
     "id": "community",
     "name": "Sol Alt Çerçeve",
-    "src": "/images/hero/community.png",
+    "src": "/images/hero/hero-1784979601388-IMG-20260503-WA0015.jpg",
     "caption": "Topluluk Ekibi"
   },
   {
     "id": "speakers",
     "name": "Sağ Üst Çerçeve",
-    "src": "/images/hero/speakers.png",
-    "caption": "Yapay Zekâ Semineri"
+    "src": "/images/hero/hero-1784981403981-IMG-20251209-WA0031.jpg",
+    "caption": "Online Eğitimler"
   },
   {
     "id": "coding",
     "name": "Sağ Orta Çerçeve",
-    "src": "/images/hero/coding.png",
-    "caption": "Model Eğitimi"
+    "src": "/images/hero/hero-1784981578920-IMG_1349.jpg",
+    "caption": "Data-Talklar"
   },
   {
     "id": "team",
     "name": "Sağ Alt Çerçeve",
-    "src": "/images/hero/team.png",
-    "caption": "Birlikte Öğreniyoruz"
+    "src": "/images/hero/hero-1784982647108-IMG_0438.HEIC.jpg",
+    "caption": "Topluluk Günleri"
   }
 ]

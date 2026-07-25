@@ -4,7 +4,7 @@ date: "2025-04-25"
 category: "AI Workshops"
 stats: ""
 outcome: ""
-image: "/images/events/1784836171839-Screenshot_20250427_225104_Gallery.jpg"
+image: "/images/events/1784983542757-Screenshot_20250427_225104_Gallery1.jpg"
 summary: "İş fikrinize göre fon tahmin eden projemizi üyelerimizle buluşturduğumuz ve sunduğumuz teknik bir etkinlik. "
 tags: ["Python","Regression","Case Study"]
 ---
