@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ExternalLink, CheckCircle2, ArrowRight, Layers, Sparkles } from 'lucide-react';
 import { MarkdownFile } from '@/lib/markdown';
 import Link from 'next/link';
+import { useLenis } from 'lenis/react';
 
 interface ProjectPipelineProps {
   projects: MarkdownFile[];
@@ -20,6 +21,22 @@ const FALLBACK_PROJECT_IMAGES = [
 
 export default function ProjectPipeline({ projects }: ProjectPipelineProps) {
   const [selectedProject, setSelectedProject] = useState<MarkdownFile | null>(null);
+
+  const lenis = useLenis();
+
+  useEffect(() => {
+    if (selectedProject) {
+      document.body.classList.add('overflow-hidden');
+      lenis?.stop();
+    } else {
+      document.body.classList.remove('overflow-hidden');
+      lenis?.start();
+    }
+    return () => {
+      document.body.classList.remove('overflow-hidden');
+      lenis?.start();
+    };
+  }, [selectedProject, lenis]);
 
   // Filter projects to show completed ones (Limit 3 for homepage)
   const completedProjects = projects
@@ -215,7 +232,7 @@ export default function ProjectPipeline({ projects }: ProjectPipelineProps) {
                 </button>
               </div>
 
-              <div className="p-6 sm:p-8 max-h-[70vh] overflow-y-auto space-y-4">
+              <div className="p-6 sm:p-8 max-h-[70vh] overflow-y-auto space-y-4" data-lenis-prevent>
                 <div className="flex flex-wrap items-center gap-2 mb-2 font-mono text-xs">
                   <span className="px-2.5 py-1 bg-brand-cyan/15 border border-brand-cyan/30 rounded text-brand-cyan font-bold">
                     {selectedProject.metadata.category}

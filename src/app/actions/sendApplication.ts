@@ -17,6 +17,15 @@ export interface ApplicationData {
 export async function sendApplicationAction(data: ApplicationData) {
   const targetEmail = 'akdenizveri07@gmail.com';
 
+  // Email validation check
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!data.email || !emailRegex.test(data.email)) {
+    return {
+      success: false,
+      error: 'Lütfen geçerli bir e-posta adresi giriniz.'
+    };
+  }
+
   // Rate limiting: Max 3 submissions per minute per user/IP
   const rateKey = await getClientIdentifier(`app_${data.email}`);
   const rateCheck = checkRateLimit(rateKey, 3, 60 * 1000);

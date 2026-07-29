@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Calendar, Filter, Sparkles, Award, ArrowRight, X, ChevronLeft, ChevronRight, MoveHorizontal } from 'lucide-react';
 import { MarkdownFile } from '@/lib/markdown';
 import Link from 'next/link';
+import { useLenis } from 'lenis/react';
 
 interface EventTimelineProps {
   events: MarkdownFile[];
@@ -44,6 +45,22 @@ export default function EventTimeline({ events, showMoreButton = false }: EventT
   const [activeCategory, setActiveCategory] = useState<string>('Tümü');
   const [selectedEvent, setSelectedEvent] = useState<MarkdownFile | null>(null);
   const [isHovered, setIsHovered] = useState(false);
+
+  const lenis = useLenis();
+
+  useEffect(() => {
+    if (selectedEvent) {
+      document.body.classList.add('overflow-hidden');
+      lenis?.stop();
+    } else {
+      document.body.classList.remove('overflow-hidden');
+      lenis?.start();
+    }
+    return () => {
+      document.body.classList.remove('overflow-hidden');
+      lenis?.start();
+    };
+  }, [selectedEvent, lenis]);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const stripRef = useRef<HTMLDivElement>(null);
@@ -389,6 +406,7 @@ export default function EventTimeline({ events, showMoreButton = false }: EventT
           <div
             className="relative w-full max-w-2xl bg-slate-900 border border-brand-border rounded-xl shadow-2xl overflow-hidden p-6 sm:p-8 space-y-6 max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
+            data-lenis-prevent
           >
             {/* Modal Header Bar */}
             <div className="flex items-center justify-between pb-4 border-b border-brand-border">

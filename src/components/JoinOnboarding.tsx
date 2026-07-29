@@ -6,9 +6,28 @@ import confetti from 'canvas-confetti';
 import { ArrowRight, ArrowLeft, Send, ExternalLink, Share2, CheckCircle2, Loader2, Sparkles, AlertTriangle } from 'lucide-react';
 import { sendApplicationAction } from '@/app/actions/sendApplication';
 
-const INTERESTS = ['Machine Learning', 'Deep Learning', 'Computer Vision', 'Natural Language Processing', 'MLOps & Deployment', 'Exploratory Data Analysis', 'Academic Research'];
-const LEVELS = ['Başlangıç (Öğrenmeye hazırım)', 'Orta Seviye (Proje geliştirdim)', 'İleri Seviye (Araştırma / Mühendislik)'];
-const DEPARTMENTS = ['Araştırma & Geliştirme (Ar-Ge)', 'Eğitim & Workshop', 'İletişim & Sosyal Medya'];
+const INTERESTS = [
+  'Machine Learning',
+  'Deep Learning',
+  'Computer Vision',
+  'Natural Language Processing',
+  'MLOps & Deployment',
+  'Exploratory Data Analysis',
+  'Academic Research',
+  'Sosyal Medya',
+  'Dijital Tasarım',
+  'Organizasyon'
+];
+const LEVELS = [
+  'İleri Seviye (Araştırma / Mühendislik)',
+  'Orta Seviye (Proje geliştirdim)',
+  'Başlangıç (Öğrenmeye hazırım)'
+];
+const DEPARTMENTS = [
+  'İletişim & Sosyal Medya',
+  'Etkinlik & Organizasyon',
+  'Araştırma & Geliştirme (Ar-Ge)'
+];
 
 const SOCIAL_LINK = 'https://linktr.ee/akdenizveribilimi';
 
@@ -27,6 +46,10 @@ export default function JoinOnboarding() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const isEmailFormatValid = email === '' || emailRegex.test(email);
+  const isEmailComplete = email !== '' && emailRegex.test(email);
 
   const handleInterestToggle = (interest: string) => {
     setSelectedInterests((prev) =>
@@ -64,6 +87,7 @@ export default function JoinOnboarding() {
       });
 
       setIsSubmitted(true);
+      setStep(5);
     } catch (err: any) {
       console.error('Submission error:', err);
       setErrorMsg('Bir bağlantı hatası oluştu. Lütfen tekrar deneyiniz.');
@@ -144,8 +168,17 @@ export default function JoinOnboarding() {
                         placeholder="Örn: alperen@email.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="p-3 bg-slate-900 border border-brand-border rounded font-mono text-sm text-white focus:border-brand-cyan focus:outline-none transition-colors"
+                        className={`p-3 bg-slate-900 border rounded font-mono text-sm text-white focus:outline-none transition-colors ${
+                          !isEmailFormatValid
+                            ? 'border-red-500/80 focus:border-red-500'
+                            : 'border-brand-border focus:border-brand-cyan'
+                        }`}
                       />
+                      {!isEmailFormatValid && (
+                        <span className="text-[10px] text-red-400 mt-1.5 font-mono">
+                          // Lütfen geçerli bir e-posta adresi girin.
+                        </span>
+                      )}
                     </div>
                   </div>
                 </motion.div>
@@ -278,99 +311,52 @@ export default function JoinOnboarding() {
                   exit={{ opacity: 0, scale: 0.95 }}
                   className="space-y-8 py-2"
                 >
-                  {isSubmitted ? (
-                    <div className="p-8 bg-brand-emerald/10 border border-brand-emerald/40 rounded-2xl flex flex-col items-center text-center space-y-5">
-                      <div className="w-16 h-16 rounded-full bg-brand-emerald/20 border border-brand-emerald flex items-center justify-center text-brand-emerald">
-                        <CheckCircle2 size={36} />
-                      </div>
-                      <div>
-                        <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">
-                          Başvurunuz Başarıyla İletildi!
-                        </h3>
-                        <p className="text-sm md:text-base text-slate-300 max-w-md mx-auto leading-relaxed">
-                          Başvuru bilgileriniz topluluk ekibimize iletildi. En kısa sürede sizinle iletişime geçeceğiz.
-                        </p>
-                      </div>
-
-                      <a
-                        href={SOCIAL_LINK}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-4 inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-brand-emerald text-[#090d16] font-bold rounded-xl text-sm hover:bg-brand-emerald/90 transition-all shadow-lg shadow-brand-emerald/25 hover:scale-105 active:scale-95"
-                      >
-                        <Share2 size={18} />
-                        <span>Sosyal Ağlarımıza Katılın</span>
-                        <ExternalLink size={14} />
-                      </a>
+                  <div className="p-8 bg-brand-emerald/10 border border-brand-emerald/40 rounded-2xl flex flex-col items-center text-center space-y-5 animate-in fade-in zoom-in-95 duration-300">
+                    <div className="w-16 h-16 rounded-full bg-brand-emerald/20 border border-brand-emerald flex items-center justify-center text-brand-emerald">
+                      <CheckCircle2 size={36} />
                     </div>
-                  ) : (
-                    <>
-                      <div className="flex items-center gap-4 pb-6 border-b border-brand-border/40">
-                        <div className="w-12 h-12 rounded-full bg-brand-cyan/20 border border-brand-cyan flex items-center justify-center text-brand-cyan shrink-0">
-                          <Sparkles size={24} />
-                        </div>
-                        <div>
-                          <h3 className="text-xl md:text-2xl font-bold text-white">
-                            Başvuruyu tamamlamak için e-posta ile gönderin
-                          </h3>
-                          <p className="text-sm text-slate-300 mt-1">
-                            Bilgileriniz hazırlandı. Aşağıdaki &quot;Başvuruyu Gönder&quot; butonuna tıklayarak başvurunuzu anında iletebilirsiniz.
-                          </p>
-                        </div>
-                      </div>
+                    <div>
+                      <h3 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                        Başvurunuz Başarıyla İletildi!
+                      </h3>
+                      <p className="text-sm md:text-base text-slate-300 max-w-md mx-auto leading-relaxed">
+                        Başvuru bilgileriniz topluluk ekibimize iletildi. En kısa sürede sizinle iletişime geçeceğiz.
+                      </p>
+                    </div>
 
-                      {/* Error Alert if Rate Limit Triggered */}
-                      {errorMsg && (
-                        <div className="p-4 bg-red-950/40 border border-red-800/60 rounded-xl flex items-start gap-3 text-red-300 text-xs font-mono animate-in fade-in">
-                          <AlertTriangle size={18} className="text-red-400 shrink-0 mt-0.5" />
-                          <span>{errorMsg}</span>
-                        </div>
-                      )}
-
-                      {/* Direct Action Buttons */}
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <button
-                          onClick={handleSubmitApplication}
-                          disabled={isSubmitting}
-                          className="flex items-center justify-center gap-2.5 px-6 py-4 bg-brand-cyan text-[#090d16] font-bold rounded-xl text-sm hover:bg-brand-cyan/90 transition-all shadow-lg shadow-brand-cyan/25 hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-                        >
-                          {isSubmitting ? (
-                            <>
-                              <Loader2 size={18} className="animate-spin" />
-                              <span>E-posta Gönderiliyor...</span>
-                            </>
-                          ) : (
-                            <>
-                              <Send size={18} />
-                              <span>Başvuruyu Gönder</span>
-                            </>
-                          )}
-                        </button>
-
-                        <a
-                          href={SOCIAL_LINK}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-center gap-2.5 px-6 py-4 bg-brand-card hover:bg-slate-800 border border-brand-border text-white font-bold rounded-xl text-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
-                        >
-                          <Share2 size={18} className="text-brand-emerald" />
-                          <span>Sosyal Ağlarımıza Katılın</span>
-                          <ExternalLink size={14} className="text-slate-400" />
-                        </a>
-                      </div>
-                    </>
-                  )}
+                    <a
+                      href={SOCIAL_LINK}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-4 inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-brand-emerald text-[#090d16] font-bold rounded-xl text-sm hover:bg-brand-emerald/90 transition-all shadow-lg shadow-brand-emerald/25 hover:scale-105 active:scale-95"
+                    >
+                      <Share2 size={18} />
+                      <span>Sosyal Ağlarımıza Katılın</span>
+                      <ExternalLink size={14} />
+                    </a>
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
+
+          {/* Error Alert if Submission/Validation Fails */}
+          {errorMsg && (
+            <div className="mb-4 p-4 bg-red-950/40 border border-red-800/60 rounded-xl flex items-start gap-3 text-red-300 text-xs font-mono animate-in fade-in">
+              <AlertTriangle size={18} className="text-red-400 shrink-0 mt-0.5" />
+              <span>{errorMsg}</span>
+            </div>
+          )}
 
           {/* Footer Controls */}
           <div className="pt-4 border-t border-brand-border/40 flex justify-between items-center">
             {step > 1 && step < 5 ? (
               <button
                 onClick={handleBack}
-                className="flex items-center gap-1.5 px-4 py-2 border border-brand-border hover:border-slate-500 font-mono text-xs rounded transition-colors text-slate-400 hover:text-white cursor-pointer"
+                disabled={isSubmitting}
+                className={`flex items-center gap-1.5 px-4 py-2 border border-brand-border font-mono text-xs rounded transition-colors text-slate-400 hover:text-white cursor-pointer ${
+                  isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:border-slate-500'
+                }`}
               >
                 <ArrowLeft size={12} />
                 <span>GERİ</span>
@@ -381,16 +367,25 @@ export default function JoinOnboarding() {
 
             {step < 5 ? (
               <button
-                onClick={handleNext}
-                disabled={step === 1 && (!fullName || !email)}
+                onClick={step === 4 ? handleSubmitApplication : handleNext}
+                disabled={isSubmitting || (step === 1 && (!fullName || !isEmailComplete))}
                 className={`flex items-center gap-1.5 px-4 py-2 rounded font-mono text-xs transition-colors shrink-0 cursor-pointer ${
-                  step === 1 && (!fullName || !email)
+                  isSubmitting || (step === 1 && (!fullName || !isEmailComplete))
                     ? 'bg-slate-800 border border-brand-border text-brand-muted cursor-not-allowed'
                     : 'bg-brand-cyan hover:bg-brand-cyan/80 text-black font-semibold'
                 }`}
               >
-                <span>{step === 4 ? 'BAŞVURUYU TAMAMLA' : 'DEVAM ET'}</span>
-                <ArrowRight size={12} />
+                {isSubmitting ? (
+                  <>
+                    <Loader2 size={12} className="animate-spin" />
+                    <span>GÖNDERİLİYOR...</span>
+                  </>
+                ) : (
+                  <>
+                    <span>{step === 4 ? 'BAŞVURUYU TAMAMLA' : 'DEVAM ET'}</span>
+                    <ArrowRight size={12} />
+                  </>
+                )}
               </button>
             ) : (
               <button

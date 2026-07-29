@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Calendar, Filter, Sparkles, Award, ArrowRight } from 'lucide-react';
 import { MarkdownFile } from '@/lib/markdown';
+import { useLenis } from 'lenis/react';
 
 interface EventListProps {
   events: MarkdownFile[];
@@ -21,6 +22,22 @@ const FALLBACK_HERO_IMAGES = [
 export default function EventList({ events }: EventListProps) {
   const [activeCategory, setActiveCategory] = useState<string>('Tümü');
   const [selectedEvent, setSelectedEvent] = useState<MarkdownFile | null>(null);
+
+  const lenis = useLenis();
+
+  useEffect(() => {
+    if (selectedEvent) {
+      document.body.classList.add('overflow-hidden');
+      lenis?.stop();
+    } else {
+      document.body.classList.remove('overflow-hidden');
+      lenis?.start();
+    }
+    return () => {
+      document.body.classList.remove('overflow-hidden');
+      lenis?.start();
+    };
+  }, [selectedEvent, lenis]);
 
   // Sort events from newest to oldest (date descending)
   const sortedEvents = React.useMemo(() => {
@@ -246,7 +263,7 @@ export default function EventList({ events }: EventListProps) {
               </div>
 
               {/* Modal Body */}
-              <div className="p-6 sm:p-8 max-h-[75vh] overflow-y-auto space-y-5">
+              <div className="p-6 sm:p-8 max-h-[75vh] overflow-y-auto space-y-5" data-lenis-prevent>
                 {/* Banner Image */}
                 <div className="w-full aspect-[16/9] rounded-xl overflow-hidden border border-brand-border bg-slate-950 relative">
                   <img
