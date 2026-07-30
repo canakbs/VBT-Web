@@ -383,7 +383,7 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
       })}
 
       {/* Hero Headline & Action Area — Centered vertically & horizontally, max-width ~45-50% */}
-      <div className="relative z-20 w-full flex-1 flex flex-col items-center justify-center text-center px-4 sm:px-6 pt-24 pb-12 pointer-events-none">
+      <div className="relative z-20 w-full flex-1 flex flex-col items-center justify-start sm:justify-center text-center px-4 sm:px-6 pt-28 sm:pt-24 pb-12 pointer-events-none">
         <div className="w-[76vw] sm:w-full max-w-xl lg:max-w-[48%] min-w-0 mx-auto flex flex-col items-center pointer-events-auto space-y-6 sm:space-y-4">
           
 
@@ -398,39 +398,39 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
           </h1>
 
           {/* Community Vision Quote & Compact Stat Metrics Widget */}
-          <div className="w-full max-w-md mt-1 p-2 sm:p-4 bg-[#090d16]/90 border border-brand-border/80 rounded-xl backdrop-blur-xl text-slate-300 shadow-xl shadow-black/50 relative overflow-hidden group hover:border-brand-cyan/40 transition-all">
+          <div className="w-[52vw] sm:w-full max-w-[220px] sm:max-w-md mt-1 p-4 bg-[#090d16]/90 border border-brand-border/80 rounded-xl backdrop-blur-xl text-slate-300 shadow-xl shadow-black/50 relative overflow-hidden group hover:border-brand-cyan/40 transition-all flex flex-col justify-center min-h-[160px] sm:min-h-0">
             <div className="absolute top-0 right-0 w-28 h-28 bg-brand-cyan/5 rounded-full blur-2xl group-hover:bg-brand-cyan/10 transition-all pointer-events-none" />
 
             <div className="space-y-3">
-              <blockquote className="text-[11.5px] sm:text-xs md:text-sm font-semibold text-white italic leading-relaxed border-l-2 border-brand-cyan pl-2.5 sm:pl-3 my-0.5 text-left">
+              <blockquote className="text-[11px] sm:text-xs md:text-sm font-semibold text-white italic leading-relaxed border-l-2 border-brand-cyan pl-2.5 sm:pl-3 my-0.5 text-left">
                 “Veri bilimi etrafında; birlikte üreten, birlikte öğrenen ve bilgisini topluma aktaran bir topluluk inşa ediyoruz.”
               </blockquote>
 
-              {/* Stat Cards */}
-              <div className="grid grid-cols-3 gap-1 sm:gap-2 pt-1">
-                <div className="p-1.5 sm:p-2.5 bg-brand-card/50 border border-brand-border/40 rounded-lg text-center flex flex-col justify-center">
-                  <div className="text-sm sm:text-lg font-extrabold text-white tracking-tight font-mono">
+              {/* Stat Cards - Hidden on Mobile, Visible on Desktop */}
+              <div className="hidden sm:grid grid-cols-3 gap-2 pt-1">
+                <div className="p-2.5 bg-brand-card/50 border border-brand-border/40 rounded-lg text-center flex flex-col justify-center">
+                  <div className="text-lg font-extrabold text-white tracking-tight font-mono">
                     <StatCounter value={370} suffix="+" />
                   </div>
-                  <div className="text-[9.5px] sm:text-[10px] text-brand-muted mt-0.5 leading-tight font-sans font-medium">
+                  <div className="text-[10px] text-brand-muted mt-0.5 leading-tight font-sans font-medium">
                     Kayıtlı Üye
                   </div>
                 </div>
 
-                <div className="p-1.5 sm:p-2.5 bg-brand-card/50 border border-brand-border/40 rounded-lg text-center flex flex-col justify-center">
-                  <div className="text-sm sm:text-lg font-extrabold text-brand-cyan tracking-tight font-mono">
+                <div className="p-2.5 bg-brand-card/50 border border-brand-border/40 rounded-lg text-center flex flex-col justify-center">
+                  <div className="text-lg font-extrabold text-brand-cyan tracking-tight font-mono">
                     <StatCounter value={30} suffix="+" />
                   </div>
-                  <div className="text-[9.5px] sm:text-[10px] text-brand-muted mt-0.5 leading-tight font-sans font-medium">
+                  <div className="text-[10px] text-brand-muted mt-0.5 leading-tight font-sans font-medium">
                     Etkinlik
                   </div>
                 </div>
 
-                <div className="p-1.5 sm:p-2.5 bg-brand-card/50 border border-brand-border/40 rounded-lg text-center flex flex-col justify-center">
-                  <div className="text-sm sm:text-lg font-extrabold text-brand-emerald tracking-tight font-mono">
+                <div className="p-2.5 bg-brand-card/50 border border-brand-border/40 rounded-lg text-center flex flex-col justify-center">
+                  <div className="text-lg font-extrabold text-brand-emerald tracking-tight font-mono">
                     <StatCounter value={7} suffix="" />
                   </div>
-                  <div className="text-[9.5px] sm:text-[10px] text-brand-muted mt-0.5 leading-tight font-sans font-medium">
+                  <div className="text-[10px] text-brand-muted mt-0.5 leading-tight font-sans font-medium">
                     Aktif Proje
                   </div>
                 </div>
