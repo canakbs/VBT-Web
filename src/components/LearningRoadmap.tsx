@@ -490,6 +490,96 @@ export default function LearningRoadmap() {
     }
   };
 
+  const renderKnowledgePanel = (step: RoadmapNode) => {
+    return (
+      <div className="bg-brand-card border border-brand-border rounded p-4 md:p-8 backdrop-blur-sm relative overflow-hidden min-h-[400px] lg:min-h-[460px] flex flex-col justify-between w-full">
+        {/* Decorative data stream log */}
+        <div className="absolute top-0 right-0 p-4 font-mono text-[8px] text-brand-muted/30 select-none uppercase hidden sm:block">
+          MODULE_HASH: MD_{step.id.toUpperCase()}_v3
+        </div>
+
+        <div>
+          {/* Node Title Header */}
+          <div className="flex items-center gap-3.5 pb-6 border-b border-brand-border/40">
+            <div className="p-2.5 sm:p-3 bg-slate-900 border border-brand-border rounded-lg">
+              {step.icon}
+            </div>
+            <div>
+              <h3 className="text-lg md:text-2xl font-bold text-white leading-tight">
+                {step.title}
+              </h3>
+              <div className="font-mono text-[10px] sm:text-xs text-brand-cyan mt-1">
+                {step.subtitle}
+              </div>
+            </div>
+          </div>
+
+          {/* Sub layout: Split details on Left and Neural Synapses Visualizer on Right */}
+          <div className="py-6 grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+            
+            {/* Left Column: Core concepts */}
+            <div className="md:col-span-7 space-y-5">
+              <div>
+                <h4 className="font-mono text-[10px] sm:text-xs text-brand-emerald tracking-wider uppercase mb-2">
+                  ■ TEMEL KAVRAMLAR
+                </h4>
+                <ul className="space-y-1.5 text-xs md:text-sm text-slate-300">
+                  {step.concepts.map((c, i) => (
+                    <li key={i} className="flex items-start gap-2">
+                      <span className="text-brand-cyan mt-1 shrink-0">•</span>
+                      <span>{c}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <h4 className="font-mono text-[10px] sm:text-xs text-brand-cyan tracking-wider uppercase mb-2">
+                  ■ ÖNERİLEN ARAÇLAR
+                </h4>
+                <div className="flex flex-wrap gap-1.5">
+                  {step.tools.map((t) => (
+                    <span key={t} className="px-2 py-0.5 bg-slate-900 border border-brand-border rounded font-mono text-[9px] sm:text-[10px] text-slate-300">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Dynamic Category Specific Visualizer */}
+            <div className="md:col-span-5 h-[180px] md:h-[220px] w-full border border-brand-border bg-slate-950/40 rounded p-3 flex flex-col justify-between relative overflow-hidden">
+              <span className="font-mono text-[7px] text-brand-muted uppercase absolute top-2 left-2">
+                {getVisualizerLabel()}
+              </span>
+              
+              <div className="w-full h-full flex items-center justify-center pt-2">
+                {renderVisualizer()}
+              </div>
+              
+              <span className="font-mono text-[7.5px] text-brand-emerald uppercase text-right w-full block">
+                ● VERİ BİLİMİ SİMÜLATÖRÜ
+              </span>
+            </div>
+
+          </div>
+        </div>
+
+        {/* Practice challenge panel */}
+        <div className="mt-4 p-3 sm:p-4 bg-slate-950 border border-brand-border/60 rounded flex flex-col justify-between items-start gap-1">
+          <div>
+            <div className="font-mono text-[9px] sm:text-[10px] text-brand-emerald uppercase tracking-wider">
+              ▼ DÖNÜM NOKTASI GÖREVİ
+            </div>
+            <p className="text-slate-400 text-xs mt-1 leading-relaxed">
+              {step.challenge}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <section id="ds-journey" className="relative py-24 bg-transparent border-b border-brand-border">
       {/* Background Grid */}
@@ -512,139 +602,62 @@ export default function LearningRoadmap() {
             {ROADMAP_STEPS.map((step, index) => {
               const isActive = activeStep.id === step.id;
               return (
-                <button
-                  key={step.id}
-                  onClick={() => setActiveStep(step)}
-                  className={`group w-full flex items-center justify-between p-4 bg-brand-card hover:bg-brand-cyan/5 border rounded text-left transition-all duration-300 relative overflow-hidden ${
-                    isActive ? 'border-brand-cyan glow-cyan' : 'border-brand-border'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    {/* Node count index indicator */}
-                    <div className="font-mono text-xs text-brand-muted/70 min-w-[20px]">
-                      0{index + 1}
-                    </div>
-                    {/* Icon wrapper */}
-                    <div className={`p-2 bg-slate-900 border border-brand-border rounded transition-colors ${
-                      isActive ? 'border-brand-cyan' : 'group-hover:border-slate-700'
-                    }`}>
-                      {step.icon}
-                    </div>
-                    <div>
-                      <div className="text-white font-medium text-sm md:text-base leading-tight">
-                        {step.title}
+                <div key={step.id} className="w-full flex flex-col gap-2">
+                  <button
+                    onClick={() => setActiveStep(step)}
+                    className={`group w-full flex items-center justify-between p-4 bg-brand-card hover:bg-brand-cyan/5 border rounded text-left transition-all duration-300 relative overflow-hidden ${
+                      isActive ? 'border-brand-cyan glow-cyan' : 'border-brand-border'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      {/* Node count index indicator */}
+                      <div className="font-mono text-xs text-brand-muted/70 min-w-[20px]">
+                        0{index + 1}
                       </div>
-                      <div className="font-mono text-[10px] text-brand-muted mt-0.5">
-                        {step.subtitle}
+                      {/* Icon wrapper */}
+                      <div className={`p-2 bg-slate-900 border border-brand-border rounded transition-colors ${
+                        isActive ? 'border-brand-cyan' : 'group-hover:border-slate-700'
+                      }`}>
+                        {step.icon}
+                      </div>
+                      <div>
+                        <div className="text-white font-medium text-sm md:text-base leading-tight">
+                          {step.title}
+                        </div>
+                        <div className="font-mono text-[10px] text-brand-muted mt-0.5">
+                          {step.subtitle}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  <div className="flex items-center gap-2">
-                    <span className={`font-mono text-[9px] px-2 py-0.5 rounded uppercase ${
-                      step.difficulty === 'Beginner' ? 'bg-blue-950 text-blue-400 border border-blue-900' :
-                      step.difficulty === 'Intermediate' ? 'bg-emerald-950 text-emerald-400 border border-emerald-900' :
-                      step.difficulty === 'Advanced' ? 'bg-amber-950 text-amber-400 border border-amber-900' :
-                      'bg-purple-950 text-purple-400 border border-purple-900'
-                    }`}>
-                      {step.difficulty === 'Beginner' ? 'Başlangıç' : step.difficulty === 'Intermediate' ? 'Orta Seviye' : step.difficulty === 'Advanced' ? 'İleri Seviye' : 'Uzman'}
-                    </span>
-                    <ChevronRight size={14} className={`text-brand-muted group-hover:text-white transition-transform ${
-                      isActive ? 'translate-x-1 text-brand-cyan' : ''
-                    }`} />
-                  </div>
-                </button>
+                    <div className="flex items-center gap-2">
+                      <span className={`font-mono text-[9px] px-2 py-0.5 rounded uppercase ${
+                        step.difficulty === 'Beginner' ? 'bg-blue-950 text-blue-400 border border-blue-900' :
+                        step.difficulty === 'Intermediate' ? 'bg-emerald-950 text-emerald-400 border border-emerald-900' :
+                        step.difficulty === 'Advanced' ? 'bg-amber-950 text-amber-400 border border-amber-900' :
+                        'bg-purple-950 text-purple-400 border border-purple-900'
+                      }`}>
+                        {step.difficulty === 'Beginner' ? 'Başlangıç' : step.difficulty === 'Intermediate' ? 'Orta Seviye' : step.difficulty === 'Advanced' ? 'İleri Seviye' : 'Uzman'}
+                      </span>
+                      <ChevronRight size={14} className={`text-brand-muted group-hover:text-white transition-transform ${
+                        isActive ? 'translate-x-1 text-brand-cyan' : ''
+                      }`} />
+                    </div>
+                  </button>
+                  {/* Inline Knowledge Panel on Mobile */}
+                  {isActive && (
+                    <div className="block lg:hidden w-full transition-all duration-300">
+                      {renderKnowledgePanel(step)}
+                    </div>
+                  )}
+                </div>
               );
             })}
           </div>
 
-          {/* Expanded Knowledge Panel */}
-          <div className="col-span-1 lg:col-span-7">
-            <div className="bg-brand-card border border-brand-border rounded p-6 md:p-8 backdrop-blur-sm relative overflow-hidden min-h-[460px] flex flex-col justify-between">
-              {/* Decorative data stream log */}
-              <div className="absolute top-0 right-0 p-4 font-mono text-[8px] text-brand-muted/30 select-none uppercase">
-                MODULE_HASH: MD_{activeStep.id.toUpperCase()}_v3
-              </div>
-
-              <div>
-                {/* Node Title Header */}
-                <div className="flex items-center gap-3.5 pb-6 border-b border-brand-border/40">
-                  <div className="p-3 bg-slate-900 border border-brand-border rounded-lg">
-                    {activeStep.icon}
-                  </div>
-                  <div>
-                    <h3 className="text-xl md:text-2xl font-bold text-white leading-tight">
-                      {activeStep.title}
-                    </h3>
-                    <div className="font-mono text-xs text-brand-cyan mt-1">
-                      {activeStep.subtitle}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Sub layout: Split details on Left and Neural Synapses Visualizer on Right */}
-                <div className="py-6 grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-                  
-                  {/* Left Column: Core concepts */}
-                  <div className="md:col-span-7 space-y-5">
-                    <div>
-                      <h4 className="font-mono text-xs text-brand-emerald tracking-wider uppercase mb-2">
-                        ■ TEMEL KAVRAMLAR
-                      </h4>
-                      <ul className="space-y-1.5 text-xs md:text-sm text-slate-300">
-                        {activeStep.concepts.map((c, i) => (
-                          <li key={i} className="flex items-start gap-2">
-                            <span className="text-brand-cyan mt-1 shrink-0">•</span>
-                            <span>{c}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    <div>
-                      <h4 className="font-mono text-xs text-brand-cyan tracking-wider uppercase mb-2">
-                        ■ ÖNERİLEN ARAÇLAR
-                      </h4>
-                      <div className="flex flex-wrap gap-1.5">
-                        {activeStep.tools.map((t) => (
-                          <span key={t} className="px-2 py-0.5 bg-slate-900 border border-brand-border rounded font-mono text-[10px] text-slate-300">
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Right Column: Dynamic Category Specific Visualizer */}
-                  <div className="md:col-span-5 h-[180px] md:h-[220px] w-full border border-brand-border bg-slate-950/40 rounded p-3 flex flex-col justify-between relative overflow-hidden">
-                    <span className="font-mono text-[7px] text-brand-muted uppercase absolute top-2 left-2">
-                      {getVisualizerLabel()}
-                    </span>
-                    
-                    <div className="w-full h-full flex items-center justify-center pt-2">
-                      {renderVisualizer()}
-                    </div>
-                    
-                    <span className="font-mono text-[7.5px] text-brand-emerald uppercase text-right w-full block">
-                      ● VERİ BİLİMİ SİMÜLATÖRÜ
-                    </span>
-                  </div>
-
-                </div>
-              </div>
-
-              {/* Practice challenge panel */}
-              <div className="mt-4 p-4 bg-slate-950 border border-brand-border/60 rounded flex flex-col justify-between items-start gap-1">
-                <div>
-                  <div className="font-mono text-[10px] text-brand-emerald uppercase tracking-wider">
-                    ▼ DÖNÜM NOKTASI GÖREVİ
-                  </div>
-                  <p className="text-slate-400 text-xs mt-1 leading-relaxed">
-                    {activeStep.challenge}
-                  </p>
-                </div>
-              </div>
-            </div>
+          {/* Expanded Knowledge Panel for Desktop */}
+          <div className="hidden lg:block lg:col-span-7">
+            {renderKnowledgePanel(activeStep)}
           </div>
         </div>
       </div>

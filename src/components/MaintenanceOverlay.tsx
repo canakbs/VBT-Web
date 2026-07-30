@@ -13,9 +13,10 @@ export default function MaintenanceOverlay({ children }: { children: React.React
     setMounted(true);
     const params = new URLSearchParams(window.location.search);
     const isDev = process.env.NODE_ENV === 'development';
+    const maintenanceEnabled = process.env.NEXT_PUBLIC_MAINTENANCE_MODE !== 'false';
     
-    // In local development or if secret preview param / localStorage is set, allow full site access
-    if (isDev || params.get('preview') === 'true' || localStorage.getItem('vbt_preview') === 'true') {
+    // If maintenance is disabled via env, in local development, or if preview param / localStorage is set
+    if (!maintenanceEnabled || isDev || params.get('preview') === 'true' || localStorage.getItem('vbt_preview') === 'true') {
       if (params.get('preview') === 'true') {
         localStorage.setItem('vbt_preview', 'true');
       }

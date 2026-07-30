@@ -255,18 +255,18 @@ export default function EventTimeline({ events, showMoreButton = false }: EventT
 
           {/* Filtering bar & Navigation Controls */}
           <div className="flex flex-wrap items-center gap-3">
-            <div className="flex flex-wrap gap-1.5 p-1.5 bg-brand-card/80 border border-brand-border rounded-lg backdrop-blur-md">
+            <div className="flex flex-wrap gap-1 sm:gap-1.5 p-1 sm:p-1.5 bg-brand-card/80 border border-brand-border rounded-lg backdrop-blur-md">
               {categories.map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded font-mono text-xs transition-all duration-300 ${
+                  className={`flex items-center gap-1 sm:gap-1.5 px-1.5 py-1 sm:px-3 sm:py-1.5 rounded font-mono text-[10px] sm:text-xs transition-all duration-300 ${
                     activeCategory === cat
                       ? 'bg-brand-cyan/20 border border-brand-cyan/50 text-white shadow-sm shadow-brand-cyan/20'
                       : 'border border-transparent text-brand-muted hover:text-white'
                   }`}
                 >
-                  {cat === 'Tümü' && <Filter size={12} />}
+                  {cat === 'Tümü' && <Filter size={10} className="sm:w-3 sm:h-3" />}
                   <span>{cat}</span>
                 </button>
               ))}

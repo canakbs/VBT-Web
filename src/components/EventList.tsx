@@ -95,18 +95,18 @@ export default function EventList({ events }: EventListProps) {
         </div>
 
         {/* Filter Buttons */}
-        <div className="flex flex-wrap gap-1.5 p-1.5 bg-brand-card/80 border border-brand-border rounded-xl backdrop-blur-md self-start md:self-auto">
+        <div className="flex flex-wrap gap-1 sm:gap-1.5 p-1 sm:p-1.5 bg-brand-card/80 border border-brand-border rounded-lg sm:rounded-xl backdrop-blur-md self-start md:self-auto">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-mono text-xs transition-all duration-300 ${
+              className={`flex items-center gap-1 sm:gap-1.5 px-1.5 py-1 sm:px-3 sm:py-1.5 rounded sm:rounded-lg font-mono text-[10px] sm:text-xs transition-all duration-300 ${
                 activeCategory === cat
                   ? 'bg-brand-cyan/20 border border-brand-cyan/50 text-white shadow-sm shadow-brand-cyan/20'
                   : 'border border-transparent text-brand-muted hover:text-white'
               }`}
             >
-              {cat === 'Tümü' && <Filter size={12} />}
+              {cat === 'Tümü' && <Filter size={10} className="sm:w-3 sm:h-3" />}
               <span>{cat}</span>
             </button>
           ))}

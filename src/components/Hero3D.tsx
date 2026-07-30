@@ -23,6 +23,7 @@ interface Hero3DProps {
 }
 
 export default function Hero3D({ frames = [] }: Hero3DProps) {
+  const [activePhotoId, setActivePhotoId] = useState<string | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const mouseRef = useRef({ x: 0, y: 0, active: false });
@@ -257,8 +258,8 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
       id: 'workshop',
       defaultSrc: '/images/hero/workshop.png',
       defaultCaption: 'Çalıştaylar #2025',
-      position: 'top-[12%] left-[1.5%] xl:left-[3.5%]',
-      size: 'w-44 xl:w-52',
+      position: 'top-[30%] lg:top-[12%] left-[1.5%] xl:left-[3.5%]',
+      size: 'w-14 sm:w-20 md:w-28 lg:w-44 xl:w-52',
       baseRotate: '-rotate-6',
       hoverRotate: 'hover:-rotate-1',
       zIndex: 'z-10',
@@ -267,8 +268,8 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
       id: 'hackathon',
       defaultSrc: '/images/hero/hackathon.png',
       defaultCaption: 'Med Hackathon',
-      position: 'top-[36%] left-[0.5%] xl:left-[2%]',
-      size: 'w-52 xl:w-60',
+      position: 'top-[50%] lg:top-[36%] left-[0.5%] xl:left-[2%]',
+      size: 'w-16 sm:w-24 md:w-32 lg:w-52 xl:w-60',
       baseRotate: 'rotate-4',
       hoverRotate: 'hover:rotate-0',
       zIndex: 'z-12',
@@ -277,8 +278,8 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
       id: 'community',
       defaultSrc: '/images/hero/community.png',
       defaultCaption: 'Topluluk Ekibi',
-      position: 'bottom-[8%] left-[2%] xl:left-[4%]',
-      size: 'w-40 xl:w-48',
+      position: 'bottom-[26%] lg:bottom-[8%] left-[2%] xl:left-[4%]',
+      size: 'w-14 sm:w-18 md:w-24 lg:w-40 xl:w-48',
       baseRotate: '-rotate-4',
       hoverRotate: 'hover:-rotate-1',
       zIndex: 'z-10',
@@ -287,8 +288,8 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
       id: 'speakers',
       defaultSrc: '/images/hero/speakers.png',
       defaultCaption: 'Yapay Zekâ Semineri',
-      position: 'top-[13%] right-[1.5%] xl:right-[3.5%]',
-      size: 'w-44 xl:w-52',
+      position: 'top-[31%] lg:top-[13%] right-[1.5%] xl:right-[3.5%]',
+      size: 'w-14 sm:w-20 md:w-28 lg:w-44 xl:w-52',
       baseRotate: 'rotate-5',
       hoverRotate: 'hover:rotate-1',
       zIndex: 'z-10',
@@ -297,8 +298,8 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
       id: 'coding',
       defaultSrc: '/images/hero/coding.png',
       defaultCaption: 'Model Eğitimi',
-      position: 'top-[37%] right-[0.5%] xl:right-[2%]',
-      size: 'w-52 xl:w-60',
+      position: 'top-[51%] lg:top-[37%] right-[0.5%] xl:right-[2%]',
+      size: 'w-16 sm:w-24 md:w-32 lg:w-52 xl:w-60',
       baseRotate: '-rotate-5',
       hoverRotate: 'hover:-rotate-1',
       zIndex: 'z-12',
@@ -307,8 +308,8 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
       id: 'team',
       defaultSrc: '/images/hero/team.png',
       defaultCaption: 'Birlikte Öğreniyoruz',
-      position: 'bottom-[9%] right-[2%] xl:right-[4%]',
-      size: 'w-40 xl:w-48',
+      position: 'bottom-[27%] lg:bottom-[9%] right-[2%] xl:right-[4%]',
+      size: 'w-14 sm:w-18 md:w-24 lg:w-40 xl:w-48',
       baseRotate: 'rotate-3',
       hoverRotate: 'hover:rotate-0',
       zIndex: 'z-10',
@@ -349,39 +350,46 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
       />
 
       {/* Side Margins Polaroid Photos (Absolute Positioned, Scattered) */}
-      {polaroidPhotos.map((photo) => (
-        <div
-          key={photo.id}
-          className={`absolute ${photo.position} ${photo.size} ${photo.baseRotate} ${photo.hoverRotate} ${photo.zIndex} 
-            hidden lg:block pointer-events-auto group cursor-pointer
-            transition-all duration-300 ease-out
-            hover:scale-105 hover:-translate-y-2 hover:z-30
-            p-2 pb-6 bg-slate-100/95 border border-white/80 rounded-md
-            shadow-xl shadow-black/80 hover:shadow-2xl hover:shadow-brand-cyan/30`}
-        >
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-sm bg-slate-900 border border-slate-300/40">
-            <img
-              src={photo.src}
-              alt={photo.alt}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-            />
+      {polaroidPhotos.map((photo) => {
+        const isActive = activePhotoId === photo.id;
+        return (
+          <div
+            key={photo.id}
+            onClick={() => setActivePhotoId(isActive ? null : photo.id)}
+            className={`absolute ${photo.position} ${photo.size} ${photo.zIndex} 
+              block pointer-events-auto group cursor-pointer
+              transition-all duration-300 ease-out
+              p-1 pb-3 sm:p-2 sm:pb-6 bg-slate-100/95 border border-white/80 rounded-md
+              ${isActive 
+                ? 'rotate-0 scale-110 z-30 shadow-2xl shadow-brand-cyan/40 border-brand-cyan/40' 
+                : `${photo.baseRotate} ${photo.hoverRotate} hover:scale-105 hover:-translate-y-2 hover:z-30 shadow-xl shadow-black/80 hover:shadow-2xl hover:shadow-brand-cyan/30`
+              }`}
+          >
+            <div className="relative aspect-[4/3] w-full overflow-hidden rounded-sm bg-slate-900 border border-slate-300/40">
+              <img
+                src={photo.src}
+                alt={photo.alt}
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              />
+            </div>
+            <div className="mt-2 text-center">
+              <span className="block text-[6px] sm:text-[9px] md:text-[11px] font-mono font-bold text-slate-800 tracking-tight truncate">
+                {photo.caption}
+              </span>
+            </div>
           </div>
-          <div className="mt-2 text-center">
-            <span className="block text-[11px] font-mono font-bold text-slate-800 tracking-tight truncate">
-              {photo.caption}
-            </span>
-          </div>
-        </div>
-      ))}
+        );
+      })}
 
       {/* Hero Headline & Action Area — Centered vertically & horizontally, max-width ~45-50% */}
       <div className="relative z-20 w-full flex-1 flex flex-col items-center justify-center text-center px-4 sm:px-6 pt-24 pb-12 pointer-events-none">
-        <div className="w-full max-w-xl lg:max-w-[48%] min-w-[320px] mx-auto flex flex-col items-center pointer-events-auto space-y-4">
+        <div className="w-[66vw] sm:w-full max-w-xl lg:max-w-[48%] min-w-0 mx-auto flex flex-col items-center pointer-events-auto space-y-4">
           
 
 
+
           {/* Headline */}
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-[1.15]">
+          <h1 className="text-xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-[1.15]">
             Veri bilimini <br />
             <span className="bg-gradient-to-r from-brand-cyan via-blue-400 to-brand-emerald bg-clip-text text-transparent">
               birlikte keşfediyoruz
@@ -389,39 +397,39 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
           </h1>
 
           {/* Community Vision Quote & Compact Stat Metrics Widget */}
-          <div className="w-full max-w-md mt-1 p-4 bg-[#090d16]/90 border border-brand-border/80 rounded-xl backdrop-blur-xl text-slate-300 shadow-xl shadow-black/50 relative overflow-hidden group hover:border-brand-cyan/40 transition-all">
+          <div className="w-full max-w-md mt-1 p-2 sm:p-4 bg-[#090d16]/90 border border-brand-border/80 rounded-xl backdrop-blur-xl text-slate-300 shadow-xl shadow-black/50 relative overflow-hidden group hover:border-brand-cyan/40 transition-all">
             <div className="absolute top-0 right-0 w-28 h-28 bg-brand-cyan/5 rounded-full blur-2xl group-hover:bg-brand-cyan/10 transition-all pointer-events-none" />
 
             <div className="space-y-3">
-              <blockquote className="text-xs sm:text-sm font-semibold text-white italic leading-relaxed border-l-2 border-brand-cyan pl-3 my-0.5 text-left">
+              <blockquote className="text-[9px] sm:text-xs md:text-sm font-semibold text-white italic leading-relaxed border-l-2 border-brand-cyan pl-2 sm:pl-3 my-0.5 text-left">
                 “Veri bilimi etrafında; birlikte üreten, birlikte öğrenen ve bilgisini topluma aktaran bir topluluk inşa ediyoruz.”
               </blockquote>
 
               {/* Stat Cards */}
-              <div className="grid grid-cols-3 gap-2 pt-1">
-                <div className="p-2.5 bg-brand-card/50 border border-brand-border/40 rounded-lg text-center flex flex-col justify-center">
-                  <div className="text-lg font-extrabold text-white tracking-tight font-mono">
+              <div className="grid grid-cols-3 gap-1 sm:gap-2 pt-1">
+                <div className="p-1.5 sm:p-2.5 bg-brand-card/50 border border-brand-border/40 rounded-lg text-center flex flex-col justify-center">
+                  <div className="text-xs sm:text-lg font-extrabold text-white tracking-tight font-mono">
                     <StatCounter value={370} suffix="+" />
                   </div>
-                  <div className="text-[10px] text-brand-muted mt-0.5 leading-tight font-sans font-medium">
+                  <div className="text-[8px] sm:text-[10px] text-brand-muted mt-0.5 leading-tight font-sans font-medium">
                     Kayıtlı Üye
                   </div>
                 </div>
 
-                <div className="p-2.5 bg-brand-card/50 border border-brand-border/40 rounded-lg text-center flex flex-col justify-center">
-                  <div className="text-lg font-extrabold text-brand-cyan tracking-tight font-mono">
+                <div className="p-1.5 sm:p-2.5 bg-brand-card/50 border border-brand-border/40 rounded-lg text-center flex flex-col justify-center">
+                  <div className="text-xs sm:text-lg font-extrabold text-brand-cyan tracking-tight font-mono">
                     <StatCounter value={30} suffix="+" />
                   </div>
-                  <div className="text-[10px] text-brand-muted mt-0.5 leading-tight font-sans font-medium">
+                  <div className="text-[8px] sm:text-[10px] text-brand-muted mt-0.5 leading-tight font-sans font-medium">
                     Etkinlik
                   </div>
                 </div>
 
-                <div className="p-2.5 bg-brand-card/50 border border-brand-border/40 rounded-lg text-center flex flex-col justify-center">
-                  <div className="text-lg font-extrabold text-brand-emerald tracking-tight font-mono">
+                <div className="p-1.5 sm:p-2.5 bg-brand-card/50 border border-brand-border/40 rounded-lg text-center flex flex-col justify-center">
+                  <div className="text-xs sm:text-lg font-extrabold text-brand-emerald tracking-tight font-mono">
                     <StatCounter value={7} suffix="" />
                   </div>
-                  <div className="text-[10px] text-brand-muted mt-0.5 leading-tight font-sans font-medium">
+                  <div className="text-[8px] sm:text-[10px] text-brand-muted mt-0.5 leading-tight font-sans font-medium">
                     Aktif Proje
                   </div>
                 </div>
@@ -430,23 +438,22 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
           </div>
 
           {/* Action Buttons (at the very bottom) */}
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 pt-2">
             <a
               href="/#join-us"
-              className="inline-flex items-center gap-2 px-6 py-3 text-sm font-bold bg-brand-cyan text-[#090d16] rounded-xl hover:bg-brand-cyan/90 transition-all shadow-lg shadow-brand-cyan/25 hover:scale-105 active:scale-95"
+              className="inline-flex items-center gap-1.5 px-3 py-2 sm:px-6 sm:py-3 text-[11px] sm:text-sm font-bold bg-brand-cyan text-[#090d16] rounded-xl hover:bg-brand-cyan/90 transition-all shadow-lg shadow-brand-cyan/25 hover:scale-105 active:scale-95"
             >
               <span>Bize Katıl</span>
-              <ArrowRight size={16} />
+              <ArrowRight size={14} className="sm:w-4 sm:h-4" />
             </a>
             <a
               href="/ekibimiz"
-              className="inline-flex items-center gap-2 px-6 py-3 text-sm font-semibold bg-brand-card/90 text-white border border-brand-border rounded-xl hover:border-brand-cyan/40 hover:bg-brand-card transition-all backdrop-blur-md hover:scale-105 active:scale-95"
+              className="inline-flex items-center gap-1.5 px-3 py-2 sm:px-6 sm:py-3 text-[11px] sm:text-sm font-semibold bg-brand-card/90 text-white border border-brand-border rounded-xl hover:border-brand-cyan/40 hover:bg-brand-card transition-all backdrop-blur-md hover:scale-105 active:scale-95"
             >
-              <Users size={16} />
+              <Users size={14} className="sm:w-4 sm:h-4" />
               <span>Ekibimiz</span>
             </a>
           </div>
-
         </div>
       </div>
     </section>
