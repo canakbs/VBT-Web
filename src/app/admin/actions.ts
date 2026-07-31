@@ -12,12 +12,15 @@ import {
   commitBinaryFile
 } from '@/lib/github';
 
-const DEFAULT_PASSCODE = 'avbt2026';
 const HAS_GITHUB_PAT = !!process.env.GITHUB_PAT;
 
 // 1. Session Management Actions
 export async function authenticate(passcode: string): Promise<{ success: boolean; error?: string }> {
-  const adminPasscode = process.env.ADMIN_PASSCODE || DEFAULT_PASSCODE;
+  const adminPasscode = process.env.ADMIN_PASSCODE;
+
+  if (!adminPasscode) {
+    return { success: false, error: 'SİSTEM YAPILANDIRMASI EKSİK' };
+  }
 
   if (passcode === adminPasscode) {
     const cookieStore = await cookies();

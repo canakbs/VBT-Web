@@ -95,10 +95,6 @@ export default function Login() {
                 <span>[GİRİŞ DURUMU]</span>
                 <span className="text-amber-400 font-bold">KİLİTLİ</span>
               </div>
-              <div className="flex justify-between">
-                <span>[VARSAYILAN PAROLA]</span>
-                <span className="text-brand-cyan font-bold">avbt2026</span>
-              </div>
               {errorMsg ? (
                 <div className="text-red-400 mt-2 border-t border-red-950 pt-2 flex items-center gap-1.5 animate-pulse font-bold">
                   <ShieldAlert size={12} />
