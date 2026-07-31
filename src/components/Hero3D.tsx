@@ -70,10 +70,11 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
     const resizeCanvas = () => {
       canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
       canvas.height = canvas.parentElement?.clientHeight || window.innerHeight;
+      if (window.innerWidth < 768) {
+        draw();
+      }
     };
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
-
+    
     // Animation Loop
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -217,9 +218,14 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
       }
 
       ctx.restore();
-      animFrame = requestAnimationFrame(draw);
+      
+      if (window.innerWidth >= 768) {
+        animFrame = requestAnimationFrame(draw);
+      }
     };
 
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
     draw();
 
     return () => {
@@ -229,6 +235,7 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
   }, []);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (window.innerWidth < 768) return;
     const rect = containerRef.current?.getBoundingClientRect();
     if (rect) {
       mouseRef.current = {
@@ -240,10 +247,12 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
   };
 
   const handleMouseLeave = () => {
+    if (window.innerWidth < 768) return;
     mouseRef.current.active = false;
   };
 
   const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (window.innerWidth < 768) return;
     const rect = containerRef.current?.getBoundingClientRect();
     if (rect && e.touches.length > 0) {
       mouseRef.current = {
@@ -339,7 +348,7 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
       onMouseLeave={handleMouseLeave}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleMouseLeave}
-      className="relative min-h-[72vh] sm:min-h-screen w-full flex flex-col justify-between overflow-hidden bg-transparent border-b border-brand-border"
+      className="relative min-h-[65vh] sm:min-h-screen w-full flex flex-col justify-between overflow-hidden bg-transparent border-b border-brand-border"
     >
       {/* Navigation Bar Header — Highest Z-Index (z-50) */}
       <SiteNav />

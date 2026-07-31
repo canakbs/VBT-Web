@@ -237,7 +237,7 @@ export default function EventTimeline({ events, showMoreButton = false }: EventT
   };
 
   return (
-    <section id="event-archive" ref={containerRef} className="relative py-20 bg-transparent border-b border-brand-border overflow-hidden select-none">
+    <section id="event-archive" ref={containerRef} className="relative pt-0 pb-20 sm:py-20 bg-transparent border-b border-brand-border overflow-hidden select-none">
       {/* Background visual grid */}
       <div className="absolute inset-0 scientific-grid opacity-10 pointer-events-none" />
 
