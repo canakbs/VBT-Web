@@ -60,7 +60,7 @@ export default function ProjectPipeline({ projects }: ProjectPipelineProps) {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
           <div className="flex flex-col items-start">
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white leading-tight">
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-[1.15]">
               Tamamlanan <br />
               <span className="bg-gradient-to-r from-brand-cyan via-blue-400 to-brand-emerald bg-clip-text text-transparent">
                 Projelerimiz

@@ -27,6 +27,12 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const mouseRef = useRef({ x: 0, y: 0, active: false });
+  const hoveringFrameRef = useRef(false);
+  const activePhotoIdRef = useRef<string | null>(null);
+
+  useEffect(() => {
+    activePhotoIdRef.current = activePhotoId;
+  }, [activePhotoId]);
 
   // Generate 42 initial data points along a general linear trend with noise
   const points = useRef<Point2D[]>([]);
@@ -118,10 +124,12 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
 
       const pts = points.current;
 
-      // 1. Shift data coordinates based on mouse attraction
+      // 1. Shift data coordinates based on mouse attraction (only if no active frame and not hovering any frame)
+      const canAttract = mouseRef.current.active && activePhotoIdRef.current === null && !hoveringFrameRef.current;
+
       if (pts.length > 0) {
         pts.forEach((p) => {
-          if (mouseRef.current.active) {
+          if (canAttract) {
             const dx = mouseRef.current.x - p.x;
             const dy = mouseRef.current.y - p.y;
             const dist = Math.sqrt(dx * dx + dy * dy);
@@ -366,6 +374,8 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
           <div
             key={photo.id}
             onClick={() => setActivePhotoId(isActive ? null : photo.id)}
+            onMouseEnter={() => { hoveringFrameRef.current = true; }}
+            onMouseLeave={() => { hoveringFrameRef.current = false; }}
             className={`absolute ${photo.position} ${photo.size} ${photo.zIndex} 
               block pointer-events-auto group cursor-pointer
               transition-all duration-300 ease-out

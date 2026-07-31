@@ -245,7 +245,7 @@ export default function EventTimeline({ events, showMoreButton = false }: EventT
         {/* Header Title & Filtering Bar */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="flex flex-col items-start">
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white">
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-white leading-[1.15]">
               Etkinliklerimiz &amp; <br />
               <span className="bg-gradient-to-r from-brand-cyan to-brand-emerald bg-clip-text text-transparent">
                 Anılarımız
