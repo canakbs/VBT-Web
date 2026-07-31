@@ -12,12 +12,28 @@ export interface ContactData {
   message: string;
 }
 
+function escapeHtml(str: string): string {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 export async function sendContactAction(data: ContactData) {
   const targetEmail = 'akdenizveri07@gmail.com';
 
+  // Sanitize and trim inputs
+  const rawEmail = (data.email || '').trim().slice(0, 100);
+  const fullName = escapeHtml((data.fullName || '').trim().slice(0, 100));
+  const category = escapeHtml((data.category || '').trim().slice(0, 50));
+  const message = escapeHtml((data.message || '').trim().slice(0, 5000));
+
   // Email validation check
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!data.email || !emailRegex.test(data.email)) {
+  if (!rawEmail || !emailRegex.test(rawEmail)) {
     return {
       success: false,
       error: 'Lütfen geçerli bir e-posta adresi giriniz.'
@@ -25,7 +41,7 @@ export async function sendContactAction(data: ContactData) {
   }
 
   // Rate limiting: Max 3 submissions per minute per user/IP
-  const rateKey = await getClientIdentifier(`contact_${data.email}`);
+  const rateKey = await getClientIdentifier(`contact_${rawEmail}`);
   const rateCheck = checkRateLimit(rateKey, 3, 60 * 1000);
 
   if (!rateCheck.allowed) {
@@ -61,32 +77,32 @@ export async function sendContactAction(data: ContactData) {
   }
 
   // 2. Prepare Email Text & HTML
-  const subject = `[AVBT İletişim & İş Birliği] - ${data.category || 'Mesaj'} - ${data.fullName || 'Ziyaretçi'}`;
+  const subject = `[AVBT İletişim & İş Birliği] - ${category || 'Mesaj'} - ${fullName || 'Ziyaretçi'}`;
 
   const textContent = `
 AKDENİZ VERİ BİLİMİ TOPLULUĞU - İLETİŞİM & İŞ BİRLİĞİ MESAJI
 ==================================================
-Ad Soyad: ${data.fullName || 'Belirtilmedi'}
-E-posta: ${data.email || 'Belirtilmedi'}
-Konu Kategorisi: ${data.category || 'Genel'}
+Ad Soyad: ${fullName || 'Belirtilmedi'}
+E-posta: ${rawEmail || 'Belirtilmedi'}
+Konu Kategorisi: ${category || 'Genel'}
 Tarih: ${new Date().toLocaleDateString('tr-TR')}
 
 Mesaj:
-${data.message || 'Mesaj girilmedi.'}
+${message || 'Mesaj girilmedi.'}
 ==================================================`;
 
   const htmlContent = `
     <div style="font-family: system-ui, sans-serif; background-color: #090d16; color: #e2e8f0; padding: 24px; border-radius: 12px; max-width: 600px; margin: 0 auto;">
       <h2 style="color: #00f2fe; margin-top: 0; margin-bottom: 16px; font-size: 20px;">Akdeniz Veri Bilimi Topluluğu — İletişim & İş Birliği</h2>
       <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px;">
-        <tr><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); color: #94a3b8; width: 140px;">Ad Soyad:</td><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); color: #ffffff; font-weight: bold;">${data.fullName}</td></tr>
-        <tr><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); color: #94a3b8;">E-posta:</td><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); color: #00f2fe;"><a href="mailto:${data.email}" style="color: #00f2fe;">${data.email}</a></td></tr>
-        <tr><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); color: #94a3b8;">Kategori:</td><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); color: #00f5a0; font-weight: bold;">${data.category}</td></tr>
+        <tr><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); color: #94a3b8; width: 140px;">Ad Soyad:</td><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); color: #ffffff; font-weight: bold;">${fullName}</td></tr>
+        <tr><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); color: #94a3b8;">E-posta:</td><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); color: #00f2fe;"><a href="mailto:${rawEmail}" style="color: #00f2fe;">${rawEmail}</a></td></tr>
+        <tr><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); color: #94a3b8;">Kategori:</td><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); color: #00f5a0; font-weight: bold;">${category}</td></tr>
         <tr><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); color: #94a3b8;">Tarih:</td><td style="padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); color: #ffffff;">${new Date().toLocaleDateString('tr-TR')}</td></tr>
       </table>
       <div style="background-color: #111624; padding: 16px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1);">
         <h4 style="color: #00f2fe; margin-top: 0; font-size: 14px;">Mesaj İçeriği:</h4>
-        <p style="white-space: pre-wrap; margin-bottom: 0; font-size: 13px; color: #cbd5e1;">${data.message || 'Boş'}</p>
+        <p style="white-space: pre-wrap; margin-bottom: 0; font-size: 13px; color: #cbd5e1;">${message || 'Boş'}</p>
       </div>
     </div>
   `;
@@ -113,7 +129,7 @@ ${data.message || 'Mesaj girilmedi.'}
       await transporter.sendMail({
         from: `"Akdeniz Veri Bilimi Topluluğu" <${smtpUser}>`,
         to: targetEmail,
-        replyTo: data.email,
+        replyTo: rawEmail,
         subject,
         text: textContent,
         html: htmlContent,

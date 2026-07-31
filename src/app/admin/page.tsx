@@ -1,7 +1,7 @@
-import { cookies } from 'next/headers';
 import type { Metadata } from 'next';
 import Workspace from './Workspace';
 import Login from './Login';
+import { isSessionValid } from './actions';
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },
@@ -10,8 +10,7 @@ export const metadata: Metadata = {
 
 // Next.js App Router Server Component
 export default async function AdminPage() {
-  const cookieStore = await cookies();
-  const isAuthenticated = cookieStore.get('avbt_cms_session')?.value === 'true';
+  const isAuthenticated = await isSessionValid();
 
   if (!isAuthenticated) {
     return <Login />;

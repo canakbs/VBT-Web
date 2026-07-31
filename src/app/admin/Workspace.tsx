@@ -453,7 +453,7 @@ summary: "${summary || teamRole}"
 
   const handleLogoutClick = async () => {
     await logout();
-    window.location.reload();
+    window.location.href = '/';
   };
 
   return (

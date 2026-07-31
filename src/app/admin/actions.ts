@@ -4,6 +4,7 @@ import { cookies } from 'next/headers';
 import matter from 'gray-matter';
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 import { 
   listDirectoryContents, 
   getFile, 
@@ -13,6 +14,58 @@ import {
 } from '@/lib/github';
 
 const HAS_GITHUB_PAT = !!process.env.GITHUB_PAT;
+
+// Security Helpers
+function getExpectedSessionToken(): string {
+  const adminPasscode = process.env.ADMIN_PASSCODE || '';
+  if (!adminPasscode) return '';
+  return crypto.createHmac('sha256', adminPasscode).update('avbt_cms_authenticated_session_v1').digest('hex');
+}
+
+export async function isSessionValid(): Promise<boolean> {
+  const expectedToken = getExpectedSessionToken();
+  if (!expectedToken) return false;
+
+  const cookieStore = await cookies();
+  const sessionValue = cookieStore.get('avbt_cms_session')?.value;
+  if (!sessionValue) return false;
+
+  const a = Buffer.from(sessionValue);
+  const b = Buffer.from(expectedToken);
+  if (a.length !== b.length) return false;
+
+  return crypto.timingSafeEqual(a, b);
+}
+
+function sanitizePath(inputPath: string, allowedPrefixes: string[] = ['content/', 'public/images/']): string {
+  if (!inputPath || typeof inputPath !== 'string') {
+    throw new Error('INVALID_PATH');
+  }
+  const cleanPath = inputPath.replace(/\0/g, '').replace(/\\/g, '/');
+  const normalized = path.normalize(cleanPath).replace(/\\/g, '/');
+
+  if (cleanPath.includes('..') || normalized.includes('..')) {
+    throw new Error('INVALID_PATH_TRAVERSAL');
+  }
+
+  const isAllowed = allowedPrefixes.some(prefix => normalized.startsWith(prefix) || cleanPath.startsWith(prefix));
+  if (!isAllowed) {
+    throw new Error('UNAUTHORIZED_PATH_ACCESS');
+  }
+
+  return cleanPath;
+}
+
+function sanitizeFilename(filename: string): string {
+  if (!filename || typeof filename !== 'string') {
+    throw new Error('INVALID_FILENAME');
+  }
+  const safeName = path.basename(filename.replace(/\\/g, '/'));
+  if (safeName !== filename || filename.includes('..') || filename.includes('/') || filename.includes('\\')) {
+    throw new Error('INVALID_FILENAME_TRAVERSAL');
+  }
+  return safeName;
+}
 
 // 1. Session Management Actions
 export async function authenticate(passcode: string): Promise<{ success: boolean; error?: string }> {
@@ -24,7 +77,8 @@ export async function authenticate(passcode: string): Promise<{ success: boolean
 
   if (passcode === adminPasscode) {
     const cookieStore = await cookies();
-    cookieStore.set('avbt_cms_session', 'true', {
+    const token = getExpectedSessionToken();
+    cookieStore.set('avbt_cms_session', token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
@@ -39,13 +93,20 @@ export async function authenticate(passcode: string): Promise<{ success: boolean
 
 export async function logout() {
   const cookieStore = await cookies();
-  cookieStore.delete('avbt_cms_session');
+  cookieStore.set('avbt_cms_session', '', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: 0,
+    expires: new Date(0),
+    path: '/admin',
+  });
+  cookieStore.delete({ name: 'avbt_cms_session', path: '/admin' });
 }
 
 // 2. CMS CRUD Actions (Protected by Session Checks)
 export async function getContentList(type: 'events' | 'blog' | 'projects' | 'team' | 'hero') {
-  const cookieStore = await cookies();
-  if (cookieStore.get('avbt_cms_session')?.value !== 'true') {
+  if (!(await isSessionValid())) {
     throw new Error('UNAUTHORIZED');
   }
 
@@ -146,14 +207,15 @@ export async function getContentList(type: 'events' | 'blog' | 'projects' | 'tea
 }
 
 export async function getFileContent(filePath: string) {
-  const cookieStore = await cookies();
-  if (cookieStore.get('avbt_cms_session')?.value !== 'true') {
+  if (!(await isSessionValid())) {
     throw new Error('UNAUTHORIZED');
   }
 
+  const safePath = sanitizePath(filePath, ['content/']);
+
   if (HAS_GITHUB_PAT) {
     try {
-      const fileData = await getFile(filePath);
+      const fileData = await getFile(safePath);
       const rawContent = Buffer.from(fileData.content, 'base64').toString('utf-8');
       const { data, content } = matter(rawContent);
 
@@ -169,7 +231,7 @@ export async function getFileContent(filePath: string) {
 
   // Local Filesystem Fallback
   try {
-    const absolutePath = path.join(process.cwd(), filePath);
+    const absolutePath = path.join(process.cwd(), safePath);
     if (!fs.existsSync(absolutePath)) {
       throw new Error('FILE_NOT_FOUND');
     }
@@ -177,12 +239,12 @@ export async function getFileContent(filePath: string) {
     const { data, content } = matter(rawContent);
 
     return {
-      sha: `local-${path.basename(filePath)}`,
+      sha: `local-${path.basename(safePath)}`,
       metadata: data,
       content: content.trim(),
     };
   } catch (err: any) {
-    console.error(`Error fetching content for ${filePath}:`, err);
+    console.error(`Error fetching content for ${safePath}:`, err);
     throw new Error(err.message || 'FAILED_TO_FETCH_FILE');
   }
 }
@@ -193,12 +255,12 @@ export async function saveContent(
   markdown: string,
   sha?: string
 ) {
-  const cookieStore = await cookies();
-  if (cookieStore.get('avbt_cms_session')?.value !== 'true') {
+  if (!(await isSessionValid())) {
     throw new Error('UNAUTHORIZED');
   }
 
-  const relativePath = `content/${type}/${filename}`;
+  const safeFilename = sanitizeFilename(filename);
+  const relativePath = sanitizePath(`content/${type}/${safeFilename}`, ['content/']);
 
   // Always write to local disk first so changes are immediate
   try {
@@ -206,7 +268,7 @@ export async function saveContent(
     if (!fs.existsSync(dirPath)) {
       fs.mkdirSync(dirPath, { recursive: true });
     }
-    fs.writeFileSync(path.join(dirPath, filename), markdown, 'utf-8');
+    fs.writeFileSync(path.join(dirPath, safeFilename), markdown, 'utf-8');
   } catch (err) {
     console.error('Error writing file locally:', err);
   }
@@ -214,7 +276,7 @@ export async function saveContent(
   // Also push to GitHub if PAT is available
   if (HAS_GITHUB_PAT) {
     const action = sha ? 'Update' : 'Create';
-    const message = `CMS: ${action} ${type} content - ${filename}`;
+    const message = `CMS: ${action} ${type} content - ${safeFilename}`;
     try {
       const result = await commitFile(relativePath, markdown, message, sha?.startsWith('local-') ? undefined : sha);
       return { success: true, sha: result.sha };
@@ -223,18 +285,19 @@ export async function saveContent(
     }
   }
 
-  return { success: true, sha: `local-${filename}` };
+  return { success: true, sha: `local-${safeFilename}` };
 }
 
 export async function deleteContent(filePath: string, sha: string) {
-  const cookieStore = await cookies();
-  if (cookieStore.get('avbt_cms_session')?.value !== 'true') {
+  if (!(await isSessionValid())) {
     throw new Error('UNAUTHORIZED');
   }
 
+  const safePath = sanitizePath(filePath, ['content/']);
+
   // Local filesystem deletion
   try {
-    const absolutePath = path.join(process.cwd(), filePath);
+    const absolutePath = path.join(process.cwd(), safePath);
     if (fs.existsSync(absolutePath)) {
       fs.unlinkSync(absolutePath);
     }
@@ -244,11 +307,11 @@ export async function deleteContent(filePath: string, sha: string) {
 
   // GitHub API deletion if PAT is set
   if (HAS_GITHUB_PAT && !sha.startsWith('local-')) {
-    const message = `CMS: Delete content file - ${filePath}`;
+    const message = `CMS: Delete content file - ${safePath}`;
     try {
-      await deleteFileFromRepo(filePath, sha, message);
+      await deleteFileFromRepo(safePath, sha, message);
     } catch (err: any) {
-      console.error(`Error deleting content at ${filePath} on GitHub:`, err);
+      console.error(`Error deleting content at ${safePath} on GitHub:`, err);
     }
   }
 
@@ -256,8 +319,7 @@ export async function deleteContent(filePath: string, sha: string) {
 }
 
 export async function uploadImageAction(formData: FormData) {
-  const cookieStore = await cookies();
-  if (cookieStore.get('avbt_cms_session')?.value !== 'true') {
+  if (!(await isSessionValid())) {
     throw new Error('UNAUTHORIZED');
   }
 
@@ -269,8 +331,9 @@ export async function uploadImageAction(formData: FormData) {
     throw new Error('MISSING_FIELDS');
   }
 
-  const relativePath = `public/images/${type}/${filename}`;
-  const webPath = `/images/${type}/${filename}`;
+  const safeFilename = sanitizeFilename(filename);
+  const relativePath = sanitizePath(`public/images/${type}/${safeFilename}`, ['public/images/']);
+  const webPath = `/images/${type}/${safeFilename}`;
 
   let buffer: Buffer;
   try {
@@ -287,14 +350,14 @@ export async function uploadImageAction(formData: FormData) {
     if (!fs.existsSync(dirPath)) {
       fs.mkdirSync(dirPath, { recursive: true });
     }
-    fs.writeFileSync(path.join(dirPath, filename), buffer);
+    fs.writeFileSync(path.join(dirPath, safeFilename), buffer);
   } catch (err) {
     console.error('Error writing image file locally:', err);
   }
 
   // Upload to GitHub if PAT is available
   if (HAS_GITHUB_PAT) {
-    const message = `CMS: Upload image ${filename}`;
+    const message = `CMS: Upload image ${safeFilename}`;
     try {
       await commitBinaryFile(relativePath, buffer.toString('base64'), message);
     } catch (err: any) {
@@ -306,8 +369,7 @@ export async function uploadImageAction(formData: FormData) {
 }
 
 export async function getApplicationsList() {
-  const cookieStore = await cookies();
-  if (cookieStore.get('avbt_cms_session')?.value !== 'true') {
+  if (!(await isSessionValid())) {
     throw new Error('UNAUTHORIZED');
   }
 
@@ -342,13 +404,14 @@ export async function getApplicationsList() {
 }
 
 export async function deleteApplication(id: string) {
-  const cookieStore = await cookies();
-  if (cookieStore.get('avbt_cms_session')?.value !== 'true') {
+  if (!(await isSessionValid())) {
     throw new Error('UNAUTHORIZED');
   }
 
+  const safeId = sanitizeFilename(id);
+
   try {
-    const filePath = path.join(process.cwd(), 'content', 'applications', id);
+    const filePath = path.join(process.cwd(), 'content', 'applications', safeId);
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath);
     }
@@ -360,8 +423,7 @@ export async function deleteApplication(id: string) {
 }
 
 export async function getHeroFrames() {
-  const cookieStore = await cookies();
-  if (cookieStore.get('avbt_cms_session')?.value !== 'true') {
+  if (!(await isSessionValid())) {
     throw new Error('UNAUTHORIZED');
   }
 
@@ -400,8 +462,7 @@ export async function getHeroFrames() {
 }
 
 export async function saveHeroFrames(frames: any[], sha?: string) {
-  const cookieStore = await cookies();
-  if (cookieStore.get('avbt_cms_session')?.value !== 'true') {
+  if (!(await isSessionValid())) {
     throw new Error('UNAUTHORIZED');
   }
 
