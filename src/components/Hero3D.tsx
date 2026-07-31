@@ -259,7 +259,7 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
       id: 'workshop',
       defaultSrc: '/images/hero/workshop.png',
       defaultCaption: 'Çalıştaylar #2025',
-      position: 'top-[33%] lg:top-[12%] left-[1.5%] xl:left-[3.5%]',
+      position: 'top-[14%] lg:top-[12%] left-[1.5%] xl:left-[3.5%]',
       size: 'w-18 sm:w-20 md:w-28 lg:w-44 xl:w-52',
       baseRotate: '-rotate-6',
       hoverRotate: 'hover:-rotate-1',
@@ -269,7 +269,7 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
       id: 'hackathon',
       defaultSrc: '/images/hero/hackathon.png',
       defaultCaption: 'Med Hackathon',
-      position: 'top-[52%] lg:top-[36%] left-[0.5%] xl:left-[2%]',
+      position: 'top-[32%] lg:top-[36%] left-[0.5%] xl:left-[2%]',
       size: 'w-22 sm:w-24 md:w-32 lg:w-52 xl:w-60',
       baseRotate: 'rotate-4',
       hoverRotate: 'hover:rotate-0',
@@ -279,7 +279,7 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
       id: 'community',
       defaultSrc: '/images/hero/community.png',
       defaultCaption: 'Topluluk Ekibi',
-      position: 'bottom-[20%] lg:bottom-[8%] left-[2%] xl:left-[4%]',
+      position: 'top-[54%] sm:top-auto sm:bottom-[20%] lg:bottom-[8%] left-[2%] xl:left-[4%]',
       size: 'w-16 sm:w-18 md:w-24 lg:w-40 xl:w-48',
       baseRotate: '-rotate-4',
       hoverRotate: 'hover:-rotate-1',
@@ -289,7 +289,7 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
       id: 'speakers',
       defaultSrc: '/images/hero/speakers.png',
       defaultCaption: 'Yapay Zekâ Semineri',
-      position: 'top-[34%] lg:top-[13%] right-[1.5%] xl:right-[3.5%]',
+      position: 'top-[14%] lg:top-[13%] right-[1.5%] xl:right-[3.5%]',
       size: 'w-18 sm:w-20 md:w-28 lg:w-44 xl:w-52',
       baseRotate: 'rotate-5',
       hoverRotate: 'hover:rotate-1',
@@ -299,7 +299,7 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
       id: 'coding',
       defaultSrc: '/images/hero/coding.png',
       defaultCaption: 'Model Eğitimi',
-      position: 'top-[53%] lg:top-[37%] right-[0.5%] xl:right-[2%]',
+      position: 'top-[32%] lg:top-[37%] right-[0.5%] xl:right-[2%]',
       size: 'w-22 sm:w-24 md:w-32 lg:w-52 xl:w-60',
       baseRotate: '-rotate-5',
       hoverRotate: 'hover:-rotate-1',
@@ -309,7 +309,7 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
       id: 'team',
       defaultSrc: '/images/hero/team.png',
       defaultCaption: 'Birlikte Öğreniyoruz',
-      position: 'bottom-[21%] lg:bottom-[9%] right-[2%] xl:right-[4%]',
+      position: 'top-[54%] sm:top-auto sm:bottom-[21%] lg:bottom-[9%] right-[2%] xl:right-[4%]',
       size: 'w-16 sm:w-18 md:w-24 lg:w-40 xl:w-48',
       baseRotate: 'rotate-3',
       hoverRotate: 'hover:rotate-0',
@@ -339,7 +339,7 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
       onMouseLeave={handleMouseLeave}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleMouseLeave}
-      className="relative min-h-screen w-full flex flex-col justify-between overflow-hidden bg-transparent border-b border-brand-border"
+      className="relative min-h-[72vh] sm:min-h-screen w-full flex flex-col justify-between overflow-hidden bg-transparent border-b border-brand-border"
     >
       {/* Navigation Bar Header — Highest Z-Index (z-50) */}
       <SiteNav />
@@ -383,7 +383,7 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
       })}
 
       {/* Hero Headline & Action Area — Centered vertically & horizontally, max-width ~45-50% */}
-      <div className="relative z-20 w-full flex-1 flex flex-col items-center justify-start sm:justify-center text-center px-4 sm:px-6 pt-28 sm:pt-24 pb-12 pointer-events-none">
+      <div className="relative z-20 w-full flex-1 flex flex-col items-center justify-start sm:justify-center text-center px-4 sm:px-6 pt-20 sm:pt-24 pb-6 sm:pb-12 pointer-events-none">
         <div className="w-[76vw] sm:w-full max-w-xl lg:max-w-[48%] min-w-0 mx-auto flex flex-col items-center pointer-events-auto space-y-6 sm:space-y-4">
           
 

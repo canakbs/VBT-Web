@@ -7,8 +7,8 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
-  title: "Akdeniz Veri Bilimi Topluluğu | Mediterranean Data Science Community",
-  description: "Akdeniz Veri Bilimi Topluluğu - Yapay Zeka, Makine Öğrenmesi, Veri Bilimi ve MLOps Araştırma Topluluğu.",
+  title: "Akdeniz Veri Bilimi Topluluğu",
+  description: "Veri bilimi etrafında; birlikte üreten, birlikte öğrenen ve bilgisini topluma aktaran bir topluluk inşa ediyoruz.",
   icons: {
     icon: [
       { url: "/favicon.png?v=4", type: "image/png", sizes: "512x512" },

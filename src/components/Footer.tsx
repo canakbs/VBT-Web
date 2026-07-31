@@ -97,9 +97,8 @@ export default function Footer() {
       </div>
 
       {/* Bottom Copyright line */}
-      <div className="max-w-7xl mx-auto pt-8 mt-8 border-t border-brand-border/40 flex flex-col sm:flex-row justify-between items-center gap-3 text-[10px] text-slate-500">
+      <div className="max-w-7xl mx-auto pt-8 mt-8 border-t border-brand-border/40 flex justify-center sm:justify-between items-center gap-3 text-[8px] sm:text-[10px] text-slate-500">
         <span>© 2026 Akdeniz Veri Bilimi Topluluğu. Tüm hakları saklıdır.</span>
-        <span className="font-mono text-slate-600">Veri Bilimi &amp; Yapay Zekâ Topluluğu</span>
       </div>
     </footer>
   );

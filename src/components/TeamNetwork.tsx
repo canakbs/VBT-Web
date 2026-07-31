@@ -115,7 +115,7 @@ function LinkedinIcon({ className = "w-3.5 h-3.5" }: { className?: string }) {
 
 export default function TeamNetwork({ teamFiles }: TeamNetworkProps) {
   // Parse team dynamic files if available
-  const allMembers: TeamMember[] = teamFiles && teamFiles.length > 0
+  const allMembers: TeamMember[] = (teamFiles && teamFiles.length > 0
     ? teamFiles.map((file) => ({
         id: file.slug,
         name: file.metadata.title || file.slug,
@@ -128,7 +128,21 @@ export default function TeamNetwork({ teamFiles }: TeamNetworkProps) {
         linkedin: file.metadata.linkedin || '',
         github: file.metadata.github || '',
       }))
-    : DEFAULT_MEMBERS;
+    : DEFAULT_MEMBERS)
+    .sort((a, b) => {
+      const getRank = (role: string, dept: string) => {
+        const r = role.toLowerCase();
+        const d = dept.toLowerCase();
+        if (r === 'başkan' || r === 'topluluk başkanı') return 1;
+        if (r === 'başkan yardımcısı') return 2;
+        if (d === 'üst yönetim') return 3;
+        return 4;
+      };
+      const rankA = getRank(a.role, a.department);
+      const rankB = getRank(b.role, b.department);
+      if (rankA !== rankB) return rankA - rankB;
+      return a.name.localeCompare(b.name, 'tr');
+    });
 
   const [activeDepartment, setActiveDepartment] = useState<string>('Tümü');
 
