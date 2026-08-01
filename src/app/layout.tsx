@@ -7,8 +7,23 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
-  title: "Akdeniz Veri Bilimi Topluluğu",
+  title: {
+    default: "Akdeniz Veri Bilimi Topluluğu",
+    template: "%s | Akdeniz Veri Bilimi Topluluğu",
+  },
   description: "Veri bilimi etrafında; birlikte üreten, birlikte öğrenen ve bilgisini topluma aktaran bir topluluk inşa ediyoruz.",
+  openGraph: {
+    title: "Akdeniz Veri Bilimi Topluluğu",
+    description: "Veri bilimi etrafında; birlikte üreten, birlikte öğrenen ve bilgisini topluma aktaran bir topluluk inşa ediyoruz.",
+    siteName: "Akdeniz Veri Bilimi Topluluğu",
+    locale: "tr_TR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Akdeniz Veri Bilimi Topluluğu",
+    description: "Veri bilimi etrafında; birlikte üreten, birlikte öğrenen ve bilgisini topluma aktaran bir topluluk inşa ediyoruz.",
+  },
   icons: {
     icon: [
       { url: "/favicon.png?v=4", type: "image/png", sizes: "512x512" },

@@ -319,7 +319,7 @@ export default function Workspace() {
       const res = await saveHeroFrames(heroFrames, heroFramesSha);
       if (res.success) {
         setHeroFramesSha(res.sha);
-        addConsoleLine(`HERO YAPILANDIRMASI KAYDEDİLDİ. SHA: ${res.sha.substring(0, 8)}`);
+        addConsoleLine(`HERO YAPILANDIRMASI KAYDEDİLDİ. SHA: ${res.sha?.substring(0, 8) || 'LOCAL'}`);
         alert('Hero çerçeveleri başarıyla güncellendi!');
       }
     } catch (err: any) {
@@ -437,7 +437,7 @@ summary: "${summary || teamRole}"
 
     try {
       const res = await saveContent(activeTab, filename, mdContent, editingSha);
-      addConsoleLine(`KAYIT BAŞARILI! SHA: ${res.sha.substring(0, 8)}`);
+      addConsoleLine(`KAYIT BAŞARILI! SHA: ${res.sha?.substring(0, 8) || 'LOCAL'}`);
       setIsSaving(false);
       
       setTimeout(() => {

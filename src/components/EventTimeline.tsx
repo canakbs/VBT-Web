@@ -85,8 +85,8 @@ export default function EventTimeline({ events, showMoreButton = false }: EventT
     ? sortedEvents
     : sortedEvents.filter(e => e.metadata.category === activeCategory);
 
-  // Duplicate list to create a seamless infinite strip
-  const repeatCount = filteredEvents.length > 0 ? Math.max(4, Math.ceil(12 / filteredEvents.length)) : 0;
+  // Duplicate list to create a seamless infinite strip (minimal repeats for performance + a11y)
+  const repeatCount = filteredEvents.length > 0 ? Math.max(3, Math.ceil(8 / filteredEvents.length)) : 0;
   const displayList = Array.from({ length: repeatCount }).flatMap(() => filteredEvents);
 
   // Recalculate single set width
@@ -303,10 +303,14 @@ export default function EventTimeline({ events, showMoreButton = false }: EventT
               {displayList.map((event, idx) => {
                 const preset = POLAROID_PRESETS[idx % POLAROID_PRESETS.length];
                 const imgSrc = getEventImage(event, idx);
+                // First set is the canonical content; duplicates are hidden from a11y/SEO
+                const isDuplicate = idx >= filteredEvents.length;
 
                 return (
                   <div
                     key={`${event.slug}-${idx}`}
+                    aria-hidden={isDuplicate ? true : undefined}
+                    data-nosnippet={isDuplicate ? '' : undefined}
                     onClick={(e) => {
                       if (hasMovedRef.current) {
                         e.preventDefault();

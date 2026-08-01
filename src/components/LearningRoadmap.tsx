@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useMediaQuery } from '@/hooks/useMediaQuery';
 
 // Pure deterministic pseudo-random number generator based on a seed.
 // React Compiler rules forbid impure functions (like Math.random) during render.
@@ -417,6 +418,7 @@ function MLOpsVisualizer() {
 
 export default function LearningRoadmap() {
   const [activeStep, setActiveStep] = useState<RoadmapNode>(ROADMAP_STEPS[0]);
+  const isDesktop = useMediaQuery('(min-width: 1024px)');
 
   // Seeding DL connection weights dynamically
   const synapseConnections = useMemo(() => {
@@ -644,9 +646,9 @@ export default function LearningRoadmap() {
                       }`} />
                     </div>
                   </button>
-                  {/* Inline Knowledge Panel on Mobile */}
-                  {isActive && (
-                    <div className="block lg:hidden w-full transition-all duration-300">
+                  {/* Inline Knowledge Panel on Mobile — conditional render (no CSS duplication) */}
+                  {isActive && !isDesktop && (
+                    <div className="w-full transition-all duration-300">
                       {renderKnowledgePanel(step)}
                     </div>
                   )}
@@ -655,10 +657,12 @@ export default function LearningRoadmap() {
             })}
           </div>
 
-          {/* Expanded Knowledge Panel for Desktop */}
-          <div className="hidden lg:block lg:col-span-7">
-            {renderKnowledgePanel(activeStep)}
-          </div>
+          {/* Expanded Knowledge Panel for Desktop — conditional render (no CSS duplication) */}
+          {isDesktop && (
+            <div className="lg:col-span-7">
+              {renderKnowledgePanel(activeStep)}
+            </div>
+          )}
         </div>
       </div>
     </section>
