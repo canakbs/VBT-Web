@@ -87,7 +87,7 @@ const SECTIONS = [
       "Yukarıda belirtilen haklarınızı kullanmak veya kişisel verilerinizle ilgili sorularınız için aşağıdaki iletişim kanalını kullanabilirsiniz:",
     contact: {
       label: "E-posta",
-      value: "akdenizveribilimi@gmail.com",
+      value: "akdenizveri07@gmail.com",
     },
   },
 ];
