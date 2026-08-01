@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { ArrowRight, ArrowLeft, Send, ExternalLink, Share2, CheckCircle2, Loader2, Sparkles, AlertTriangle } from 'lucide-react';
+import Link from 'next/link';
 import { sendApplicationAction } from '@/app/actions/sendApplication';
 
 const INTERESTS = [
@@ -46,6 +47,7 @@ export default function JoinOnboarding() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [kvkkConsent, setKvkkConsent] = useState(false);
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const isEmailFormatValid = email === '' || emailRegex.test(email);
@@ -300,6 +302,27 @@ export default function JoinOnboarding() {
                     onChange={(e) => setGoals(e.target.value)}
                     className="w-full p-4 bg-slate-900 border border-brand-border rounded font-mono text-xs md:text-sm text-white focus:border-brand-cyan focus:outline-none transition-colors"
                   />
+
+                  {/* KVKK Consent Checkbox */}
+                  <label className="flex items-start gap-3 cursor-pointer group">
+                    <input
+                      type="checkbox"
+                      checked={kvkkConsent}
+                      onChange={(e) => setKvkkConsent(e.target.checked)}
+                      className="mt-1 w-4 h-4 rounded border-brand-border bg-slate-900 accent-brand-cyan shrink-0 cursor-pointer"
+                    />
+                    <span className="text-xs text-slate-400 leading-relaxed group-hover:text-slate-300 transition-colors">
+                      <Link
+                        href="/kvkk"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-brand-cyan hover:text-white underline underline-offset-2 transition-colors"
+                      >
+                        KVKK Aydınlatma Metni
+                      </Link>
+                      &apos;ni okudum ve kişisel verilerimin bu kapsamda işlenmesini kabul ediyorum.
+                    </span>
+                  </label>
                 </motion.div>
               )}
 
@@ -368,9 +391,9 @@ export default function JoinOnboarding() {
             {step < 5 ? (
               <button
                 onClick={step === 4 ? handleSubmitApplication : handleNext}
-                disabled={isSubmitting || (step === 1 && (!fullName || !isEmailComplete))}
+                disabled={isSubmitting || (step === 1 && (!fullName || !isEmailComplete)) || (step === 4 && !kvkkConsent)}
                 className={`flex items-center gap-1.5 px-4 py-2 rounded font-mono text-xs transition-colors shrink-0 cursor-pointer ${
-                  isSubmitting || (step === 1 && (!fullName || !isEmailComplete))
+                  isSubmitting || (step === 1 && (!fullName || !isEmailComplete)) || (step === 4 && !kvkkConsent)
                     ? 'bg-slate-800 border border-brand-border text-brand-muted cursor-not-allowed'
                     : 'bg-brand-cyan hover:bg-brand-cyan/80 text-black font-semibold'
                 }`}

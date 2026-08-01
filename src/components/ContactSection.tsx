@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Send, CheckCircle2, Loader2, MessageSquare, AlertTriangle } from 'lucide-react';
+import Link from 'next/link';
 import { sendContactAction } from '@/app/actions/sendContact';
 
 const CATEGORIES = [
@@ -18,13 +19,15 @@ export default function ContactSection() {
   const [category, setCategory] = useState(CATEGORIES[0]);
   const [message, setMessage] = useState('');
 
+  const [kvkkConsent, setKvkkConsent] = useState(false);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!fullName || !email || !message || isSubmitting) return;
+    if (!fullName || !email || !message || !kvkkConsent || isSubmitting) return;
 
     setIsSubmitting(true);
     setErrorMsg('');
@@ -167,11 +170,32 @@ export default function ContactSection() {
                 />
               </div>
 
+              {/* KVKK Consent Checkbox */}
+              <label className="flex items-start gap-3 cursor-pointer group">
+                <input
+                  type="checkbox"
+                  checked={kvkkConsent}
+                  onChange={(e) => setKvkkConsent(e.target.checked)}
+                  className="mt-1 w-4 h-4 rounded border-brand-border bg-slate-900 accent-brand-cyan shrink-0 cursor-pointer"
+                />
+                <span className="text-xs text-slate-400 leading-relaxed group-hover:text-slate-300 transition-colors">
+                  <Link
+                    href="/kvkk"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-brand-cyan hover:text-white underline underline-offset-2 transition-colors"
+                  >
+                    KVKK Aydınlatma Metni
+                  </Link>
+                  &apos;ni okudum ve kişisel verilerimin bu kapsamda işlenmesini kabul ediyorum.
+                </span>
+              </label>
+
               <button
                 type="submit"
-                disabled={isSubmitting || !fullName || !email || !message}
+                disabled={isSubmitting || !fullName || !email || !message || !kvkkConsent}
                 className={`w-full flex items-center justify-center gap-2.5 p-4 rounded-xl font-mono text-sm font-bold transition-all shadow-lg cursor-pointer ${
-                  isSubmitting || !fullName || !email || !message
+                  isSubmitting || !fullName || !email || !message || !kvkkConsent
                     ? 'bg-slate-800 text-slate-500 border border-brand-border cursor-not-allowed'
                     : 'bg-brand-cyan hover:bg-brand-cyan/90 text-[#090d16] shadow-brand-cyan/20 hover:scale-[1.01] active:scale-[0.99]'
                 }`}

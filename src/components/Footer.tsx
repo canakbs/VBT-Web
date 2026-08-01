@@ -72,6 +72,7 @@ export default function Footer() {
           <Link href="/ekibimiz" className="hover:text-brand-cyan transition-colors">Ekibimiz</Link>
           <Link href="/veri-bilimi-nedir" className="hover:text-brand-cyan transition-colors">Veri Bilimi Nedir?</Link>
           <Link href="/iletisim" className="hover:text-brand-cyan transition-colors">İletişim</Link>
+          <Link href="/kvkk" className="hover:text-brand-cyan transition-colors">KVKK</Link>
           <Link href="/#join-us" className="hover:text-brand-emerald transition-colors font-bold text-brand-emerald">BİZE KATIL</Link>
         </div>
 
@@ -99,6 +100,7 @@ export default function Footer() {
       {/* Bottom Copyright line */}
       <div className="max-w-7xl mx-auto pt-8 mt-8 border-t border-brand-border/40 flex justify-center sm:justify-between items-center gap-3 text-[8px] sm:text-[10px] text-slate-500">
         <span>© 2026 Akdeniz Veri Bilimi Topluluğu. Tüm hakları saklıdır.</span>
+        <Link href="/kvkk" className="hover:text-brand-cyan transition-colors">Gizlilik &amp; KVKK</Link>
       </div>
     </footer>
   );
