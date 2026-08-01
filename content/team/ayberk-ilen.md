@@ -1,6 +1,6 @@
 ---
 title: "Ayberk Şilen"
-role: "ARGE Ekip Üyesi"
+role: "Arge Ekip Üyesi"
 department: "AR-GE"
 skills: ["Data Science","Mobile App Development","AI Driven Car Systems"]
 github: ""
