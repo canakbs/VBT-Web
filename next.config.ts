@@ -23,6 +23,20 @@ const nextConfig: NextConfig = {
       bodySizeLimit: '10mb',
     },
   },
+  async redirects() {
+    return [
+      {
+        source: '/events',
+        destination: '/etkinlikler',
+        permanent: true,
+      },
+      {
+        source: '/projects',
+        destination: '/projeler',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {
