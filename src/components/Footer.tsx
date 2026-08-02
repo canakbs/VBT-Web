@@ -67,13 +67,13 @@ export default function Footer() {
 
         {/* Center: Navigation Links */}
         <div className="flex flex-wrap justify-center gap-5 text-[11px]">
-          <Link href="/#event-archive" className="hover:text-brand-cyan transition-colors">Etkinlikler</Link>
-          <Link href="/#project-showcase" className="hover:text-brand-cyan transition-colors">Projeler</Link>
+          <Link href="/#etkinlikler" className="hover:text-brand-cyan transition-colors">Etkinlikler</Link>
+          <Link href="/#projeler" className="hover:text-brand-cyan transition-colors">Projeler</Link>
           <Link href="/ekibimiz" className="hover:text-brand-cyan transition-colors">Ekibimiz</Link>
           <Link href="/veri-bilimi-nedir" className="hover:text-brand-cyan transition-colors">Veri Bilimi Nedir?</Link>
           <Link href="/iletisim" className="hover:text-brand-cyan transition-colors">İletişim</Link>
           <Link href="/kvkk" className="hover:text-brand-cyan transition-colors">KVKK</Link>
-          <Link href="/#join-us" className="hover:text-brand-emerald transition-colors font-bold text-brand-emerald">BİZE KATIL</Link>
+          <Link href="/#bize-katil" className="hover:text-brand-emerald transition-colors font-bold text-brand-emerald">BİZE KATIL</Link>
         </div>
 
         {/* Right: Social Media Icons Bar */}

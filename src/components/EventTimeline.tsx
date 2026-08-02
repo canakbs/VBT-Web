@@ -237,7 +237,7 @@ export default function EventTimeline({ events, showMoreButton = false }: EventT
   };
 
   return (
-    <section id="event-archive" ref={containerRef} className="relative pt-0 pb-20 sm:py-20 bg-transparent border-b border-brand-border overflow-hidden select-none">
+    <section id="etkinlikler" ref={containerRef} className="relative pt-0 pb-20 sm:py-20 bg-transparent border-b border-brand-border overflow-hidden select-none">
       {/* Background visual grid */}
       <div className="absolute inset-0 scientific-grid opacity-10 pointer-events-none" />
 
@@ -392,7 +392,7 @@ export default function EventTimeline({ events, showMoreButton = false }: EventT
       {showMoreButton && (
         <div className="flex justify-center mt-4 relative z-20">
           <Link
-            href="/events"
+            href="/etkinlikler"
             className="flex items-center gap-2 px-6 py-3 bg-brand-card hover:bg-brand-cyan/15 border border-brand-border hover:border-brand-cyan/40 rounded-xl font-mono text-xs text-brand-cyan hover:text-white transition-all duration-300 shadow-lg glow-cyan"
           >
             <span>TÜM ETKİNLİK ARŞİVİNİ GÖRÜNTÜLE</span>

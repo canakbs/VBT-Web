@@ -52,7 +52,7 @@ export default function ProjectPipeline({ projects }: ProjectPipelineProps) {
     }
     return FALLBACK_PROJECT_IMAGES[index % FALLBACK_PROJECT_IMAGES.length];
   };  return (
-    <section id="project-showcase" className="relative pt-20 md:pt-24 pb-20 bg-transparent border-b border-brand-border">
+    <section id="projeler" className="relative pt-20 md:pt-24 pb-20 bg-transparent border-b border-brand-border">
       {/* Background patterns */}
       <div className="absolute inset-0 scientific-grid opacity-10 pointer-events-none" />
 
@@ -192,7 +192,7 @@ export default function ProjectPipeline({ projects }: ProjectPipelineProps) {
               </div>
 
               <Link
-                href="/projects"
+                href="/projeler"
                 className="w-full sm:w-auto px-6 py-2.5 bg-brand-cyan hover:bg-brand-cyan/90 text-[#090d16] font-bold rounded-lg text-xs font-mono transition-all flex items-center justify-center gap-2 shadow-lg shadow-brand-cyan/20 hover:scale-105 active:scale-95"
               >
                 <span>TÜMÜNÜ GÖRÜNTÜLE</span>

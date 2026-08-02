@@ -460,7 +460,7 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
           {/* Action Buttons (at the very bottom) */}
           <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 pt-2">
             <a
-              href="/#join-us"
+              href="/#bize-katil"
               className="inline-flex items-center gap-1.5 px-3 py-2 sm:px-6 sm:py-3 text-[11px] sm:text-sm font-bold bg-brand-cyan text-[#090d16] rounded-xl hover:bg-brand-cyan/90 transition-all shadow-lg shadow-brand-cyan/25 hover:scale-105 active:scale-95"
             >
               <span>Bize Katıl</span>

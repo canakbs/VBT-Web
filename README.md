@@ -34,7 +34,7 @@ Sunucu başladıktan sonra tarayıcınızdan aşağıdaki adrese gidin:
 - **Ana Sayfa:** `http://localhost:3000/`
 - **Veri Bilimi Nedir?:** `http://localhost:3000/veri-bilimi-nedir`
 - **Ekibimiz:** `http://localhost:3000/ekibimiz`
-- **Etkinlik Arşivi:** `http://localhost:3000/events`
+- **Etkinlik Arşivi:** `http://localhost:3000/etkinlikler`
 - **Yönetici Paneli (CMS):** `http://localhost:3000/admin`
   - **Varsayılan Parola:** `avbt2026`
 

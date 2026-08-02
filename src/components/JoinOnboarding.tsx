@@ -115,7 +115,7 @@ export default function JoinOnboarding() {
   };
 
   return (
-    <section id="join-us" className="relative pt-10 md:pt-12 pb-10 md:pb-12 bg-transparent border-b border-brand-border">
+    <section id="bize-katil" className="relative pt-10 md:pt-12 pb-10 md:pb-12 bg-transparent border-b border-brand-border">
       {/* Background patterns */}
       <div className="absolute inset-0 scientific-grid opacity-10 pointer-events-none" />
 
