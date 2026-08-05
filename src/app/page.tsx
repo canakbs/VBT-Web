@@ -3,10 +3,12 @@ import Hero3D from "@/components/Hero3D";
 import EventTimeline from "@/components/EventTimeline";
 import ProjectPipeline from "@/components/ProjectPipeline";
 import JoinOnboarding from "@/components/JoinOnboarding";
-import NeuralBackground from "@/components/NeuralBackground";
 import Footer from "@/components/Footer";
 import fs from 'fs';
 import path from 'path';
+import dynamic from 'next/dynamic';
+
+const NeuralBackground = dynamic(() => import('@/components/NeuralBackground'));
 
 export default function Home() {
   // Read events and projects from content markdown files

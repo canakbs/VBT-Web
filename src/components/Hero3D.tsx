@@ -389,6 +389,8 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
               <img
                 src={photo.src}
                 alt={photo.alt}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
             </div>

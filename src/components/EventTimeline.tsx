@@ -112,6 +112,23 @@ export default function EventTimeline({ events, showMoreButton = false }: EventT
     };
   }, [filteredEvents.length, activeCategory]);
 
+  const isVisibleRef = useRef(true);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisibleRef.current = entry.isIntersecting;
+      },
+      { threshold: 0.05 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   // Main continuous marquee animation loop
   useEffect(() => {
     let animId: number;
@@ -121,7 +138,7 @@ export default function EventTimeline({ events, showMoreButton = false }: EventT
       const dt = Math.min((now - lastTime) / 1000, 0.1);
       lastTime = now;
 
-      if (!isHoveredRef.current && !isDraggingRef.current && singleWidthRef.current > 0) {
+      if (isVisibleRef.current && !isHoveredRef.current && !isDraggingRef.current && singleWidthRef.current > 0) {
         const speed = window.innerWidth < 640 ? 24 : 38; // px per second
         currentOffsetXRef.current -= speed * dt;
 
@@ -131,7 +148,7 @@ export default function EventTimeline({ events, showMoreButton = false }: EventT
         }
       }
 
-      if (stripRef.current) {
+      if (stripRef.current && isVisibleRef.current) {
         stripRef.current.style.transform = `translate3d(${currentOffsetXRef.current}px, 0, 0)`;
       }
 
@@ -329,6 +346,8 @@ export default function EventTimeline({ events, showMoreButton = false }: EventT
                       <img
                         src={imgSrc}
                         alt={event.metadata.title || 'Etkinlik görseli'}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105 pointer-events-none"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;

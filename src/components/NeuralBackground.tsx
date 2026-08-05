@@ -86,7 +86,7 @@ function NeuralNetwork({
       mouse.current.x = (e.clientX / window.innerWidth) * 2 - 1;
       mouse.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
     };
-    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
 
@@ -320,27 +320,26 @@ export default function NeuralBackground() {
   const [nodeCount, setNodeCount] = useState(160);
   const [reducedMotion, setReducedMotion] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    // Avoid synchronous state update inside effect body to prevent cascading render warnings
-    const animationFrameId = requestAnimationFrame(() => {
-      setMounted(true);
-      setReducedMotion(mediaQuery.matches);
-    });
-
-    // Optimize node counts for performance (reduced by 50% for sleeker look & higher performance)
     const checkMobile = () => {
-      if (window.innerWidth < 768) {
-        setNodeCount(65);
-      } else {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      if (!mobile) {
         setNodeCount(160);
       }
     };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
 
-    // Handle system accessibility prefers-reduced-motion
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    const animationFrameId = requestAnimationFrame(() => {
+      setMounted(true);
+      setReducedMotion(mediaQuery.matches);
+      checkMobile();
+    });
+
+    window.addEventListener('resize', checkMobile, { passive: true });
     const motionListener = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
     mediaQuery.addEventListener('change', motionListener);
 
@@ -353,6 +352,17 @@ export default function NeuralBackground() {
 
   if (!mounted) {
     return <div className="fixed inset-0 w-full h-full -z-10 bg-transparent" suppressHydrationWarning />;
+  }
+
+  // On mobile screens (<768px), render zero-overhead CSS Ambient Glow Mesh to eliminate 536ms INP latency
+  if (isMobile) {
+    return (
+      <div className="fixed inset-0 w-full h-full -z-10 bg-transparent overflow-hidden pointer-events-none">
+        <div className="absolute top-[20%] left-1/2 -translate-x-1/2 w-[300px] h-[300px] bg-brand-cyan/15 rounded-full blur-[110px] animate-pulse" />
+        <div className="absolute top-[50%] left-1/3 w-[250px] h-[250px] bg-blue-600/10 rounded-full blur-[100px]" />
+        <div className="absolute bottom-[10%] right-1/4 w-[280px] h-[280px] bg-brand-emerald/10 rounded-full blur-[120px]" />
+      </div>
+    );
   }
 
   return (
