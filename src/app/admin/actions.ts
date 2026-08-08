@@ -12,6 +12,7 @@ import {
   deleteFileFromRepo,
   commitBinaryFile
 } from '@/lib/github';
+import sharp from 'sharp';
 
 const HAS_GITHUB_PAT = !!process.env.GITHUB_PAT;
 
@@ -332,8 +333,11 @@ export async function uploadImageAction(formData: FormData) {
   }
 
   const safeFilename = sanitizeFilename(filename);
-  const relativePath = sanitizePath(`public/images/${type}/${safeFilename}`, ['public/images/']);
-  const webPath = `/images/${type}/${safeFilename}`;
+  const nameWithoutExt = path.parse(safeFilename).name;
+  const webpFilename = `${nameWithoutExt}.webp`;
+
+  const relativePath = sanitizePath(`public/images/${type}/${webpFilename}`, ['public/images/']);
+  const webPath = `/images/${type}/${webpFilename}`;
 
   let buffer: Buffer;
   try {
@@ -344,22 +348,38 @@ export async function uploadImageAction(formData: FormData) {
     throw new Error('FAILED_TO_READ_FILE');
   }
 
+  // Convert uploaded image to WebP using sharp
+  let processedBuffer = buffer;
+  try {
+    processedBuffer = await sharp(buffer)
+      .resize({
+        width: 1200,
+        height: 1200,
+        fit: 'inside',
+        withoutEnlargement: true,
+      })
+      .webp({ quality: 80 })
+      .toBuffer();
+  } catch (err) {
+    console.error('Failed to convert uploaded image to WebP, falling back to original:', err);
+  }
+
   // Write image file locally
   try {
     const dirPath = path.join(process.cwd(), 'public', 'images', type);
     if (!fs.existsSync(dirPath)) {
       fs.mkdirSync(dirPath, { recursive: true });
     }
-    fs.writeFileSync(path.join(dirPath, safeFilename), buffer);
+    fs.writeFileSync(path.join(dirPath, webpFilename), processedBuffer);
   } catch (err) {
     console.error('Error writing image file locally:', err);
   }
 
   // Upload to GitHub if PAT is available
   if (HAS_GITHUB_PAT) {
-    const message = `CMS: Upload image ${safeFilename}`;
+    const message = `CMS: Upload image ${webpFilename}`;
     try {
-      await commitBinaryFile(relativePath, buffer.toString('base64'), message);
+      await commitBinaryFile(relativePath, processedBuffer.toString('base64'), message);
     } catch (err: any) {
       console.error(`Error uploading image to GitHub ${relativePath}:`, err);
     }
