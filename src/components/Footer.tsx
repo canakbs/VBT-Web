@@ -55,7 +55,7 @@ export default function Footer() {
         {/* Left: Logo & Community Info */}
         <div className="flex items-center gap-3">
           <img
-            src="/logo.svg"
+            src="/logo.webp"
             alt="Akdeniz Veri Bilimi Logo"
             className="w-10 h-10 rounded-full object-contain border border-brand-border bg-slate-950 p-1"
           />

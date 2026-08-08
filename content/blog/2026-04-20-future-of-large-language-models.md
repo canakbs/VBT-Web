@@ -3,7 +3,7 @@ title: "The Future of Large Language Models: Beyond Transformers"
 date: "2026-04-20"
 author: "Alperen Demir (Research Lead)"
 stats: "Read Time: 8 min"
-image: "/images/blog/llm-future.jpg"
+image: "/images/blog/llm-future.webp"
 summary: "An in-depth look at state-space models, Mamba architectures, and linear attention mechanisms designed to overcome the quadratic complexity limit of Transformers."
 tags: ["LLM", "Transformers", "Mamba", "Research"]
 ---

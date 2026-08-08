@@ -2,37 +2,37 @@
   {
     "id": "workshop",
     "name": "Sol Üst Çerçeve",
-    "src": "/images/hero/hero-1784983522456-Screenshot_20250427_225104_Gallery1.jpg",
+    "src": "/images/hero/hero-1784983522456-Screenshot_20250427_225104_Gallery1.webp",
     "caption": "Teknik Sunumlar"
   },
   {
     "id": "hackathon",
     "name": "Sol Orta Çerçeve",
-    "src": "/images/hero/hero-1784838117152-IMG-20250216-WA0012.jpg",
+    "src": "/images/hero/hero-1784838117152-IMG-20250216-WA0012.webp",
     "caption": "Sosyal Etkinlikler"
   },
   {
     "id": "community",
     "name": "Sol Alt Çerçeve",
-    "src": "/images/hero/hero-1784979601388-IMG-20260503-WA0015.jpg",
+    "src": "/images/hero/hero-1784979601388-IMG-20260503-WA0015.webp",
     "caption": "Topluluk Ekibi"
   },
   {
     "id": "speakers",
     "name": "Sağ Üst Çerçeve",
-    "src": "/images/hero/hero-1784981403981-IMG-20251209-WA0031.jpg",
+    "src": "/images/hero/hero-1784981403981-IMG-20251209-WA0031.webp",
     "caption": "Online Eğitimler"
   },
   {
     "id": "coding",
     "name": "Sağ Orta Çerçeve",
-    "src": "/images/hero/hero-1784981578920-IMG_1349.jpg",
+    "src": "/images/hero/hero-1784981578920-IMG_1349.webp",
     "caption": "Data-Talklar"
   },
   {
     "id": "team",
     "name": "Sağ Alt Çerçeve",
-    "src": "/images/hero/hero-1784982647108-IMG_0438.HEIC.jpg",
+    "src": "/images/hero/hero-1784982647108-IMG_0438.webp.webp",
     "caption": "Topluluk Günleri"
   }
 ]

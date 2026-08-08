@@ -4,7 +4,7 @@ date: "2025-11-26"
 category: "Technical Talks"
 stats: ""
 outcome: ""
-image: "/images/events/1784981644139-IMG_1349.jpg"
+image: "/images/events/1784981644139-IMG_1349.webp"
 summary: "Değerli profesyonelimiz Eyyüp Güner ile gerçekleştirdiğimiz Data-talk etkinliğimiz"
 tags: ["Data-Talk"]
 ---

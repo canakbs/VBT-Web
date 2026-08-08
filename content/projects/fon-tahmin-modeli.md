@@ -4,7 +4,7 @@ stage: "Deployment"
 category: "NLP"
 github: "https://github.com/akdenizveribilimi/funding-prediction"
 stats: ""
-image: "/images/projects/1784989740242-Gemini_Generated_Image_hzjcashzjcashzjc.png"
+image: "/images/projects/1784989740242-Gemini_Generated_Image_hzjcashzjcashzjc.webp"
 summary: "İş fikrinizin özelliklerine göre ne kadar fon bulabileceğinizi tahmin eden projemiz"
 tags: ["Python","NLP"]
 ---

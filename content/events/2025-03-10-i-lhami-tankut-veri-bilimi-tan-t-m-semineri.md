@@ -4,7 +4,7 @@ date: "2025-03-10"
 category: "Technical Talks"
 stats: ""
 outcome: ""
-image: "/images/events/1784835053697-IMG_20250313_122016.jpg"
+image: "/images/events/1784835053697-IMG_20250313_122016.webp"
 summary: "Bu etkinlikte Antalya İlhami Tankut Lisesi öğrencilerine üniversite seçimi, veri bilimi, yapay zeka ve meslek gruplarını anlattık."
 tags: ["Data Science","AI"]
 ---

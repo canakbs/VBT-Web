@@ -4,7 +4,7 @@ date: "2025-02-28"
 category: "AI Workshops"
 stats: ""
 outcome: ""
-image: "/images/events/1785069200584-WhatsAppImage2026-07-26at15.24.38.jpeg"
+image: "/images/events/1785069200584-WhatsAppImage2026-07-26at15.24.38.webp"
 summary: "Açık IMBD veri seti ile eğittimiz film önerisi projemizin sunum günü"
 tags: ["Python","Case Study"]
 ---

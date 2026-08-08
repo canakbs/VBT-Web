@@ -274,7 +274,7 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
   const basePhotos = [
     {
       id: 'workshop',
-      defaultSrc: '/images/hero/workshop.png',
+      defaultSrc: '/images/hero/workshop.webp',
       defaultCaption: 'Çalıştaylar #2025',
       position: 'top-[14%] lg:top-[12%] left-[1.5%] xl:left-[3.5%]',
       size: 'w-18 sm:w-20 md:w-28 lg:w-44 xl:w-52',
@@ -284,7 +284,7 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
     },
     {
       id: 'hackathon',
-      defaultSrc: '/images/hero/hackathon.png',
+      defaultSrc: '/images/hero/hackathon.webp',
       defaultCaption: 'Med Hackathon',
       position: 'top-[32%] lg:top-[36%] left-[0.5%] xl:left-[2%]',
       size: 'w-22 sm:w-24 md:w-32 lg:w-52 xl:w-60',
@@ -294,7 +294,7 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
     },
     {
       id: 'community',
-      defaultSrc: '/images/hero/community.png',
+      defaultSrc: '/images/hero/community.webp',
       defaultCaption: 'Topluluk Ekibi',
       position: 'top-[54%] sm:top-auto sm:bottom-[20%] lg:bottom-[8%] left-[2%] xl:left-[4%]',
       size: 'w-16 sm:w-18 md:w-24 lg:w-40 xl:w-48',
@@ -304,7 +304,7 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
     },
     {
       id: 'speakers',
-      defaultSrc: '/images/hero/speakers.png',
+      defaultSrc: '/images/hero/speakers.webp',
       defaultCaption: 'Yapay Zekâ Semineri',
       position: 'top-[14%] lg:top-[13%] right-[1.5%] xl:right-[3.5%]',
       size: 'w-18 sm:w-20 md:w-28 lg:w-44 xl:w-52',
@@ -314,7 +314,7 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
     },
     {
       id: 'coding',
-      defaultSrc: '/images/hero/coding.png',
+      defaultSrc: '/images/hero/coding.webp',
       defaultCaption: 'Model Eğitimi',
       position: 'top-[32%] lg:top-[37%] right-[0.5%] xl:right-[2%]',
       size: 'w-22 sm:w-24 md:w-32 lg:w-52 xl:w-60',
@@ -324,7 +324,7 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
     },
     {
       id: 'team',
-      defaultSrc: '/images/hero/team.png',
+      defaultSrc: '/images/hero/team.webp',
       defaultCaption: 'Birlikte Öğreniyoruz',
       position: 'top-[54%] sm:top-auto sm:bottom-[21%] lg:bottom-[9%] right-[2%] xl:right-[4%]',
       size: 'w-16 sm:w-18 md:w-24 lg:w-40 xl:w-48',

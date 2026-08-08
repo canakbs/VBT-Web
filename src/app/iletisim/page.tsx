@@ -1,14 +1,28 @@
+import type { Metadata } from "next";
 import ContactSection from "@/components/ContactSection";
-import NeuralBackground from "@/components/NeuralBackground";
 import SiteNav from "@/components/SiteNav";
 import Footer from "@/components/Footer";
+import NeuralBackground from "@/components/NeuralBackground";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "İletişim & İş Birliği | Akdeniz Veri Bilimi Topluluğu",
-  description: "Akdeniz Veri Bilimi Topluluğu ile iletişime geçin — soru, öneri, konuşmacı ve sponsorluk iş birlikleri.",
+  description:
+    "Akdeniz Veri Bilimi Topluluğu ile iletişime geçin — soru, öneri, konuşmacı daveti ve sponsorluk iş birlikleri.",
+  keywords: [
+    "Akdeniz Veri Bilimi İletişim",
+    "Yapay Zeka Sponsorluk",
+    "Teknoloji Topluluğu İletişim",
+    "Antalya Yazılım Etkinlik İletişim",
+    "Akdeniz Üniversitesi Topluluk İletişim",
+  ],
+  openGraph: {
+    title: "İletişim & İş Birliği | Akdeniz Veri Bilimi Topluluğu",
+    description: "Soru, öneri, konuşmacı ve sponsorluk iş birlikleri için bize ulaşın.",
+    url: "https://akdenizveribilimi.com/iletisim",
+    images: ["/logo.webp"],
+  },
 };
 
 export default function ContactPage() {

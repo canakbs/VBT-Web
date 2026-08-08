@@ -4,7 +4,7 @@ date: "2025-12-09"
 category: "AI Workshops"
 stats: ""
 outcome: ""
-image: "/images/events/1784981241667-IMG-20251209-WA0031.jpg"
+image: "/images/events/1784981241667-IMG-20251209-WA0031.webp"
 summary: "Kıymetli profesyonelimiz Çağla Öztürk ile düzenlediğimiz bu etkinlikte üyelerimize RAG'i anlattık."
 tags: ["Webinar","RAG"]
 ---

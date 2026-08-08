@@ -4,7 +4,7 @@ stage: "Deployment"
 category: "Clustering"
 github: "https://github.com/akdenizveribilimi/note-clusterer"
 stats: ""
-image: "/images/projects/1785005693777-Gemini_Generated_Image_25wfqy25wfqy25wf.png"
+image: "/images/projects/1785005693777-Gemini_Generated_Image_25wfqy25wfqy25wf.webp"
 summary: "Karışık ve alakasız notların otomatik olarak belirli kategorilere atanmasını sağlayan clustering projesi"
 tags: ["Python","Clustering"]
 ---

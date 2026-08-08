@@ -4,7 +4,7 @@ stage: "Deployment"
 category: "Classification"
 github: "https://github.com/akdenizveribilimi/emotion-based-song-recommender"
 stats: ""
-image: "/images/projects/1785005399669-Gemini_Generated_Image_9m2eyc9m2eyc9m2e.png"
+image: "/images/projects/1785005399669-Gemini_Generated_Image_9m2eyc9m2eyc9m2e.webp"
 summary: "Kullanıcının mevcut duygusunu ve olmak istediği ruh halini alarak uygun müzikleri getiren öneri sistemi"
 tags: ["Python","Decision Tree"]
 ---

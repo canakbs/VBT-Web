@@ -4,7 +4,7 @@ date: "2025-10-30"
 category: "AI Workshops"
 stats: ""
 outcome: ""
-image: "/images/events/1784836546751-20251030_184745.jpg"
+image: "/images/events/1784836546751-20251030_184745.webp"
 summary: "Ruh haliniz ve müzik zevkinize göre size en uygun şarkıları getiren projemizin sunum günü"
 tags: ["Python","Classification","Case Study"]
 ---

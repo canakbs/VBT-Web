@@ -1,15 +1,31 @@
+import type { Metadata } from "next";
 import { getFilesFromDir } from "@/lib/markdown";
 import EventList from "@/components/EventList";
-import NeuralBackground from "@/components/NeuralBackground";
 import SiteNav from "@/components/SiteNav";
 import Footer from "@/components/Footer";
+import NeuralBackground from "@/components/NeuralBackground";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Etkinlik Arşivi | Akdeniz Veri Bilimi Topluluğu",
-  description: "Akdeniz Veri Bilimi Topluluğu etkinlik arşivi — workshoplar, hackathonlar ve teknoloji buluşmaları.",
+  description:
+    "Akdeniz Veri Bilimi Topluluğu etkinlik arşivi — workshoplar, hackathonlar, yapay zekâ seminerleri ve teknoloji buluşmaları.",
+  keywords: [
+    "Akdeniz Veri Bilimi Etkinlikleri",
+    "Antalya Yapay Zeka Seminerleri",
+    "Python Workshop Antalya",
+    "Data Talk Buluşmaları",
+    "Hackathon Antalya",
+    "Veri Bilimi Çalıştayları",
+    "Akdeniz Üniversitesi Etkinlik Arşivi",
+  ],
+  openGraph: {
+    title: "Etkinlik Arşivi | Akdeniz Veri Bilimi Topluluğu",
+    description: "Workshoplar, hackathonlar ve teknoloji buluşmaları arşivi.",
+    url: "https://akdenizveribilimi.com/etkinlikler",
+    images: ["/logo.webp"],
+  },
 };
 
 export default function EventsArchivePage() {

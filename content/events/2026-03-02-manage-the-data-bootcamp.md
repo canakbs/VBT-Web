@@ -4,7 +4,7 @@ date: "2026-03-02"
 category: "AI Workshops"
 stats: ""
 outcome: ""
-image: "/images/events/1784983842481-Ekrangrnts2026-07-25155015.png"
+image: "/images/events/1784983842481-Ekrangrnts2026-07-25155015.webp"
 summary: "Türkiye Yapay Zeka Topluluğu işbirliği ile düzenlediğimiz veri okuma ve analizi eğitimi"
 tags: ["Bootcamp","Veri Bilimi"]
 ---

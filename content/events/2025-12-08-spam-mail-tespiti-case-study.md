@@ -4,7 +4,7 @@ date: "2025-12-08"
 category: "AI Workshops"
 stats: ""
 outcome: ""
-image: "/images/events/1784837187821-20251208_184710.jpg"
+image: "/images/events/1784837187821-20251208_184710.webp"
 summary: "Spam mailleri tespit eden projemizin sunum günü"
 tags: ["Python","Classification","Case Study"]
 ---

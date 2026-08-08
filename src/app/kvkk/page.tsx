@@ -1,14 +1,25 @@
-import NeuralBackground from "@/components/NeuralBackground";
+import type { Metadata } from "next";
 import SiteNav from "@/components/SiteNav";
 import Footer from "@/components/Footer";
+import NeuralBackground from "@/components/NeuralBackground";
 import Link from "next/link";
 import { ArrowLeft, Shield } from "lucide-react";
-import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "KVKK Aydınlatma Metni | Akdeniz Veri Bilimi Topluluğu",
   description:
     "Akdeniz Veri Bilimi Topluluğu Kişisel Verilerin Korunması Kanunu (KVKK) kapsamında Aydınlatma Metni.",
+  keywords: [
+    "Akdeniz Veri Bilimi KVKK",
+    "Kişisel Verilerin Korunması Aydınlatma Metni",
+    "AVBT Gizlilik Politikası",
+  ],
+  openGraph: {
+    title: "KVKK Aydınlatma Metni | Akdeniz Veri Bilimi Topluluğu",
+    description: "6698 sayılı Kişisel Verilerin Korunması Kanunu kapsamında Aydınlatma Metni.",
+    url: "https://akdenizveribilimi.com/kvkk",
+    images: ["/logo.webp"],
+  },
 };
 
 const SECTIONS = [

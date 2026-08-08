@@ -4,7 +4,7 @@ stage: "Deployment"
 category: "Classification"
 github: "https://github.com/akdenizveribilimi/movie-recommender"
 stats: ""
-image: "/images/projects/1785065191045-Gemini_Generated_Image_tvvrowtvvrowtvvr.png"
+image: "/images/projects/1785065191045-Gemini_Generated_Image_tvvrowtvvrowtvvr.webp"
 summary: "Sevdiğin filmlerin özelliklerine göre sevebileceğin filmleri öneren projemiz"
 tags: ["Python","NLP"]
 ---

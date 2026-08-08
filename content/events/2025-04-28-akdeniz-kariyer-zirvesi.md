@@ -4,7 +4,7 @@ date: "2025-04-28"
 category: "Technical Talks"
 stats: ""
 outcome: ""
-image: "/images/events/1785006820838-WhatsAppImage2026-07-25at22.12.34.jpeg"
+image: "/images/events/1785006820838-WhatsAppImage2026-07-25at22.12.34.webp"
 summary: "Teknoloji alanında faaliyet gösteren 8 ayrı profesyonelle 2 oturum şeklinde düzenlediğimiz panel organizasyonumuz"
 tags: ["Summit","Career"]
 ---

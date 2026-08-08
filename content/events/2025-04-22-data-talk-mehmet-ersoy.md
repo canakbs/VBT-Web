@@ -4,7 +4,7 @@ date: "2025-04-22"
 category: "Technical Talks"
 stats: ""
 outcome: ""
-image: "/images/events/1785006501206-WhatsAppImage2026-07-25at22.08.02.jpeg"
+image: "/images/events/1785006501206-WhatsAppImage2026-07-25at22.08.02.webp"
 summary: "Değerli konuşmacımız ile veri mühendisi olmak ve remote çalışmak üzerine sohbet ettiğimiz bir etkinlik"
 tags: ["Data Engineering"]
 ---

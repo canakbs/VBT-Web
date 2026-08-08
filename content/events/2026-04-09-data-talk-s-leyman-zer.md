@@ -4,7 +4,7 @@ date: "2026-04-09"
 category: "Technical Talks"
 stats: ""
 outcome: ""
-image: "/images/events/1784981987082-1776185115610.jpg"
+image: "/images/events/1784981987082-1776185115610.webp"
 summary: "Değerli konuşmacımız Süleyman Özer ile havacılık sektörünü konuştuk."
 tags: ["Data-Talk"]
 ---

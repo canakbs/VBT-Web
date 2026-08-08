@@ -1,14 +1,32 @@
+import type { Metadata } from "next";
 import { getFilesFromDir } from "@/lib/markdown";
-import NeuralBackground from "@/components/NeuralBackground";
 import SiteNav from "@/components/SiteNav";
 import Footer from "@/components/Footer";
+import NeuralBackground from "@/components/NeuralBackground";
 import Link from "next/link";
 import { ArrowLeft, ExternalLink, CheckCircle2 } from "lucide-react";
-import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Proje Arşivi | Akdeniz Veri Bilimi Topluluğu",
-  description: "Akdeniz Veri Bilimi Topluluğu tamamlanan ve yayınlanan açık kaynak projeler.",
+  description:
+    "Akdeniz Veri Bilimi Topluluğu öğrencileri ve araştırmacıları tarafından geliştirilen açık kaynak veri bilimi ve yapay zekâ projeleri.",
+  keywords: [
+    "Akdeniz Veri Bilimi Projeleri",
+    "Açık Kaynak Yapay Zeka Projeleri",
+    "Machine Learning GitHub",
+    "Kira Tahmin Modeli",
+    "Müzik Öneri Sistemi",
+    "Not Kümeleme Algoritması",
+    "Spam Mail Tespit Modeli",
+    "Fon Tahmin Modeli",
+    "Python Projeleri Antalya",
+  ],
+  openGraph: {
+    title: "Proje Arşivi | Akdeniz Veri Bilimi Topluluğu",
+    description: "Geliştirdiğimiz açık kaynak projeler, model mimarileri ve dokümanlar.",
+    url: "https://akdenizveribilimi.com/projeler",
+    images: ["/logo.webp"],
+  },
 };
 
 export default function ProjectsPage() {

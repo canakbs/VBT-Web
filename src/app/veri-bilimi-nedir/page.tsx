@@ -1,14 +1,31 @@
+import type { Metadata } from "next";
 import LearningRoadmap from "@/components/LearningRoadmap";
-import NeuralBackground from "@/components/NeuralBackground";
 import SiteNav from "@/components/SiteNav";
 import Footer from "@/components/Footer";
+import NeuralBackground from "@/components/NeuralBackground";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Veri Bilimi Nedir? | Akdeniz Veri Bilimi Topluluğu",
-  description: "Veri bilimi nedir, ne işe yarar ve nasıl öğrenilir? Akdeniz Veri Bilimi Topluluğu öğrenme yol haritası.",
+  description:
+    "Veri bilimi nedir, ne işe yarar ve sıfırdan nasıl öğrenilir? Akdeniz Veri Bilimi Topluluğu kapsamlı öğrenme yol haritası.",
+  keywords: [
+    "Veri Bilimi Nedir",
+    "Veri Bilimi Nasıl Öğrenilir",
+    "Data Science Yol Haritası",
+    "Makine Öğrenmesi Rehberi",
+    "Python Veri Analizi",
+    "Veri Bilimcisi Nasıl Olunur",
+    "MLOps ve Yapay Zeka Öğrenme Yol Haritası",
+    "Akdeniz Veri Bilimi Öğrenme Rehberi",
+  ],
+  openGraph: {
+    title: "Veri Bilimi Nedir? | Akdeniz Veri Bilimi Topluluğu",
+    description: "Veri bilimi öğrenme yol haritası ve kapsamlı rehber.",
+    url: "https://akdenizveribilimi.com/veri-bilimi-nedir",
+    images: ["/logo.webp"],
+  },
 };
 
 export default function VeriBilimiNedirPage() {

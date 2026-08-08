@@ -4,7 +4,7 @@ date: "2026-02-27"
 category: "AI Workshops"
 stats: ""
 outcome: ""
-image: "/images/events/1784837803846-IMG_6397.jpg"
+image: "/images/events/1784837803846-IMG_6397.webp"
 summary: "Günlük hayatta tuttuğumuz karışık notları otomatik düzenleyen projemizin sunum günü"
 tags: ["Python","Clustering","Case Study"]
 ---

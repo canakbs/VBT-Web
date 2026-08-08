@@ -1,15 +1,30 @@
+import type { Metadata } from "next";
 import TeamNetwork from "@/components/TeamNetwork";
-import NeuralBackground from "@/components/NeuralBackground";
 import SiteNav from "@/components/SiteNav";
 import Footer from "@/components/Footer";
+import NeuralBackground from "@/components/NeuralBackground";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { getFilesFromDir } from "@/lib/markdown";
-import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Ekibimiz | Akdeniz Veri Bilimi Topluluğu",
-  description: "Akdeniz Veri Bilimi Topluluğu yönetim ekibi, akademik danışmanlarımız, takım liderlerimiz ve mentörlerimiz.",
+  description:
+    "Akdeniz Veri Bilimi Topluluğu yönetim ekibi, akademik danışmanlarımız, liderlerimiz, yazılımcılarımız ve mentörlerimiz.",
+  keywords: [
+    "Akdeniz Veri Bilimi Ekibi",
+    "Yönetim Kurulu",
+    "Akdeniz Üniversitesi Danışmanlar",
+    "Veri Bilimi Mentörleri",
+    "Akdeniz Veri Bilimi Liderleri",
+    "Yapay Zeka Araştırmacıları Antalya",
+  ],
+  openGraph: {
+    title: "Ekibimiz | Akdeniz Veri Bilimi Topluluğu",
+    description: "Yönetim ekibimiz, akademik danışmanlarımız ve takım liderlerimiz.",
+    url: "https://akdenizveribilimi.com/ekibimiz",
+    images: ["/logo.webp"],
+  },
 };
 
 export default function EkibimizPage() {

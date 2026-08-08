@@ -4,7 +4,7 @@ date: "2024-12-06"
 category: "Technical Talks"
 stats: ""
 outcome: ""
-image: "/images/events/1785006077362-IMG-20241206-WA0086.jpg"
+image: "/images/events/1785006077362-IMG-20241206-WA0086.webp"
 summary: "Kıymetli konuşmacımız ile sağlıkta yapay zeka ve etik problemleri üzerine konuştuğumuz bir etkinlik"
 tags: ["Sağlık","Yapay Zeka","Etik"]
 ---
