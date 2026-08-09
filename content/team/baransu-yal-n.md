@@ -1,5 +1,5 @@
 ---
-title: "Baransu yalçın"
+title: "Baransu Yalçın"
 role: "Arge Ekip Üyesi"
 department: "AR-GE"
 skills: ["Python","AI Development"]
