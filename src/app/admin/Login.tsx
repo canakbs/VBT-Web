@@ -15,7 +15,7 @@ export default function Login() {
   const [infoMsg, setInfoMsg] = useState('');
   const [isDecrypting, setIsDecrypting] = useState(false);
   const [decryptProgress, setDecryptProgress] = useState(0);
-  const [maskedEmail, setMaskedEmail] = useState('akdenizveri07@gmail.com');
+  const [maskedEmail, setMaskedEmail] = useState('akd***r07@gmail.com');
   const [countdown, setCountdown] = useState(300); // 5 minutes
   const [resendCooldown, setResendCooldown] = useState(0);
 
@@ -267,14 +267,15 @@ export default function Login() {
                     </span>
                   </div>
                   <input
-                    type="text"
+                    type="password"
                     maxLength={6}
-                    placeholder="123456"
+                    placeholder="••••••"
                     value={otpInput}
                     onChange={(e) => setOtpInput(e.target.value.replace(/\D/g, '').slice(0, 6))}
                     disabled={isChecking}
                     className="p-3.5 bg-slate-900 border border-brand-cyan/50 rounded-lg text-brand-emerald focus:border-brand-emerald focus:outline-none transition-colors text-center tracking-[0.5em] font-mono text-xl font-bold"
                     autoFocus
+                    autoComplete="one-time-code"
                   />
                 </div>
 

@@ -144,6 +144,15 @@ Eğer bu giriş denemesini siz yapmadıysanız lütfen şifrenizi değiştirin.
   return false;
 }
 
+function maskEmailAddress(email: string): string {
+  if (!email || !email.includes('@')) return email;
+  const [username, domain] = email.split('@');
+  if (username.length <= 6) {
+    return `${username.slice(0, 1)}***${username.slice(-1)}@${domain}`;
+  }
+  return `${username.slice(0, 3)}***${username.slice(-3)}@${domain}`;
+}
+
 export async function requestAdminOtp(passcode: string): Promise<{ success: boolean; requireOtp?: boolean; maskedEmail?: string; error?: string }> {
   const adminPasscode = process.env.ADMIN_PASSCODE;
 
@@ -197,7 +206,7 @@ export async function requestAdminOtp(passcode: string): Promise<{ success: bool
   return {
     success: true,
     requireOtp: true,
-    maskedEmail: 'akdenizveri07@gmail.com',
+    maskedEmail: maskEmailAddress('akdenizveri07@gmail.com'),
   };
 }
 
