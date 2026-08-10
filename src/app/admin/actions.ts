@@ -5,6 +5,8 @@ import matter from 'gray-matter';
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
+import nodemailer from 'nodemailer';
+import { checkRateLimit, getClientIdentifier } from '@/lib/rateLimit';
 import { 
   listDirectoryContents, 
   getFile, 
@@ -68,28 +70,282 @@ function sanitizeFilename(filename: string): string {
   return safeName;
 }
 
-// 1. Session Management Actions
-export async function authenticate(passcode: string): Promise<{ success: boolean; error?: string }> {
+// 1. Session Management & 2FA OTP Actions
+
+async function sendAdminOtpEmail(otpCode: string): Promise<boolean> {
+  const targetEmail = 'akdenizveri07@gmail.com';
+  const rawPass = process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASS;
+  const cleanPass = rawPass ? rawPass.replace(/\s+/g, '') : '';
+  const smtpUser = process.env.GMAIL_USER || process.env.SMTP_USER || 'akdenizveri07@gmail.com';
+  const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
+  const smtpPort = Number(process.env.SMTP_PORT) || 587;
+
+  const subject = `[AVBT Admin] Giriş Doğrulama Kodu: ${otpCode}`;
+
+  const textContent = `
+AKDENİZ VERİ BİLİMİ TOPLULUĞU - ADMİN PANELE GİRİŞ DOĞRULAMA KODU
+==================================================================
+Güvenlik Kodunuz: ${otpCode}
+
+Bu kod 5 dakika boyunca geçerlidir.
+Eğer bu giriş denemesini siz yapmadıysanız lütfen şifrenizi değiştirin.
+==================================================================`;
+
+  const htmlContent = `
+    <div style="font-family: system-ui, -apple-system, sans-serif; background-color: #090d16; color: #e2e8f0; padding: 32px; border-radius: 16px; max-width: 520px; margin: 0 auto; border: 1px solid rgba(0, 242, 254, 0.2);">
+      <div style="text-align: center; margin-bottom: 24px;">
+        <h2 style="color: #00f2fe; margin: 0 0 8px 0; font-size: 22px; font-weight: 800;">AKDENİZ VERİ BİLİMİ TOPLULUĞU</h2>
+        <p style="color: #64748b; font-size: 12px; font-family: monospace; text-transform: uppercase; margin: 0;">// ADMİN PANELİ 2 ADIMLI DOĞRULAMA</p>
+      </div>
+
+      <div style="background-color: #0f172a; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 24px; text-align: center; margin-bottom: 24px;">
+        <p style="color: #94a3b8; font-size: 13px; margin-top: 0; margin-bottom: 12px;">Admin paneline giriş yapmak için aşağıdaki 6 haneli güvenlik kodunu kullanın:</p>
+        <div style="font-family: monospace; font-size: 36px; font-weight: 900; letter-spacing: 8px; color: #00f5a0; background-color: #020617; padding: 16px; border-radius: 8px; border: 1px dashed rgba(0, 245, 160, 0.4); display: inline-block; margin: 8px 0;">
+          ${otpCode}
+        </div>
+        <p style="color: #f59e0b; font-size: 12px; margin-bottom: 0; margin-top: 12px;">⏰ Bu kod <strong>5 dakika</strong> geçerlidir.</p>
+      </div>
+
+      <div style="font-size: 11px; color: #64748b; line-height: 1.5; border-top: 1px solid rgba(255, 255, 255, 0.05); padding-top: 16px;">
+        <p style="margin: 0 0 4px 0;">🔒 Bu e-posta otomatik olarak gönderilmiştir.</p>
+        <p style="margin: 0;">Bu giriş isteğini siz başlatmadıysanız, sistem yöneticiniz ile derhal iletişime geçin.</p>
+      </div>
+    </div>
+  `;
+
+  if (cleanPass) {
+    try {
+      const transporter = nodemailer.createTransport({
+        host: smtpHost,
+        port: smtpPort,
+        secure: smtpPort === 465,
+        auth: {
+          user: smtpUser,
+          pass: cleanPass,
+        },
+      });
+
+      await transporter.sendMail({
+        from: `"AVBT Güvenlik" <${smtpUser}>`,
+        to: targetEmail,
+        subject,
+        text: textContent,
+        html: htmlContent,
+      });
+
+      console.log(`✅ Admin OTP koda (${otpCode}) ${targetEmail} adresine başarıyla gönderildi.`);
+      return true;
+    } catch (err) {
+      console.error('Nodemailer Admin OTP SMTP Error:', err);
+    }
+  } else {
+    console.warn(`⚠️ SMTP şifresi bulunamadı. OTP Kodu konsola yazıldı: ${otpCode}`);
+  }
+  return false;
+}
+
+export async function requestAdminOtp(passcode: string): Promise<{ success: boolean; requireOtp?: boolean; maskedEmail?: string; error?: string }> {
   const adminPasscode = process.env.ADMIN_PASSCODE;
 
   if (!adminPasscode) {
     return { success: false, error: 'SİSTEM YAPILANDIRMASI EKSİK' };
   }
 
-  if (passcode === adminPasscode) {
-    const cookieStore = await cookies();
-    const token = getExpectedSessionToken();
-    cookieStore.set('avbt_cms_session', token, {
+  // Rate limit: Max 5 password attempts per 5 minutes per client IP
+  const rateKey = await getClientIdentifier('admin_auth_pass');
+  const rateCheck = checkRateLimit(rateKey, 5, 5 * 60 * 1000);
+  if (!rateCheck.allowed) {
+    return {
+      success: false,
+      error: `Çok fazla hatalı deneme yaptınız. Lütfen ${rateCheck.retryAfterSeconds} saniye bekleyin.`,
+    };
+  }
+
+  if (passcode !== adminPasscode) {
+    return { success: false, error: 'GEÇERSİZ ERİŞİM PAROLASI' };
+  }
+
+  // Generate 6-digit random OTP
+  const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+  const challengeId = crypto.randomBytes(16).toString('hex');
+  const expiresAt = Date.now() + 5 * 60 * 1000; // 5 minutes
+
+  const hash = crypto
+    .createHmac('sha256', adminPasscode)
+    .update(`avbt_otp_${challengeId}_${otpCode}_${expiresAt}`)
+    .digest('hex');
+
+  const challengePayload = {
+    challengeId,
+    hash,
+    expiresAt,
+    attempts: 0,
+  };
+
+  const cookieStore = await cookies();
+  cookieStore.set('avbt_admin_otp_challenge', JSON.stringify(challengePayload), {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: 300, // 5 mins
+    path: '/admin',
+  });
+
+  // Send OTP email
+  await sendAdminOtpEmail(otpCode);
+
+  return {
+    success: true,
+    requireOtp: true,
+    maskedEmail: 'akdenizveri07@gmail.com',
+  };
+}
+
+export async function verifyAdminOtp(otpInput: string): Promise<{ success: boolean; error?: string }> {
+  const adminPasscode = process.env.ADMIN_PASSCODE;
+  if (!adminPasscode) {
+    return { success: false, error: 'SİSTEM YAPILANDIRMASI EKSİK' };
+  }
+
+  const cookieStore = await cookies();
+  const rawChallenge = cookieStore.get('avbt_admin_otp_challenge')?.value;
+
+  if (!rawChallenge) {
+    return { success: false, error: 'DOĞRULAMA SÜRESİ DOLDU VEYA İSTEK GEÇERSİZ. LÜTFEN TEKRAR PAROLA GİRİN.' };
+  }
+
+  let challengePayload: {
+    challengeId: string;
+    hash: string;
+    expiresAt: number;
+    attempts: number;
+  };
+
+  try {
+    challengePayload = JSON.parse(rawChallenge);
+  } catch {
+    cookieStore.delete({ name: 'avbt_admin_otp_challenge', path: '/admin' });
+    return { success: false, error: 'GEÇERSİZ DOĞRULAMA VERİSİ' };
+  }
+
+  const { challengeId, hash, expiresAt, attempts } = challengePayload;
+
+  if (Date.now() > expiresAt) {
+    cookieStore.delete({ name: 'avbt_admin_otp_challenge', path: '/admin' });
+    return { success: false, error: 'DOĞRULAMA KODUNUN SÜRESİ DOLDU. LÜTFEN YENİ KOD İSTEYİN.' };
+  }
+
+  if (attempts >= 5) {
+    cookieStore.delete({ name: 'avbt_admin_otp_challenge', path: '/admin' });
+    return { success: false, error: 'ÇOK FAZLA HATALI DENEME. LÜTFEN TEKRAR BAŞLAYIN.' };
+  }
+
+  const cleanOtp = (otpInput || '').trim();
+  const expectedHash = crypto
+    .createHmac('sha256', adminPasscode)
+    .update(`avbt_otp_${challengeId}_${cleanOtp}_${expiresAt}`)
+    .digest('hex');
+
+  const hashA = Buffer.from(hash);
+  const hashB = Buffer.from(expectedHash);
+
+  const isValid = hashA.length === hashB.length && crypto.timingSafeEqual(hashA, hashB);
+
+  if (!isValid) {
+    challengePayload.attempts += 1;
+    cookieStore.set('avbt_admin_otp_challenge', JSON.stringify(challengePayload), {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
-      maxAge: 60 * 60 * 24, // 1 day
+      maxAge: Math.max(1, Math.ceil((expiresAt - Date.now()) / 1000)),
       path: '/admin',
     });
-    return { success: true };
+    return { success: false, error: `GEÇERSİZ DOĞRULAMA KODU (${5 - challengePayload.attempts} HAKKINIZ KALDI)` };
   }
 
-  return { success: false, error: 'GEÇERSİZ ERİŞİM PAROLASI' };
+  // Clear challenge cookie & Set authentic session cookie
+  cookieStore.delete({ name: 'avbt_admin_otp_challenge', path: '/admin' });
+
+  const token = getExpectedSessionToken();
+  cookieStore.set('avbt_cms_session', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: 60 * 60 * 24, // 1 day
+    path: '/admin',
+  });
+
+  return { success: true };
+}
+
+export async function resendAdminOtp(): Promise<{ success: boolean; error?: string }> {
+  const adminPasscode = process.env.ADMIN_PASSCODE;
+  if (!adminPasscode) {
+    return { success: false, error: 'SİSTEM YAPILANDIRMASI EKSİK' };
+  }
+
+  const cookieStore = await cookies();
+  const rawChallenge = cookieStore.get('avbt_admin_otp_challenge')?.value;
+
+  if (!rawChallenge) {
+    return { success: false, error: 'OTURUM SÜRESİ DOLDU. LÜTFEN ŞİFRENİZİ TEKRAR GİRİN.' };
+  }
+
+  let challengePayload: {
+    challengeId: string;
+    hash: string;
+    expiresAt: number;
+    attempts: number;
+  };
+
+  try {
+    challengePayload = JSON.parse(rawChallenge);
+  } catch {
+    return { success: false, error: 'GEÇERSİZ DOĞRULAMA VERİSİ' };
+  }
+
+  // Rate limit resend attempts (max 1 resend per 45 seconds)
+  const rateKey = await getClientIdentifier('admin_otp_resend');
+  const rateCheck = checkRateLimit(rateKey, 1, 45 * 1000);
+  if (!rateCheck.allowed) {
+    return {
+      success: false,
+      error: `Yeni kod istemek için lütfen ${rateCheck.retryAfterSeconds} saniye bekleyin.`,
+    };
+  }
+
+  // Generate new OTP code
+  const otpCode = Math.floor(100000 + Math.random() * 900000).toString();
+  const challengeId = crypto.randomBytes(16).toString('hex');
+  const expiresAt = Date.now() + 5 * 60 * 1000;
+
+  const hash = crypto
+    .createHmac('sha256', adminPasscode)
+    .update(`avbt_otp_${challengeId}_${otpCode}_${expiresAt}`)
+    .digest('hex');
+
+  const newPayload = {
+    challengeId,
+    hash,
+    expiresAt,
+    attempts: 0,
+  };
+
+  cookieStore.set('avbt_admin_otp_challenge', JSON.stringify(newPayload), {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict',
+    maxAge: 300,
+    path: '/admin',
+  });
+
+  await sendAdminOtpEmail(otpCode);
+
+  return { success: true };
+}
+
+export async function authenticate(passcode: string): Promise<{ success: boolean; requireOtp?: boolean; maskedEmail?: string; error?: string }> {
+  return requestAdminOtp(passcode);
 }
 
 export async function logout() {
@@ -103,6 +359,7 @@ export async function logout() {
     path: '/admin',
   });
   cookieStore.delete({ name: 'avbt_cms_session', path: '/admin' });
+  cookieStore.delete({ name: 'avbt_admin_otp_challenge', path: '/admin' });
 }
 
 // 2. CMS CRUD Actions (Protected by Session Checks)
