@@ -5,7 +5,7 @@ category: "Regression"
 github: "https://github.com/akdenizveribilimi/rent-prediction"
 stats: ""
 image: "/images/projects/1784989397947-Gemini_Generated_Image_4u4ucy4u4ucy4u4u.webp"
-summary: "Lokasyon, konut özellikleri ve piyasa verilerini analiz ederek makine öğrenmesi modelleriyle gayrimenkul kiralama fiyatlarını yüksek doğrulukla tahmin eden veri bilimi projesi"
+summary: "Lokasyon, konut özellikleri ve piyasa verilerini analiz ederek makine öğrenmesi modelleriyle gayrimenkul kiralama fiyatlarını yüksek doğrulukla tahmin eden veri bilimi projesi."
 tags: ["Python","Machine Learning"]
 ---
 
