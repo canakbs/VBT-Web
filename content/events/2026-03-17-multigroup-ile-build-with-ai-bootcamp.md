@@ -9,12 +9,4 @@ summary: "MultiGroup ve Akdeniz Veri Bilimi Topluluğu iş birliğiyle düzenlen
 tags: ["Gemini","Code Assist","Gemini CLI","YouTube Summarizer","AI","MultiGroup"]
 ---
 
-MultiGroup ve Akdeniz Veri Bilimi Topluluğu ortaklığıyla, Google for Developers destekli "Build with AI Bootcamp" sertifika programı düzenlenmektedir.
-
-### Oturum Programı
-* **3 Mart Salı (21.00 - 22.00):** Build a Gemini-Powered YouTube Summarizer
-* **12 Mart Perşembe (21.00 - 22.00):** Develop an App with Gemini (Code Assist)
-* **17 Mart Salı (21.00 - 22.00):** Agentverse - The Shadowblade's Codex - Vibecoding with Gemini CLI
-
-**Lokasyon:** Online  
-**Katılım:** Kontenjan sınırlı, sertifikalı program.
+Türkiye'nin dört bir yanından aramıza katılan tüm katılımcılarımızla birlikte Gemini dünyasını keşfettiğimiz, kod yazdığımız ve yapay zeka araçlarını deneyimlediğimiz dolu dolu üç oturum gerçekleştirdik. Bizimle bu öğrenme yolculuğuna çıkan, enerjisiyle her oturumu keyifli hale getiren tüm katılımcılarımıza ve emeği geçen ekibimize çok teşekkür ederiz!
