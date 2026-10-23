@@ -18,10 +18,10 @@ const STATS: StatItem[] = [
   {
     id: 'members',
     label: 'Kayıtlı Üye',
-    value: 440,
+    value: 700,
     suffix: '+',
     icon: <Users className="w-5 h-5 text-brand-cyan" />,
-    sparkline: [20, 50, 90, 140, 220, 310, 440],
+    sparkline: [50, 120, 220, 340, 480, 590, 700],
     color: '#00f2fe',
   },
   {

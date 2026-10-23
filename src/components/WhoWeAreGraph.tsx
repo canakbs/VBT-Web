@@ -38,7 +38,7 @@ const NODES: ClusterNode[] = [
     x: 25, y: 30,
     details: {
       title: 'Topluluk Ağı',
-      value: '440+ Kayıtlı Üye',
+      value: '700+ Kayıtlı Üye',
       description: 'Bilgisayar mühendisliği, endüstri mühendisliği ve matematik bölümlerinden öğrencilerin bir araya geldiği kapsayıcı bir ağ.',
     },
   },

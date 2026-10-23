@@ -431,7 +431,7 @@ export default function Hero3D({ frames = [] }: Hero3DProps) {
               <div className="hidden sm:grid grid-cols-3 gap-2 pt-1">
                 <div className="p-2.5 bg-brand-card/50 border border-brand-border/40 rounded-lg text-center flex flex-col justify-center">
                   <div className="text-lg font-extrabold text-white tracking-tight font-mono">
-                    <StatCounter value={370} suffix="+" />
+                    <StatCounter value={700} suffix="+" />
                   </div>
                   <div className="text-[10px] text-brand-muted mt-0.5 leading-tight font-sans font-medium">
                     Kayıtlı Üye
