@@ -14,7 +14,7 @@ import {
   deleteFileFromRepo,
   commitBinaryFile
 } from '@/lib/github';
-import sharp from 'sharp';
+// sharp is dynamically imported in uploadImageAction to avoid bundling issues
 
 const HAS_GITHUB_PAT = !!process.env.GITHUB_PAT;
 
@@ -498,7 +498,7 @@ export async function getFileContent(filePath: string) {
 
   // Local Filesystem Fallback
   try {
-    const absolutePath = path.join(process.cwd(), safePath);
+    const absolutePath = path.join(/*turbopackIgnore: true*/ process.cwd(), safePath);
     if (!fs.existsSync(absolutePath)) {
       throw new Error('FILE_NOT_FOUND');
     }
@@ -564,7 +564,7 @@ export async function deleteContent(filePath: string, sha: string) {
 
   // Local filesystem deletion
   try {
-    const absolutePath = path.join(process.cwd(), safePath);
+    const absolutePath = path.join(/*turbopackIgnore: true*/ process.cwd(), safePath);
     if (fs.existsSync(absolutePath)) {
       fs.unlinkSync(absolutePath);
     }
@@ -617,6 +617,8 @@ export async function uploadImageAction(formData: FormData) {
   // Convert uploaded image to WebP using sharp
   let processedBuffer = buffer;
   try {
+    const sharpModule = await import('sharp');
+    const sharp = sharpModule.default || sharpModule;
     processedBuffer = await sharp(buffer)
       .resize({
         width: 1200,
@@ -756,7 +758,7 @@ export async function saveHeroFrames(frames: any[], sha?: string) {
   const contentString = JSON.stringify(frames, null, 2);
 
   try {
-    const filePath = path.join(process.cwd(), relativePath);
+    const filePath = path.join(/*turbopackIgnore: true*/ process.cwd(), relativePath);
     fs.writeFileSync(filePath, contentString, 'utf-8');
   } catch (err) {
     console.error('Error writing hero-frames locally:', err);
