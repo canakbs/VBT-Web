@@ -4,7 +4,20 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Lock, ShieldAlert, Cpu, RefreshCw, Mail, KeyRound, Clock, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { requestAdminOtp, verifyAdminOtp, resendAdminOtp } from './actions';
+
+async function callAdminAuth(payload: Record<string, unknown>) {
+  const res = await fetch('/admin/api/auth', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+    credentials: 'same-origin',
+  });
+  const data = await res.json().catch(() => null);
+  if (!data) {
+    throw new Error(`HTTP ${res.status}`);
+  }
+  return data;
+}
 
 export default function Login() {
   const [step, setStep] = useState<'password' | 'otp'>('password');
@@ -39,7 +52,7 @@ export default function Login() {
     setInfoMsg('');
 
     try {
-      const res = await requestAdminOtp(passwordInput);
+      const res = await callAdminAuth({ action: 'request_otp', passcode: passwordInput });
       if (res.success && res.requireOtp) {
         if (res.maskedEmail) setMaskedEmail(res.maskedEmail);
         setStep('otp');
@@ -66,7 +79,7 @@ export default function Login() {
     setInfoMsg('');
 
     try {
-      const res = await verifyAdminOtp(otpInput);
+      const res = await callAdminAuth({ action: 'verify_otp', otp: otpInput });
       if (res.success) {
         setIsDecrypting(true);
         let progress = 0;
@@ -98,7 +111,7 @@ export default function Login() {
     setInfoMsg('');
 
     try {
-      const res = await resendAdminOtp();
+      const res = await callAdminAuth({ action: 'resend_otp' });
       if (res.success) {
         setCountdown(300);
         setResendCooldown(45);

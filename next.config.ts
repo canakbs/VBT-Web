@@ -18,6 +18,7 @@ const cspHeader = `
 
 const nextConfig: NextConfig = {
   /* config options here */
+  serverExternalPackages: ['sharp'],
   experimental: {
     serverActions: {
       bodySizeLimit: '10mb',

@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import Workspace from './Workspace';
 import Login from './Login';
-import { isSessionValid } from './actions';
+import { isSessionValid } from '@/lib/adminService';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   robots: { index: false, follow: false },

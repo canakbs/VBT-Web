@@ -19,18 +19,49 @@ import {
   Calendar
 } from 'lucide-react';
 import Link from 'next/link';
-import { 
-  logout, 
-  getContentList, 
-  getFileContent, 
-  saveContent, 
-  deleteContent,
-  uploadImageAction,
-  getApplicationsList,
-  deleteApplication,
-  getHeroFrames,
-  saveHeroFrames
-} from './actions';
+import { optimizeImageForUpload } from '@/lib/clientImage';
+
+interface PendingImageState {
+  file: File;
+  filename: string;
+  destFolder: 'events' | 'projects' | 'team' | 'hero';
+  previewUrl: string;
+}
+
+interface PendingHeroImageState {
+  file: File;
+  filename: string;
+  previewUrl: string;
+}
+
+async function adminApiRequest<T = any>(url: string, options?: RequestInit): Promise<T> {
+  const res = await fetch(url, {
+    credentials: 'same-origin',
+    cache: 'no-store',
+    ...options,
+  });
+
+  const text = await res.text();
+  let data: any = null;
+  try {
+    data = text ? JSON.parse(text) : null;
+  } catch {
+    data = null;
+  }
+
+  if (res.status === 401) {
+    throw new Error('OTURUM SÜRESİ DOLDU. LÜTFEN SAYFAYI YENİLEYİP TEKRAR GİRİŞ YAPIN.');
+  }
+
+  if (!res.ok) {
+    if (res.status === 413) {
+      throw new Error('DOSYA BOYUTU ÇOK BÜYÜK (MAKSİMUM 4 MB). LÜTFEN DAHA KÜÇÜK BİR GÖRSEL SEÇİN.');
+    }
+    throw new Error(data?.error || `SUNUCU HATASI (HTTP ${res.status})`);
+  }
+
+  return data as T;
+}
 
 export default function Workspace() {
   // Navigation & Tabs
@@ -71,6 +102,8 @@ export default function Workspace() {
   
   // Image handling
   const [imagePath, setImagePath] = useState('/images/placeholder.jpg');
+  const [pendingImage, setPendingImage] = useState<PendingImageState | null>(null);
+  const [pendingHeroImages, setPendingHeroImages] = useState<Record<number, PendingHeroImageState>>({});
 
   // Commit tracking
   const [editingFilename, setEditingFilename] = useState('');
@@ -81,6 +114,22 @@ export default function Workspace() {
     'AWAITING INSTRUCTIONS...'
   ]);
 
+  const clearPendingImage = () => {
+    setPendingImage((prev) => {
+      if (prev?.previewUrl) URL.revokeObjectURL(prev.previewUrl);
+      return null;
+    });
+  };
+
+  const clearPendingHeroImages = () => {
+    setPendingHeroImages((prev) => {
+      Object.values(prev).forEach((item) => {
+        if (item?.previewUrl) URL.revokeObjectURL(item.previewUrl);
+      });
+      return {};
+    });
+  };
+
   // Load Content List
   const fetchList = async (type: 'events' | 'projects' | 'team' | 'applications' | 'hero') => {
     setIsLoadingList(true);
@@ -88,9 +137,10 @@ export default function Workspace() {
 
     if (type === 'hero') {
       try {
-        const res = await getHeroFrames();
-        setHeroFrames(res.frames);
-        setHeroFramesSha(res.sha);
+        clearPendingHeroImages();
+        const res = await adminApiRequest<{ frames: any[]; sha: string }>('/admin/api/hero');
+        setHeroFrames(res.frames || []);
+        setHeroFramesSha(res.sha || '');
       } catch (err) {
         console.error(err);
         setHeroFrames([]);
@@ -102,8 +152,8 @@ export default function Workspace() {
 
     if (type === 'applications') {
       try {
-        const data = await getApplicationsList();
-        setApplicationsList(data);
+        const data = await adminApiRequest<{ items: any[] }>('/admin/api/applications');
+        setApplicationsList(data.items || []);
       } catch (err) {
         console.error(err);
         setApplicationsList([]);
@@ -114,9 +164,10 @@ export default function Workspace() {
     }
 
     try {
-      const data = await getContentList(type);
-      setContentList(data);
-      addConsoleLine(`LIST LOADED: ${data.length} ITEMS FETCHED FOR [${type.toUpperCase()}]`);
+      const data = await adminApiRequest<{ items: any[] }>(`/admin/api/content?type=${encodeURIComponent(type)}`);
+      const items = data.items || [];
+      setContentList(items);
+      addConsoleLine(`LIST LOADED: ${items.length} ITEMS FETCHED FOR [${type.toUpperCase()}]`);
     } catch (err: any) {
       console.error(err);
       addConsoleLine(`FETCH ERROR FOR ${type}: ${err.message || 'Unknown Error'}`);
@@ -136,6 +187,7 @@ export default function Workspace() {
 
   // Switch to create mode
   const handleCreateNew = () => {
+    clearPendingImage();
     setTitle('');
     setSummary('');
     setContent('');
@@ -170,10 +222,13 @@ export default function Workspace() {
 
   // Fetch file for editing
   const handleEdit = async (path: string) => {
+    clearPendingImage();
     setConsoleLines([`INITIALIZING EDIT FOR FILE: ${path}`]);
     addConsoleLine('CONNECTING TO GITHUB API CORE...');
     try {
-      const fileData = await getFileContent(path);
+      const fileData = await adminApiRequest<{ sha: string; metadata: any; content: string }>(
+        `/admin/api/content?path=${encodeURIComponent(path)}`
+      );
       addConsoleLine('DECODING FILE CONTENT STREAMS...');
 
       setTitle(fileData.metadata.title || '');
@@ -222,7 +277,11 @@ export default function Workspace() {
 
     addConsoleLine(`DELETING FILE: ${path}`);
     try {
-      await deleteContent(path, sha);
+      await adminApiRequest('/admin/api/content', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path, sha }),
+      });
       addConsoleLine('FILE DELETED SUCCESSFULLY.');
       fetchList(activeTab);
     } catch (err: any) {
@@ -236,7 +295,11 @@ export default function Workspace() {
   const handleDeleteApp = async (id: string) => {
     if (!window.confirm('Bu başvuruyu silmek istediğinizden emin misiniz?')) return;
     try {
-      await deleteApplication(id);
+      await adminApiRequest('/admin/api/applications', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id }),
+      });
       fetchList('applications');
     } catch (err: any) {
       alert('Silinemedi: ' + err.message);
@@ -251,62 +314,80 @@ export default function Workspace() {
       .filter(Boolean);
   };
 
-  // Image Uploader
+  // Image Staging (optimizes locally & commits atomically when saving to avoid mid-form Vercel deploys)
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     try {
-      addConsoleLine(`STARTING IMAGE UPLOAD: ${file.name}...`);
-      const destFolder = activeTab === 'applications' ? 'events' : activeTab;
+      addConsoleLine(`GÖRSEL OPTİMİZE EDİLİYOR: ${file.name}...`);
+      const destFolder: 'events' | 'projects' | 'team' | 'hero' =
+        activeTab === 'applications' ? 'events' : activeTab;
       const cleanName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
-      const finalName = `${Date.now()}-${cleanName}`;
+      const baseName = `${Date.now()}-${cleanName}`;
 
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('type', destFolder);
-      formData.append('filename', finalName);
-      
-      const result = await uploadImageAction(formData);
-      if (result.success && result.path) {
-        setImagePath(result.path);
-        addConsoleLine(`IMAGE UPLOAD SUCCESSFUL: ${result.path}`);
-      }
+      const optimized = await optimizeImageForUpload(file, baseName);
+      const targetWebPath = `/images/${destFolder}/${optimized.filename}`;
+
+      setPendingImage((prev) => {
+        if (prev?.previewUrl) URL.revokeObjectURL(prev.previewUrl);
+        return {
+          file: optimized.file,
+          filename: optimized.filename,
+          destFolder,
+          previewUrl: optimized.previewUrl,
+        };
+      });
+
+      setImagePath(targetWebPath);
+      const sizeKb = Math.max(1, Math.round(optimized.file.size / 1024));
+      addConsoleLine(
+        `GÖRSEL HAZIR (${sizeKb} KB, KAYDET İLE BİRLİKTE YÜKLENECEK): ${targetWebPath}`
+      );
     } catch (err: any) {
       console.error(err);
-      addConsoleLine(`IMAGE UPLOAD FAILED: ${err.message}`);
-      alert('Resim yüklenirken hata oluştu: ' + err.message);
+      addConsoleLine(`GÖRSEL HAZIRLAMA HATASI: ${err.message}`);
+      alert('Resim hazırlanırken hata oluştu: ' + err.message);
     }
   };
 
-  // Hero Image Uploader
+  // Hero Image Staging (commits atomically with Hero Frames save)
   const handleHeroImageUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     try {
-      addConsoleLine(`HERO GÖRSEL YÜKLENİYOR: ${file.name}...`);
+      addConsoleLine(`HERO GÖRSEL OPTİMİZE EDİLİYOR: ${file.name}...`);
       const cleanName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
-      const finalName = `hero-${Date.now()}-${cleanName}`;
+      const baseName = `hero-${Date.now()}-${cleanName}`;
 
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('type', 'hero');
-      formData.append('filename', finalName);
+      const optimized = await optimizeImageForUpload(file, baseName);
+      const targetWebPath = `/images/hero/${optimized.filename}`;
 
-      const result = await uploadImageAction(formData);
-      if (result.success && result.path) {
-        setHeroFrames(prev => {
-          const updated = [...prev];
-          updated[index] = { ...updated[index], src: result.path };
-          return updated;
-        });
-        addConsoleLine(`GÖRSEL BAŞARIYLA YÜKLENDİ: ${result.path}`);
-      }
+      setPendingHeroImages((prev) => {
+        if (prev[index]?.previewUrl) URL.revokeObjectURL(prev[index].previewUrl);
+        return {
+          ...prev,
+          [index]: {
+            file: optimized.file,
+            filename: optimized.filename,
+            previewUrl: optimized.previewUrl,
+          },
+        };
+      });
+
+      setHeroFrames((prev) => {
+        const updated = [...prev];
+        updated[index] = { ...updated[index], src: targetWebPath };
+        return updated;
+      });
+
+      const sizeKb = Math.max(1, Math.round(optimized.file.size / 1024));
+      addConsoleLine(`HERO GÖRSELİ HAZIR (${sizeKb} KB, KAYDET İLE YÜKLENECEK): ${targetWebPath}`);
     } catch (err: any) {
       console.error(err);
       addConsoleLine(`HERO GÖRSEL YÜKLEME HATASI: ${err.message}`);
-      alert('Görsel yüklenirken hata oluştu: ' + err.message);
+      alert('Görsel hazırlanırken hata oluştu: ' + err.message);
     }
   };
 
@@ -316,9 +397,42 @@ export default function Workspace() {
     addConsoleLine('HERO ÇERÇEVELERİ YAPILANDIRMASI GÜNCELLENİYOR...');
 
     try {
-      const res = await saveHeroFrames(heroFrames, heroFramesSha);
+      const pendingEntries = Object.entries(pendingHeroImages);
+      let res: { success: boolean; sha: string; frames?: any[] };
+
+      if (pendingEntries.length > 0) {
+        const formData = new FormData();
+        formData.append('frames', JSON.stringify(heroFrames));
+        if (heroFramesSha) formData.append('sha', heroFramesSha);
+
+        const imageMeta: Array<{ index: number; fieldName: string; filename: string }> = [];
+        for (const [idxStr, img] of pendingEntries) {
+          const fieldName = `heroImage_${idxStr}`;
+          imageMeta.push({
+            index: Number(idxStr),
+            fieldName,
+            filename: img.filename,
+          });
+          formData.append(fieldName, img.file);
+        }
+        formData.append('imageMeta', JSON.stringify(imageMeta));
+
+        res = await adminApiRequest('/admin/api/hero', {
+          method: 'POST',
+          body: formData,
+        });
+      } else {
+        res = await adminApiRequest('/admin/api/hero', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ frames: heroFrames, sha: heroFramesSha }),
+        });
+      }
+
       if (res.success) {
         setHeroFramesSha(res.sha);
+        if (res.frames) setHeroFrames(res.frames);
+        clearPendingHeroImages();
         addConsoleLine(`HERO YAPILANDIRMASI KAYDEDİLDİ. SHA: ${res.sha?.substring(0, 8) || 'LOCAL'}`);
         alert('Hero çerçeveleri başarıyla güncellendi!');
       }
@@ -436,13 +550,46 @@ summary: "${summary || teamRole}"
     const mdContent = generateMarkdownString();
 
     try {
-      const res = await saveContent(activeTab, filename, mdContent, editingSha);
+      let res: { success: boolean; sha?: string; imagePath?: string };
+
+      if (pendingImage) {
+        const formData = new FormData();
+        formData.append('type', activeTab);
+        formData.append('filename', filename);
+        formData.append('markdown', mdContent);
+        if (editingSha) formData.append('sha', editingSha);
+        formData.append('imageFile', pendingImage.file);
+        formData.append('imageFilename', pendingImage.filename);
+        formData.append('imageDestFolder', pendingImage.destFolder);
+
+        res = await adminApiRequest('/admin/api/content', {
+          method: 'POST',
+          body: formData,
+        });
+      } else {
+        res = await adminApiRequest('/admin/api/content', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: activeTab,
+            filename,
+            markdown: mdContent,
+            sha: editingSha,
+          }),
+        });
+      }
+
+      if (res.imagePath) {
+        setImagePath(res.imagePath);
+      }
+      clearPendingImage();
       addConsoleLine(`KAYIT BAŞARILI! SHA: ${res.sha?.substring(0, 8) || 'LOCAL'}`);
       setIsSaving(false);
-      
+
       setTimeout(() => {
         setActiveView('list');
-      }, 1000);
+        fetchList(activeTab);
+      }, 800);
     } catch (err: any) {
       console.error(err);
       addConsoleLine(`KAYIT HATASI: ${err.message || 'Bilinmeyen hata'}`);
@@ -452,8 +599,15 @@ summary: "${summary || teamRole}"
   };
 
   const handleLogoutClick = async () => {
-    await logout();
-    window.location.href = '/';
+    try {
+      await adminApiRequest('/admin/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'logout' }),
+      });
+    } finally {
+      window.location.href = '/';
+    }
   };
 
   return (
@@ -663,7 +817,7 @@ summary: "${summary || teamRole}"
                               <div className="flex items-center gap-3">
                                 <div className="w-16 h-12 overflow-hidden rounded border border-brand-border bg-slate-900 shrink-0">
                                   <img
-                                    src={frame.src}
+                                    src={pendingHeroImages[idx]?.previewUrl || frame.src}
                                     alt={frame.name}
                                     className="object-cover w-full h-full"
                                     onError={(e) => {
@@ -803,7 +957,10 @@ summary: "${summary || teamRole}"
               <div className="flex justify-between items-center pb-4 border-b border-brand-border/40 mb-6">
                 <div className="flex items-center gap-2">
                   <button
-                    onClick={() => setActiveView('list')}
+                    onClick={() => {
+                      clearPendingImage();
+                      setActiveView('list');
+                    }}
                     className="p-1.5 bg-slate-900 border border-brand-border hover:border-slate-600 rounded text-slate-400 hover:text-white transition-colors cursor-pointer"
                     title="Listeye dön"
                   >
@@ -949,9 +1106,9 @@ summary: "${summary || teamRole}"
                           onChange={handleImageUpload}
                           className="p-2 bg-slate-900 border border-brand-border rounded text-white text-xs w-full"
                         />
-                        {imagePath && (
+                        {(pendingImage?.previewUrl || imagePath) && (
                           <div className="w-10 h-10 overflow-hidden rounded border border-brand-cyan shrink-0">
-                            <img src={imagePath} alt="preview" className="object-cover w-full h-full" />
+                            <img src={pendingImage?.previewUrl || imagePath} alt="preview" className="object-cover w-full h-full" />
                           </div>
                         )}
                       </div>
@@ -994,9 +1151,9 @@ summary: "${summary || teamRole}"
                           onChange={handleImageUpload}
                           className="p-2 bg-slate-900 border border-brand-border rounded text-white text-xs w-full"
                         />
-                        {imagePath && (
+                        {(pendingImage?.previewUrl || imagePath) && (
                           <div className="w-10 h-10 overflow-hidden rounded border border-brand-cyan shrink-0">
-                            <img src={imagePath} alt="preview" className="object-cover w-full h-full" />
+                            <img src={pendingImage?.previewUrl || imagePath} alt="preview" className="object-cover w-full h-full" />
                           </div>
                         )}
                       </div>
@@ -1080,7 +1237,10 @@ summary: "${summary || teamRole}"
                 {/* Action button triggers */}
                 <div className="flex flex-col sm:flex-row gap-3 pt-2">
                   <button
-                    onClick={() => setActiveView('list')}
+                    onClick={() => {
+                      clearPendingImage();
+                      setActiveView('list');
+                    }}
                     className="w-full sm:w-1/3 py-3 bg-slate-900 border border-brand-border hover:border-slate-600 rounded text-slate-300 hover:text-white transition-colors cursor-pointer font-bold"
                   >
                     İPTAL
